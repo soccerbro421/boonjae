@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "976427213364",
+    "project_id": "instagram-practice-1b313",
+    "storage_bucket": "instagram-practice-1b313.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976427213364:android:ba7e01d7b9094943832061",
+        "android_client_info": {
+          "package_name": "com.example.boonjae"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiWbO-_KBAyFtLaNFCjfuwLS0UKakZ3HM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
