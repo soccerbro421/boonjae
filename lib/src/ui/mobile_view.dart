@@ -1,4 +1,6 @@
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
+import 'package:boonjae/src/providers/profile_pic_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/ui/profile/profile_view.dart';
 import 'package:boonjae/src/ui/todo/todo_view.dart';
@@ -29,8 +31,12 @@ class _MobileViewState extends State<MobileView> {
   updateData() async {
     UserProvider userProvider = Provider.of(context, listen: false);
     HabitsProvider habitsProvider = Provider.of(context, listen: false);
+    ProfilePicProvider profilePicProvider = Provider.of(context, listen: false);
     await userProvider.refreshUser();
     await habitsProvider.refreshHabits();
+
+    UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
+    await profilePicProvider.refreshProfilePic(user);
     // Provider.of<MainUser>(context, listen: false).updateUser();
   }
 

@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/ui/profile/settings/settings_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -5,10 +8,12 @@ import 'package:flutter/material.dart';
 
 class ProfileAppBar extends StatelessWidget {
   final UserModel user;
+  final Uint8List? image;
   final void Function() refreshPage;
 
   const ProfileAppBar({
     required this.user,
+    this.image,
     required this.refreshPage,
     super.key,
   });
@@ -40,10 +45,7 @@ class ProfileAppBar extends StatelessWidget {
         ],
         title: Row(
           children: [
-            // if (context.watch<MainUser>().mainUser != null)
-
             Text(user.name),
-
             const Spacer(),
             IconButton(
               onPressed: () {
@@ -54,29 +56,53 @@ class ProfileAppBar extends StatelessWidget {
           ],
         ),
         background: DecoratedBox(
-            position: DecorationPosition.foreground,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.center,
-                  colors: [
-                    Theme.of(context).scaffoldBackgroundColor,
-                    Colors.transparent,
-                  ]),
-            ),
-            child: CachedNetworkImage(
-              imageUrl: user.photoUrl,
-              fit: BoxFit.cover,
-              key: UniqueKey(),
-              placeholder: (context, url) => const Text(''),
-              errorWidget: (context, url, error) => const Icon(Icons.person),
-            )
+          position: DecorationPosition.foreground,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.center,
+                colors: [
+                  Theme.of(context).scaffoldBackgroundColor,
+                  Colors.transparent,
+                ]),
+          ),
+          child: image != null ? Image(
+            image: MemoryImage(image!),
+            fit: BoxFit.cover,
+            gaplessPlayback: true,
+          ): const Text(''),
+          // Image.file(
+          //   profileImage,
+          //   fit: BoxFit.cover,
+          // ),
+          // CachedNetworkImage(
+          //   imageUrl: user.photoUrl,
+          //   fit: BoxFit.cover,
+          //   key: UniqueKey(),
+          //   placeholder: (context, url) => const Text(''),
+          //   errorWidget: (context, url, error) => const Icon(Icons.person),
+          // )
 
-            //  Image.network(
-            //   user!.photoUrl,
-            //   fit: BoxFit.cover,
-            // ),
-            ),
+          //  Image.network(
+          //   user.photoUrl,
+          //   fit: BoxFit.cover,
+          // ),
+
+          //     FutureBuilder<File>(
+          //   future: getImageFile(),
+          //   builder: (context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.done) {
+          //       if (snapshot.hasData) {
+          //         return Image.file(snapshot.data!, fit: BoxFit.cover);
+          //       } else {
+          //         return Text("no image found");
+          //       }
+          //     } else {
+          //       return CircularProgressIndicator();
+          //     }
+          //   },
+          // ),
+        ),
       ),
     );
   }

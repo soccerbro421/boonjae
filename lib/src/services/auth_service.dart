@@ -4,11 +4,12 @@ import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/services/storage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<String> signUpUser({
     required String email,
@@ -29,19 +30,29 @@ class AuthService {
         String photoUrl = '';
 
         if (file != null) {
-            photoUrl = await StorageService()
-              .uploadImageToStorage('profilePics', file, false);
+ 
+
+          Reference profilePicRef = _storage
+              .ref()
+              .child('users/${creds.user!.uid}')
+              .child('profilePic');
+              
+
+          photoUrl = await StorageService()
+              .uploadImageToStorageByReference(profilePicRef, file);    
         }
 
         UserModel user = UserModel(
-            email: email,
-            uid: creds.user!.uid,
-            username: 'user${creds.user!.uid}',
-            photoUrl: photoUrl,
-            name: name,
-            bio: bio,
-            followers: [],
-            following: []);
+          email: email,
+          uid: creds.user!.uid,
+          username: 'user${creds.user!.uid}',
+          photoUrl: photoUrl,
+          name: name,
+          bio: bio,
+          friends: [],
+        );
+
+        
 
         // add user
         // doc(creds.user!.uid) sets the document id
@@ -101,6 +112,8 @@ class AuthService {
     DocumentSnapshot snap =
         await _firestore.collection('users').doc(currentUser.uid).get();
 
-    return UserModel.fromSnap(snap);
+    UserModel user = UserModel.fromSnap(snap);
+
+    return user;
   }
 }
