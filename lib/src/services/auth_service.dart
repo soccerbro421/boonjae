@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/storage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,6 +37,8 @@ class AuthService {
               .ref()
               .child('users/${creds.user!.uid}')
               .child('profilePic');
+          
+          file = await ImageService().compressImage(file);
               
 
           photoUrl = await StorageService()

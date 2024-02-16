@@ -5,11 +5,9 @@ import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/profile_pic_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
-import 'package:boonjae/src/services/user_service.dart';
 import 'package:boonjae/src/ui/widgets/habits_list_view.dart';
 import 'package:boonjae/src/ui/widgets/mid_screen_user_info.dart';
 import 'package:boonjae/src/ui/widgets/profile_app_bar.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,13 +25,11 @@ class _ProfileViewState extends State<ProfileView> {
   List<HabitModel>? habits;
   late Uint8List? image;
 
-  final FirebaseStorage _storage = FirebaseStorage.instance;
-
-  @override
-  void initState() {
-    refreshPage();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   refreshPage();
+  //   super.initState();
+  // }
 
   void refreshPage() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -61,7 +57,7 @@ class _ProfileViewState extends State<ProfileView> {
     habits = Provider.of<HabitsProvider>(context).getHabits;
     image = Provider.of<ProfilePicProvider>(context).getImage;
     
-    return image != null ? Scaffold(
+    return Scaffold(
       body: CustomScrollView(
         slivers: [
           
@@ -74,6 +70,6 @@ class _ProfileViewState extends State<ProfileView> {
           HabitsListView(habits: habits!,),
         ],
       ),
-    ) : Text('hi');
+    );
   }
 }

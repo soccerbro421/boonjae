@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/storage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +32,8 @@ class HabitsService {
 
     try {
       if (name.isNotEmpty && description.isNotEmpty) {
+
+
         
         Reference habitsFolderRef = _storage
             .ref()
@@ -39,6 +42,9 @@ class HabitsService {
             .child(habitId);
 
         if (file != null) {
+
+          file = await ImageService().compressImage(file);
+
           photoUrl = await StorageService()
               .uploadImageToStorageByReference(habitsFolderRef, file);
         }

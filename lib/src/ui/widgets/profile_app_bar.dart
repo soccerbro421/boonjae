@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:boonjae/src/models/user_model.dart';
@@ -66,22 +65,23 @@ class ProfileAppBar extends StatelessWidget {
                   Colors.transparent,
                 ]),
           ),
-          child: image != null ? Image(
-            image: MemoryImage(image!),
-            fit: BoxFit.cover,
-            gaplessPlayback: true,
-          ): const Text(''),
+          child: 
+          // image != null ? Image(
+          //   image: MemoryImage(image!),
+          //   fit: BoxFit.cover,
+          //   gaplessPlayback: true,
+          // ): const Text(''),
           // Image.file(
           //   profileImage,
           //   fit: BoxFit.cover,
           // ),
-          // CachedNetworkImage(
-          //   imageUrl: user.photoUrl,
-          //   fit: BoxFit.cover,
-          //   key: UniqueKey(),
-          //   placeholder: (context, url) => const Text(''),
-          //   errorWidget: (context, url, error) => const Icon(Icons.person),
-          // )
+          CachedNetworkImage(
+            imageUrl: user.photoUrl,
+            fit: BoxFit.cover,
+            key: UniqueKey(),
+            placeholder: (context, url) => const Text(''),
+            errorWidget: (context, url, error) => const Icon(Icons.person),
+          )
 
           //  Image.network(
           //   user.photoUrl,

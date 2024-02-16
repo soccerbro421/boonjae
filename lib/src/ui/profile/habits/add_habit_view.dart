@@ -194,7 +194,7 @@ class _AddHabitView extends State<AddHabitView> {
                     ),
                   ),
                   Step(
-                    title: const Text('Profile pic (optional)'),
+                    title: const Text('Image (optional)'),
                     content: Stack(
                       children: [
                         _image != null

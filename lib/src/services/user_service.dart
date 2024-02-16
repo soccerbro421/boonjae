@@ -1,21 +1,20 @@
-import 'dart:typed_data';
-import 'package:firebase_storage/firebase_storage.dart';
+// import 'dart:typed_data';
+// import 'package:firebase_storage/firebase_storage.dart';
 
-class UserService {
+// class UserService {
 
-  Future<Uint8List?> getImageBytes(Reference ref) async {
-    try {      
-      const oneMegabyte = 1024 * 1024;
-      final Uint8List? data = await ref.getData(5 * oneMegabyte);
-      return data;
+//   Future<Uint8List?> getImageBytes(Reference ref) async {
+//     try {      
+//       const oneMegabyte = 1024 * 1024;
+//       final Uint8List? data = await ref.getData(5 * oneMegabyte);
+//       return data;
       
-    } catch (e) {
-      print('Error loading image: $e');
-      return null;
-    }
+//     } catch (e) {
+//       return null;
+//     }
     
-  }
-}
+//   }
+// }
 
 
 
