@@ -17,7 +17,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         title: const Text('Edit Profile'),
         actions: const [],
       ),
-      body: Center(
+      body: const Center(
         child: Text('hi'),
       ),
     );
