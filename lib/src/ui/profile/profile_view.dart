@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
-import 'package:boonjae/src/providers/profile_pic_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/ui/widgets/habits_list_view.dart';
 import 'package:boonjae/src/ui/widgets/mid_screen_user_info.dart';
@@ -46,16 +45,12 @@ class _ProfileViewState extends State<ProfileView> {
     HabitsProvider habitsProvider = Provider.of(context, listen: false);
     await habitsProvider.refreshHabits();
 
-    ProfilePicProvider profilePicProvider = Provider.of(context, listen: false);
-    await profilePicProvider.refreshProfilePic(user!);
-
   }
 
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).getUser;
     habits = Provider.of<HabitsProvider>(context).getHabits;
-    image = Provider.of<ProfilePicProvider>(context).getImage;
     
     return Scaffold(
       body: CustomScrollView(
@@ -64,7 +59,6 @@ class _ProfileViewState extends State<ProfileView> {
             ProfileAppBar(
               user: user!,
               refreshPage: refreshPage,
-              image: image!,
             ),
           MidScreenUserInfoView(user: user!),
           HabitsListView(habits: habits!,),

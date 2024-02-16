@@ -16,12 +16,10 @@ class ImageService {
     
   }
 
-
-
   Future<Uint8List> compressImage(Uint8List list) async {
     var result = await FlutterImageCompress.compressWithList(
       list,
-      quality: 5,
+      quality: 2,
     );
     return result;
   }

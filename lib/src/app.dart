@@ -1,5 +1,4 @@
 import 'package:boonjae/src/providers/habits_provider.dart';
-import 'package:boonjae/src/providers/profile_pic_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/ui/auth/login_screen.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
@@ -36,9 +35,6 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(
               create: (_) => HabitsProvider(),
             ),
-            ChangeNotifierProvider(
-              create: (_) => ProfilePicProvider(),
-            )
           ],
           child: MaterialApp(
             // Providing a restorationScopeId allows the Navigator built by the
