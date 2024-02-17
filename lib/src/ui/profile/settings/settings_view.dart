@@ -1,11 +1,16 @@
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/ui/auth/login_screen.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_profile_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatelessWidget {
+
+  final UserModel user;
+
   const SettingsView({
     super.key,
+    required this.user,
   });
 
   void logoutUser(BuildContext context) {
@@ -22,7 +27,7 @@ class SettingsView extends StatelessWidget {
   void navigateToEditProfileView(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const EditProfileView(),
+        builder: (context) => EditProfileView(user: user,),
       ),
     );
   }

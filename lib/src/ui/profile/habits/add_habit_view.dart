@@ -165,7 +165,7 @@ class _AddHabitView extends State<AddHabitView> {
                         TextFieldInput(
                           textEditingController: _nameController,
                           hintText: 'Enter habit name',
-                          textInputType: TextInputType.emailAddress,
+                          textInputType: TextInputType.text,
                         ),
                         const SizedBox(height: 16),
                         TextFieldInput(

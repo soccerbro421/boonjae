@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:boonjae/src/db/tasks_database.dart';
 import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/models/task_model.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/storage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +14,16 @@ class HabitsService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  final List<String> daysOfWeekStrings = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   Future<String> addHabit({
     required String name,
@@ -32,9 +44,6 @@ class HabitsService {
 
     try {
       if (name.isNotEmpty && description.isNotEmpty) {
-
-
-        
         Reference habitsFolderRef = _storage
             .ref()
             .child('users/$userId')
@@ -42,7 +51,6 @@ class HabitsService {
             .child(habitId);
 
         if (file != null) {
-
           file = await ImageService().compressImage(file);
 
           photoUrl = await StorageService()
@@ -50,12 +58,27 @@ class HabitsService {
         }
 
         HabitModel h = HabitModel(
-            habitId: habitId,
-            photoUrl: photoUrl,
-            name: name,
-            description: description,
-            userId: userId,
-            daysOfWeek: daysOfWeek);
+          habitId: habitId,
+          photoUrl: photoUrl,
+          name: name,
+          description: description,
+          userId: userId,
+          daysOfWeek: daysOfWeek,
+        );
+
+        for (int i = 0; i < daysOfWeek.length; i++) {
+          if (daysOfWeek[i] == true) {
+            TaskModel task = TaskModel(
+              userId: userId,
+              habitId: h.habitId,
+              dayOfWeek: daysOfWeekStrings[i],
+              habitName: h.name,
+              date: DateTime.now(),
+              status: "NOTCOMPLETED",
+            );
+            await TasksDatabase.instance.create(task);
+          }
+        }
 
         // Reference to the user document
         DocumentReference userDocRef =

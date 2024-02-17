@@ -20,7 +20,7 @@ class ProfileAppBar extends StatelessWidget {
   void navigateToSettings(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const SettingsView(),
+        builder: (context) => SettingsView(user: user),
       ),
     );
   }

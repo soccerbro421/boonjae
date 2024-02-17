@@ -44,7 +44,7 @@ class HabitsProvider with ChangeNotifier {
     QuerySnapshot habitsQuerySnapshot = await habitsCollectionRef.get();
 
     // Iterate through the documents in the subcollection
-    habitsQuerySnapshot.docs.forEach((habitDoc) {
+    for (var habitDoc in habitsQuerySnapshot.docs) {
       // Access the data of each document
       // Map<String, dynamic> habitData = habitDoc.data() as Map<String, dynamic>;
 
@@ -54,7 +54,7 @@ class HabitsProvider with ChangeNotifier {
 
       // Use 'habitData' as needed
     
-    });
+    }
 
     _habits = temp;
 
