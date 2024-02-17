@@ -27,9 +27,9 @@ class TaskModel {
   final String habitId;
   final String habitName;
   final DateTime date;
-  final String status;
+  String status;
 
-  const TaskModel({
+  TaskModel({
     this.taskId,
     required this.userId,
     required this.habitId,

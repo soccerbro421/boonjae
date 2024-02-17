@@ -45,18 +45,16 @@ class HabitsListView extends StatelessWidget {
                       height: 150,
                       width: 150,
                       // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
-                      child: Hero(
-                        tag: habit.habitId,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: CachedNetworkImage(
-                            imageUrl: habit.photoUrl,
-                            fit: BoxFit.cover,
-                            key: UniqueKey(),
-                            placeholder: (context, url) => const Text(''),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.person),
-                          ),
+
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: CachedNetworkImage(
+                          imageUrl: habit.photoUrl,
+                          fit: BoxFit.cover,
+                          key: UniqueKey(),
+                          placeholder: (context, url) => const Text(''),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.person),
                         ),
                       ),
                     ),

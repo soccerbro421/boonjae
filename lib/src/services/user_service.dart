@@ -21,6 +21,10 @@ class UserService {
     String photoUrl = '';
     Map<String, dynamic> map = {};
 
+    if (username.isEmpty || bio.isEmpty || name.isEmpty) {
+      return 'please enter all fields';
+    }
+
     try {
       User currentUser = _auth.currentUser!;
 

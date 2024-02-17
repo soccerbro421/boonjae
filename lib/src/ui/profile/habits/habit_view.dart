@@ -1,5 +1,7 @@
 import 'package:boonjae/src/models/habit_model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:boonjae/src/ui/profile/habits/habit_cover.dart';
+import 'package:boonjae/src/ui/profile/habits/habit_settings_view.dart';
+import 'package:boonjae/src/ui/profile/habits/posts_grid_view.dart';
 import 'package:flutter/material.dart';
 
 class HabitView extends StatelessWidget {
@@ -10,33 +12,37 @@ class HabitView extends StatelessWidget {
     required this.habit,
   });
 
+  void navigateToHabitSettings(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => HabitSettingsView(habit: habit),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(habit.name),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            Hero(
-              tag: habit.habitId,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: CachedNetworkImage(
-                  imageUrl: habit.photoUrl,
-                  fit: BoxFit.cover,
-                  key: UniqueKey(),
-                  placeholder: (context, url) => const Text(''),
-                  errorWidget: (context, url, error) =>
-                      const Icon(Icons.person),
-                ),
-              ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                navigateToHabitSettings(context);
+              },
+              icon: const Icon(Icons.more_horiz_sharp),
             ),
-            Text(habit.description),
-          ],
-        ),
+        ],
       ),
+      
+      body: CustomScrollView(slivers: [
+        HabitCover(
+          habit: habit,
+        ),
+        PostsGridView(
+          habit: habit,
+        ),
+      ]),
     );
   }
 }

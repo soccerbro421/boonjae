@@ -31,6 +31,13 @@ class _CreateTaskViewState extends State<CreateTaskView> {
     "Friday",
     "Saturday",
   ];
+  showSnackBar(String content) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(content),
+      ),
+    );
+  }
 
   void createTask() async {
     UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
@@ -38,6 +45,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
     int indexOfTrue = values.indexOf(true);
 
     if (indexOfTrue == -1 || selectedHabit == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      showSnackBar('please fill out whole form');
       return;
     }
 

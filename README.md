@@ -38,7 +38,8 @@ To support additional languages, please visit the tutorial on
 [Internationalizing Flutter
 apps](https://flutter.dev/docs/development/accessibility-and-localization/internationalization)
 
-
+## Tips
+* run ```dart fix --apply``` to allow dart to fix some issues
 
 ## Resources
 * firebase.flutter.dev

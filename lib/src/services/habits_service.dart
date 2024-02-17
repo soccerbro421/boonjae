@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:boonjae/src/db/tasks_database.dart';
 import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/task_model.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/storage_service.dart';
@@ -24,6 +25,130 @@ class HabitsService {
     "Friday",
     "Saturday",
   ];
+
+  void deleteHabit({
+    required HabitModel habit,
+  }) async {
+    try {
+      String currentUserId = _auth.currentUser!.uid;
+
+      DocumentReference userDocRef =
+          _firestore.collection('users').doc(currentUserId);
+
+      // Reference to the 'habits' subcollection for the user
+      DocumentReference habitsDocRef =
+          userDocRef.collection('habits').doc(habit.habitId);
+
+      await habitsDocRef.delete();
+
+      Reference habitRef =
+          _storage.ref().child('users/$currentUserId/habits/${habit.habitId}');
+
+      Reference coverPhotoRef = habitRef.child('coverPhoto');
+
+      Reference postsRef = habitRef.child('posts');
+
+      ListResult listResult = await postsRef.listAll();
+
+      // Delete each item in the 'posts' directory
+      await Future.forEach(listResult.items, (Reference itemRef) async {
+        await itemRef.delete();
+      });
+
+      await coverPhotoRef.delete();
+
+      print("deleted success :D");
+    } catch (err) {
+      print(err.toString());
+      print("deleted fail D:");
+    }
+  }
+
+  Future<List<PostModel>> getPostsByHabit({
+    required HabitModel habit,
+  }) async {
+    try {
+      String currentUserId = _auth.currentUser!.uid;
+
+      DocumentReference userDocRef =
+          _firestore.collection('users').doc(currentUserId);
+
+      // Reference to the 'habits' subcollection for the user
+      DocumentReference habitsDocRef =
+          userDocRef.collection('habits').doc(habit.habitId);
+
+      CollectionReference postsCollectionRef = habitsDocRef.collection('posts');
+
+      List<PostModel> posts = [];
+
+      QuerySnapshot querySnapshot = await postsCollectionRef.get();
+
+      posts = [];
+
+      for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
+        PostModel post = PostModel.fromSnap(docSnapshot);
+        posts.add(post);
+      }
+
+      return posts;
+    } catch (err) {
+      print(err.toString());
+      return [];
+    }
+  }
+
+  Future<String> uploadPost({
+    required TaskModel task,
+    Uint8List? file,
+    required String description,
+  }) async {
+    String photoUrl = '';
+    String postId = const Uuid().v1();
+
+    if (file == null || description.isEmpty) {
+      return 'please enter all fields';
+    }
+
+    try {
+      User currentUser = _auth.currentUser!;
+
+      Reference postPicRef = _storage
+          .ref()
+          .child('users/${currentUser.uid}')
+          .child('habits')
+          .child(task.habitId)
+          .child('posts')
+          .child(postId);
+
+      file = await ImageService().compressImage(file);
+
+      photoUrl = await StorageService()
+          .uploadImageToStorageByReference(postPicRef, file);
+
+      PostModel p = PostModel(
+        habitId: task.habitId,
+        photoUrl: photoUrl,
+        postId: postId,
+        description: description,
+        userId: currentUser.uid,
+      );
+
+      DocumentReference userDocRef =
+          _firestore.collection('users').doc(currentUser.uid);
+
+      // Reference to the 'habits' subcollection for the user
+      DocumentReference habitsDocRef =
+          userDocRef.collection('habits').doc(task.habitId);
+
+      CollectionReference postsCollectionRef = habitsDocRef.collection('posts');
+
+      await postsCollectionRef.doc(postId).set(p.toJson());
+
+      return 'success';
+    } catch (err) {
+      return err.toString();
+    }
+  }
 
   Future<String> addHabit({
     required String name,
@@ -48,7 +173,8 @@ class HabitsService {
             .ref()
             .child('users/$userId')
             .child('habits')
-            .child(habitId);
+            .child(habitId)
+            .child('coverPhoto');
 
         if (file != null) {
           file = await ImageService().compressImage(file);

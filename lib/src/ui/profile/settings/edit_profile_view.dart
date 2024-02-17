@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/user_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class EditProfileView extends StatefulWidget {
   final UserModel user;
@@ -43,24 +43,14 @@ class _EditProfileViewState extends State<EditProfileView> {
     super.dispose();
   }
 
-  pickImage(ImageSource source) async {
-    final ImagePicker imagePicker = ImagePicker();
-
-    XFile? file = await imagePicker.pickImage(source: source);
-
-    if (file != null) {
-      return await file.readAsBytes();
-    }
-
-    return null;
-  }
-
   void selectImage() async {
-    Uint8List im = await pickImage(ImageSource.gallery);
+    final im = await ImageService().pickMedia();
 
-    setState(() {
-      _image = im;
-    });
+    if (im != null) {
+      setState(() {
+        _image = im;
+      });
+    }
   }
 
   void updateUser() async {
@@ -194,20 +184,27 @@ class _EditProfileViewState extends State<EditProfileView> {
                     title: const Text('Profile pic (optional)'),
                     content: Column(
                       children: [
-                        const Text('note: if new pic not provided, will not update current profile pic'),
+                        const Text(
+                            'note: if new pic not provided, will not update current profile pic'),
                         const SizedBox(height: 20),
                         Stack(
                           children: [
-                            _image != null
-                                ? CircleAvatar(
-                                    radius: 64,
-                                    backgroundImage: MemoryImage(_image!),
-                                  )
-                                : const CircleAvatar(
-                                    radius: 64,
-                                    backgroundImage: AssetImage(
-                                        'assets/images/flutter_logo.png'),
-                                  ),
+                            InkWell(
+                              onTap: selectImage,
+                              child: SizedBox(
+                                height: 150,
+                                width: 150,
+                                // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
+
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: _image != null
+                                      ? Image.memory(_image!)
+                                      : Image.asset(
+                                          'assets/images/flutter_logo.png'),
+                                ),
+                              ),
+                            ),
                             Positioned(
                               bottom: -10,
                               left: 80,

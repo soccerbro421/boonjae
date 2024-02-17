@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:boonjae/src/services/habits_service.dart';
+import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -62,6 +63,7 @@ class _AddHabitView extends State<AddHabitView> {
     });
 
     if (res != 'success') {
+      ScaffoldMessenger.of(context).clearSnackBars();
       showSnackBar(res);
     } else {
       Navigator.of(context).pop();
@@ -81,11 +83,13 @@ class _AddHabitView extends State<AddHabitView> {
   }
 
   void selectImage() async {
-    Uint8List im = await pickImage(ImageSource.gallery);
+    final im = await ImageService().pickMedia();
 
-    setState(() {
-      _image = im;
-    });
+    if (im != null) {
+      setState(() {
+        _image = im;
+      });
+    }
   }
 
   @override
@@ -197,19 +201,25 @@ class _AddHabitView extends State<AddHabitView> {
                     title: const Text('Image (optional)'),
                     content: Stack(
                       children: [
-                        _image != null
-                            ? CircleAvatar(
-                                radius: 64,
-                                backgroundImage: MemoryImage(_image!),
-                              )
-                            : const CircleAvatar(
-                                radius: 64,
-                                backgroundImage: AssetImage(
-                                    'assets/images/flutter_logo.png'),
+                        InkWell(
+                              onTap: selectImage,
+                              child: SizedBox(
+                                height: 150,
+                                width: 150,
+                                // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
+                              
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: _image != null
+                                      ? Image.memory(_image!)
+                                      : Image.asset(
+                                          'assets/images/flutter_logo.png'),
+                                ),
                               ),
+                            ),
                         Positioned(
                           bottom: -10,
-                          left: 80,
+                          left: 110,
                           child: IconButton(
                             onPressed: selectImage,
                             icon: const Icon(Icons.add_a_photo),
