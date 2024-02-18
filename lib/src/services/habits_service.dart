@@ -4,6 +4,7 @@ import 'package:boonjae/src/db/tasks_database.dart';
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/task_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/storage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -57,10 +58,10 @@ class HabitsService {
 
       await coverPhotoRef.delete();
 
-      print("deleted success :D");
+
     } catch (err) {
-      print(err.toString());
-      print("deleted fail D:");
+      
+
     }
   }
 
@@ -92,7 +93,7 @@ class HabitsService {
 
       return posts;
     } catch (err) {
-      print(err.toString());
+   
       return [];
     }
   }
@@ -101,6 +102,7 @@ class HabitsService {
     required TaskModel task,
     Uint8List? file,
     required String description,
+    required UserModel user,
   }) async {
     String photoUrl = '';
     String postId = const Uuid().v1();
@@ -131,6 +133,9 @@ class HabitsService {
         postId: postId,
         description: description,
         userId: currentUser.uid,
+        createdDate: DateTime.now(),
+        habitName: task.habitName,
+        userName: user.username,
       );
 
       DocumentReference userDocRef =

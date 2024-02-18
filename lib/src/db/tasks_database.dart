@@ -81,7 +81,8 @@ class TasksDatabase {
 
       // Get the current date and find the beginning and end of the current week
       DateTime currentDate = DateTime.now();
-      DateTime startOfWeek =
+   
+      DateTime startOfWeek = currentDate.weekday == 7 ?   DateTime(currentDate.year, currentDate.month, currentDate.day) :
           currentDate.subtract(Duration(days: currentDate.weekday - 1));
       DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
 

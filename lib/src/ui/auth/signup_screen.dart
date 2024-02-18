@@ -212,7 +212,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       children: [
                         TextFieldInput(
                           textEditingController: _nameController,
-                          hintText: 'Enter your name',
+                          hintText: 'Enter your nickname',
                           textInputType: TextInputType.text,
                         ),
                         const SizedBox(height: 16),

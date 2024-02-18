@@ -6,6 +6,9 @@ class PostModel {
   final String photoUrl;
   final String description;
   final String userId;
+  final DateTime createdDate;
+  final String habitName;
+  final String userName;
 
 
   PostModel({
@@ -14,6 +17,9 @@ class PostModel {
     required this.postId,
     required this.description,
     required this.userId,
+    required this.createdDate,
+    required this.habitName,
+    required this.userName,
   });
 
   Map<String, dynamic> toJson() => {
@@ -22,6 +28,9 @@ class PostModel {
         'postId': postId,
         'description': description,
         'userId': userId,
+        'createdDate': createdDate,
+        'habitName': habitName,
+        'userName': userName,
       };
 
   static PostModel fromSnap(DocumentSnapshot snap) {
@@ -35,6 +44,9 @@ class PostModel {
       habitId: snapshot['habitId'],
       photoUrl: snapshot['photoUrl'],
       description: snapshot['description'],
+      createdDate: (snapshot['createdDate'] as Timestamp).toDate(),
+      userName: snapshot['userName'],
+      habitName: snapshot['habitName']
     );
   }
 }

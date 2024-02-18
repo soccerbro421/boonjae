@@ -1,4 +1,5 @@
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/ui/profile/friends/friends_view.dart';
 import 'package:boonjae/src/ui/profile/habits/add_habit_view.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +19,14 @@ class MidScreenUserInfoView extends StatelessWidget {
     );
   }
 
+  void navigateToFriendsView(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const FriendsView(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SliverFixedExtentList(
@@ -30,12 +39,13 @@ class MidScreenUserInfoView extends StatelessWidget {
               child: Row(
                 children: [
                   Text(user.username),
+                  const SizedBox(width: 10,),
                   const Spacer(),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'friends',
-                    ),
+                  InkWell(
+                    onTap: () {
+                      navigateToFriendsView(context);
+                    },
+                    child: const Icon(Icons.group),
                   ),
                 ],
               ),
@@ -49,13 +59,19 @@ class MidScreenUserInfoView extends StatelessWidget {
                 children: [
                   Text(user.bio),
                   const Spacer(),
-                  ElevatedButton.icon(
-                    onPressed: () {
+                  InkWell(
+                    onTap: () {
                       navigateToAddHabitView(context);
                     },
-                    icon: const Icon(Icons.add),
-                    label: const Text('add habit'),
-                  )
+                    child: const Icon(Icons.add),
+                  ),
+                  // ElevatedButton.icon(
+                  //   onPressed: () {
+                  //     navigateToAddHabitView(context);
+                  //   },
+                  //   icon: const Icon(Icons.add),
+                  //   label: const Text('add habit'),
+                  // )
                 ],
               ),
             ),

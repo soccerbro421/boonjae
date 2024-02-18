@@ -1,10 +1,13 @@
 import 'dart:typed_data';
 
 import 'package:boonjae/src/models/task_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TaskDetailsView extends StatefulWidget {
   final TaskModel task;
@@ -46,10 +49,13 @@ class _TaskDetailsViewState extends State<TaskDetailsView> {
       _isLoading = true;
     });
 
+    UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
+
     String res = await HabitsService().uploadPost(
       task: widget.task,
       file: _image,
       description: _descriptionController.text,
+      user: user,
     );
 
     setState(() {

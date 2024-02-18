@@ -68,7 +68,7 @@ class _TaskTileState extends State<TaskTile> {
               borderRadius: BorderRadius.circular(15),
             ),
             child: AnimatedContainer(
-              duration: const Duration(seconds: 1),
+              duration: const Duration(milliseconds: 300),
               color: isChecked ? const Color.fromARGB(120, 0, 255, 0) : const Color.fromARGB(0, 0, 0, 0),
               padding: const EdgeInsets.all(8.0),
               child: Row(

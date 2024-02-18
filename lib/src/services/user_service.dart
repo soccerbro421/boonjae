@@ -34,6 +34,8 @@ class UserService {
             .child('users/${currentUser.uid}')
             .child('profilePic');
 
+        // TODO: check if username exists
+
         file = await ImageService().compressImage(file);
 
         photoUrl = await StorageService()

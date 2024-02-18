@@ -27,7 +27,8 @@ class _TodoViewState extends State<TodoView> {
     "Friday",
     "Saturday",
   ];
-  int currentDayIndex = DateTime.now().weekday; // Subtract 1 to match 0-based index
+  int currentDayIndex = DateTime.now().weekday == 7 ? 0 : DateTime.now().weekday;
+ // Subtract 1 to match 0-based index
 
 
   late List<List<TaskModel>> tasks = [[], [], [], [], [], [], [] ];

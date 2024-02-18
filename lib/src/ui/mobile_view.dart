@@ -1,11 +1,13 @@
+import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
+import 'package:boonjae/src/services/feed_service.dart';
+import 'package:boonjae/src/ui/feed/feed_view.dart';
 import 'package:boonjae/src/ui/profile/profile_view.dart';
 import 'package:boonjae/src/ui/todo/todo_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 class MobileView extends StatefulWidget {
   const MobileView({
@@ -17,22 +19,37 @@ class MobileView extends StatefulWidget {
 }
 
 class _MobileViewState extends State<MobileView> {
-  String username = "";
   int _selectedIndex = 2;
+  List<PostModel> feedPosts = [];
 
   @override
   void initState() {
     super.initState();
     updateData();
+    updatePosts();
   }
 
   updateData() async {
     UserProvider userProvider = Provider.of(context, listen: false);
     HabitsProvider habitsProvider = Provider.of(context, listen: false);
-    
+
     await userProvider.refreshUser();
     await habitsProvider.refreshHabits();
+  }
 
+  updatePosts() async {
+    List<PostModel> temp = await FeedService().getFeed();
+    setState(() {
+      feedPosts = temp;
+      _widgetOptions = <Widget>[
+        FeedView(
+          posts: feedPosts,
+        ),
+        const TodoView(),
+        // SearchScreen(),
+        const ProfileView(),
+      ];
+    });
   }
 
   void _navigationTapped(int index) {
@@ -41,16 +58,14 @@ class _MobileViewState extends State<MobileView> {
     });
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    
-    Text('feed'),
-    TodoView(),
-    // SearchScreen(),
-    ProfileView(),
-
-  ];
-
-  
+  static List<Widget> _widgetOptions = <Widget>[
+        FeedView(
+          posts: const [],
+        ),
+        const TodoView(),
+        // SearchScreen(),
+        const ProfileView(),
+      ];
 
   @override
   Widget build(BuildContext context) {

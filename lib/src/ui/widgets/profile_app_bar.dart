@@ -44,7 +44,7 @@ class ProfileAppBar extends StatelessWidget {
         ],
         title: Row(
           children: [
-            Text(user.name),
+            Text(user.name, softWrap: true,),
             const Spacer(),
             IconButton(
               onPressed: () {
@@ -55,54 +55,55 @@ class ProfileAppBar extends StatelessWidget {
           ],
         ),
         background: DecoratedBox(
-          position: DecorationPosition.foreground,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
+            position: DecorationPosition.foreground,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.center,
                 colors: [
                   Theme.of(context).scaffoldBackgroundColor,
                   Colors.transparent,
-                ]),
-          ),
-          child: 
-          // image != null ? Image(
-          //   image: MemoryImage(image!),
-          //   fit: BoxFit.cover,
-          //   gaplessPlayback: true,
-          // ): const Text(''),
-          // Image.file(
-          //   profileImage,
-          //   fit: BoxFit.cover,
-          // ),
-          CachedNetworkImage(
-            imageUrl: user.photoUrl,
-            fit: BoxFit.cover,
-            key: UniqueKey(),
-            placeholder: (context, url) => const Text(''),
-            errorWidget: (context, url, error) => const Icon(Icons.person),
-          )
+                ],
+              ),
+            ),
+            child:
+                // image != null ? Image(
+                //   image: MemoryImage(image!),
+                //   fit: BoxFit.cover,
+                //   gaplessPlayback: true,
+                // ): const Text(''),
+                // Image.file(
+                //   profileImage,
+                //   fit: BoxFit.cover,
+                // ),
+                CachedNetworkImage(
+              imageUrl: user.photoUrl,
+              fit: BoxFit.cover,
+              key: UniqueKey(),
+              placeholder: (context, url) => const Text(''),
+              errorWidget: (context, url, error) => const Icon(Icons.person),
+            )
 
-          //  Image.network(
-          //   user.photoUrl,
-          //   fit: BoxFit.cover,
-          // ),
+            //  Image.network(
+            //   user.photoUrl,
+            //   fit: BoxFit.cover,
+            // ),
 
-          //     FutureBuilder<File>(
-          //   future: getImageFile(),
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.done) {
-          //       if (snapshot.hasData) {
-          //         return Image.file(snapshot.data!, fit: BoxFit.cover);
-          //       } else {
-          //         return Text("no image found");
-          //       }
-          //     } else {
-          //       return CircularProgressIndicator();
-          //     }
-          //   },
-          // ),
-        ),
+            //     FutureBuilder<File>(
+            //   future: getImageFile(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.done) {
+            //       if (snapshot.hasData) {
+            //         return Image.file(snapshot.data!, fit: BoxFit.cover);
+            //       } else {
+            //         return Text("no image found");
+            //       }
+            //     } else {
+            //       return CircularProgressIndicator();
+            //     }
+            //   },
+            // ),
+            ),
       ),
     );
   }
