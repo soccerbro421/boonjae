@@ -1,31 +1,14 @@
 import 'package:boonjae/src/models/user_model.dart';
-import 'package:boonjae/src/ui/profile/friends/friends_view.dart';
-import 'package:boonjae/src/ui/profile/habits/add_habit_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class MidScreenUserInfoView extends StatelessWidget {
+class OtherMidScreenUserInfoView extends StatelessWidget {
   final UserModel user;
 
-  const MidScreenUserInfoView({
-    required this.user,
+  const OtherMidScreenUserInfoView({
     super.key,
+    required this.user,
   });
-
-  void navigateToAddHabitView(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AddHabitView(),
-      ),
-    );
-  }
-
-  void navigateToFriendsView(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const FriendsView(),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +26,7 @@ class MidScreenUserInfoView extends StatelessWidget {
                     width: 10,
                   ),
                   const Spacer(),
-                  InkWell(
-                    onTap: () {
-                      navigateToFriendsView(context);
-                    },
-                    child: const Icon(Icons.group),
-                  ),
+                  
                 ],
               ),
             ),
@@ -61,13 +39,6 @@ class MidScreenUserInfoView extends StatelessWidget {
                 children: [
                   Text(user.bio),
                   const Spacer(),
-
-                  InkWell(
-                    onTap: () {
-                      navigateToAddHabitView(context);
-                    },
-                    child: const Icon(Icons.add),
-                  )
                 ],
               ),
             ),

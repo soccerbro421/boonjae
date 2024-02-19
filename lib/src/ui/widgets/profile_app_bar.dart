@@ -9,11 +9,13 @@ class ProfileAppBar extends StatelessWidget {
   final UserModel user;
   final Uint8List? image;
   final void Function() refreshPage;
+  final bool isCurrentUser;
 
   const ProfileAppBar({
     required this.user,
     this.image,
     required this.refreshPage,
+    required this.isCurrentUser,
     super.key,
   });
 
@@ -28,6 +30,7 @@ class ProfileAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
+      
       // title: Text('my profile'),
       stretch: true,
       onStretchTrigger: () async {
@@ -46,12 +49,13 @@ class ProfileAppBar extends StatelessWidget {
           children: [
             Text(user.name, softWrap: true,),
             const Spacer(),
-            IconButton(
-              onPressed: () {
-                navigateToSettings(context);
-              },
-              icon: const Icon(Icons.more_horiz_sharp),
-            ),
+            isCurrentUser == true ?
+              IconButton(
+                onPressed: () {
+                  navigateToSettings(context);
+                },
+                icon: const Icon(Icons.more_horiz_sharp),
+              ) : const Text(''),
           ],
         ),
         background: DecoratedBox(

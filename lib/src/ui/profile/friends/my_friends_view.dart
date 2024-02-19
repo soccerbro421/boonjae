@@ -55,8 +55,9 @@ class _MyFriendsViewState extends State<MyFriendsView> {
             onChanged: (value) => _runFilter(value),
             controller: searchController,
             decoration: const InputDecoration(
-              labelText: 'Search for a user...',
+              labelText: 'Search for a friend...',
             ),
+            autocorrect: false,
           ),
         ),
         Expanded(

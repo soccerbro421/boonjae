@@ -1,15 +1,18 @@
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/post_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PostsGridView extends StatefulWidget {
   final HabitModel habit;
+  final UserModel user;
 
   const PostsGridView({
     super.key,
     required this.habit,
+    required this.user,
   });
 
   @override
@@ -26,8 +29,10 @@ class _PostsGridViewState extends State<PostsGridView> {
   }
 
   void updateData() async {
-    List<PostModel> temp =
-        await HabitsService().getPostsByHabit(habit: widget.habit);
+    List<PostModel> temp = await HabitsService().getPostsByHabitAndUser(
+      habit: widget.habit,
+      user: widget.user,
+    );
 
     setState(() {
       posts = temp;

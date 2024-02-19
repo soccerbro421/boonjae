@@ -59,9 +59,10 @@ class _ProfileViewState extends State<ProfileView> {
             ProfileAppBar(
               user: user!,
               refreshPage: refreshPage,
+              isCurrentUser: true,
             ),
-          MidScreenUserInfoView(user: user!),
-          HabitsListView(habits: habits!,),
+          MidScreenUserInfoView(user: user!,),
+          HabitsListView(habits: habits!, user: user!),
         ],
       ),
     );

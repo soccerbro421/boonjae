@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/storage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +11,11 @@ class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+
+  bool isCurrentUser({required UserModel user}) {
+    return user.uid == _auth.currentUser!.uid;
+  }
 
   Future<String> updateUser({
     required String username,

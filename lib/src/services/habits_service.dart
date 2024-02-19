@@ -27,6 +27,30 @@ class HabitsService {
     "Saturday",
   ];
 
+  Future<List<HabitModel>> getHabitsByUser({required UserModel user}) async {
+    try {
+      List<HabitModel> habits = [];
+
+      CollectionReference habitsCollectionRef =
+          _firestore.collection('users').doc(user.uid).collection('habits');
+
+      QuerySnapshot habitsQuerySnapshot = await habitsCollectionRef.get();
+
+      // Iterate through the documents in the subcollection
+      for (var habitDoc in habitsQuerySnapshot.docs) {
+        // Access the data of each document
+        // Map<String, dynamic> habitData = habitDoc.data() as Map<String, dynamic>;
+
+        HabitModel h = HabitModel.fromSnap(habitDoc);
+
+        habits.add(h);
+      }
+      return habits;
+    } catch (err) {
+      return [];
+    }
+  }
+
   void deleteHabit({
     required HabitModel habit,
   }) async {
@@ -57,22 +81,17 @@ class HabitsService {
       });
 
       await coverPhotoRef.delete();
-
-
-    } catch (err) {
-      
-
-    }
+    } catch (err) {}
   }
 
-  Future<List<PostModel>> getPostsByHabit({
+  Future<List<PostModel>> getPostsByHabitAndUser({
     required HabitModel habit,
+    required UserModel user,
   }) async {
     try {
-      String currentUserId = _auth.currentUser!.uid;
+      String userId = user.uid;
 
-      DocumentReference userDocRef =
-          _firestore.collection('users').doc(currentUserId);
+      DocumentReference userDocRef = _firestore.collection('users').doc(userId);
 
       // Reference to the 'habits' subcollection for the user
       DocumentReference habitsDocRef =
@@ -93,7 +112,6 @@ class HabitsService {
 
       return posts;
     } catch (err) {
-   
       return [];
     }
   }

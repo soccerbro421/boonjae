@@ -40,6 +40,7 @@ class _ExploreFriendsViewState extends State<ExploreFriendsView> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: TextFormField(
+            autocorrect: false,
             // onChanged: (value) => _runFilter(value),
             onFieldSubmitted: (value) {
               searchUser(value);

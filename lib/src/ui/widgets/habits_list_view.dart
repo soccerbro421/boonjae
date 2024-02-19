@@ -1,14 +1,17 @@
 import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/ui/profile/habits/habit_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class HabitsListView extends StatelessWidget {
   final List<HabitModel> habits;
+  final UserModel user;
 
   const HabitsListView({
     super.key,
     required this.habits,
+    required this.user,
   });
 
   void navigateToHabitView(BuildContext context, HabitModel habit) {
@@ -16,6 +19,7 @@ class HabitsListView extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => HabitView(
           habit: habit,
+          user: user,
         ),
       ),
     );

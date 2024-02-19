@@ -2,6 +2,34 @@
 
 A new Flutter project.
 
+## Firebase Firestore
+```
+Firestore-root
+  |
+  --- users (collection)
+  |    |
+  |    --- $userOneUid (document)
+  |    |     |
+  |    |     --- //User data
+  |    |
+  |    --- $userTwoUid (document)
+  |    |     |
+  |    |     --- //User data
+ 
+  --- requests (collection)
+       |
+       --- $userOneUid (document)
+       |     |
+       |     --- ownRequests (map)
+       |     |      |
+       |     |      --- $userTwoUid
+       |     |
+       |     --- friendRequests (map)
+       |     |      |
+       |     |      --- $userThreeUid
+       |     |             |
+```
+
 ## VSCode
 Install the Flutter package and Pubspec Assist
 
