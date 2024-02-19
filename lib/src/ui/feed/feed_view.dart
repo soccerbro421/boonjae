@@ -3,6 +3,18 @@ import 'package:boonjae/src/services/feed_service.dart';
 import 'package:boonjae/src/ui/feed/post_tile.dart';
 import 'package:flutter/material.dart';
 
+// TODO: USE FUTURE BUILDER HERE !!!!!!
+
+
+//
+//
+//
+// USE FUTURE BUILDer
+//
+//
+//
+//
+
 class FeedView extends StatefulWidget {
   List<PostModel> posts;
 

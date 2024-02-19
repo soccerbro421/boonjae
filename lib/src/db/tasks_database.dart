@@ -1,4 +1,5 @@
 import 'package:boonjae/src/models/task_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -65,7 +66,8 @@ class TasksDatabase {
     }
   }
 
-  Future<List<List<TaskModel>>> readCurrentWeekTasks() async {
+  Future<List<List<TaskModel>>> readCurrentWeekTasksByUser(
+      {required UserModel user}) async {
     try {
       final db = await instance.database;
 
@@ -81,16 +83,26 @@ class TasksDatabase {
 
       // Get the current date and find the beginning and end of the current week
       DateTime currentDate = DateTime.now();
-   
-      DateTime startOfWeek = currentDate.weekday == 7 ?   DateTime(currentDate.year, currentDate.month, currentDate.day) :
-          currentDate.subtract(Duration(days: currentDate.weekday - 1));
+      DateTime startOfWeek =
+          currentDate.subtract(Duration(days: currentDate.weekday));
+      DateTime startOfSunday =
+          DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+
+      startOfWeek = currentDate.weekday == 7
+          ? DateTime(currentDate.year, currentDate.month, currentDate.day)
+          : startOfSunday;
       DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
 
       final maps = await db.query(
         tableTasks,
         columns: TaskFields.values,
-        where: '${TaskFields.date} BETWEEN ? AND ?',
-        whereArgs: [startOfWeek.toIso8601String(), endOfWeek.toIso8601String()],
+        where:
+            '${TaskFields.date} BETWEEN ? AND ? AND ${TaskFields.userId} = ?',
+        whereArgs: [
+          startOfWeek.toIso8601String(),
+          endOfWeek.toIso8601String(),
+          user.uid
+        ],
       );
 
       List<TaskModel> allTasks =

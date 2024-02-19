@@ -24,9 +24,8 @@ class OtherProfileView extends StatefulWidget {
 }
 
 class _OtherProfileViewState extends State<OtherProfileView> {
-  String friendStatus = 'PENDING';
+  String friendStatus = '';
   List<HabitModel> otherUsersHabits = [];
-
 
   @override
   void initState() {
@@ -35,14 +34,11 @@ class _OtherProfileViewState extends State<OtherProfileView> {
   }
 
   checkIsFriend() async {
-
     String res = await FriendsService().getFriendStatus(user: widget.user);
     setState(() {
       friendStatus = res;
     });
 
-
- 
     List<HabitModel> habitsTemp = [];
     if (widget.isFriend) {
       habitsTemp = await HabitsService().getHabitsByUser(user: widget.user);
@@ -66,8 +62,6 @@ class _OtherProfileViewState extends State<OtherProfileView> {
     });
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,6 +75,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
           ),
           OtherMidScreenUserInfoView(
             user: widget.user,
+            isFriend: widget.isFriend,
           ),
           friendStatus == "FRIEND" || widget.isFriend
               ? HabitsListView(
@@ -94,11 +89,15 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                           SizedBox(
                             width: 100,
                             child: InkWell(
-                              onTap: () {
-                                // navigateToFriendsView(context);
-                              },
+                              onTap: () {},
                               child: ElevatedButton.icon(
-                                onPressed: () {},
+                                onPressed: () {
+                                  setState(() {
+                                    friendStatus = '';
+                                  });
+                                  FriendsService().cancelRequest(
+                                      cancelledUser: widget.user);
+                                },
                                 icon: const Icon(Icons.cancel),
                                 label: const Text('cancel request'),
                               ),
@@ -111,18 +110,36 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                       ? SliverFixedExtentList(
                           delegate: SliverChildListDelegate(
                             [
-                              SizedBox(
-                                width: 100,
-                                child: InkWell(
-                                  onTap: () {
-                                    // navigateToFriendsView(context);
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    updateHabits();
                                   },
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      updateHabits();
-                                    },
-                                    icon: const Icon(Icons.group_add),
-                                    label: const Text('accept friend request'),
+                                  icon: const Icon(Icons.group_add),
+                                  label: const Text('accept friend request'),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    setState(() {
+                                      friendStatus = '';
+                                    });
+                                    FriendsService()
+                                        .denyRequest(denyingUser: widget.user);
+                                  },
+                                  icon: const Icon(Icons.group_remove),
+                                  label: const Text('deny friend request'),
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            const Color.fromARGB(255, 255, 133,
+                                                125)), // Text color
+                                    overlayColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.redAccent), // Ripple color
                                   ),
                                 ),
                               ),

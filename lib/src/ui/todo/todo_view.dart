@@ -27,11 +27,11 @@ class _TodoViewState extends State<TodoView> {
     "Friday",
     "Saturday",
   ];
-  int currentDayIndex = DateTime.now().weekday == 7 ? 0 : DateTime.now().weekday;
- // Subtract 1 to match 0-based index
+  int currentDayIndex =
+      DateTime.now().weekday == 7 ? 0 : DateTime.now().weekday;
+  // Subtract 1 to match 0-based index
 
-
-  late List<List<TaskModel>> tasks = [[], [], [], [], [], [], [] ];
+  late List<List<TaskModel>> tasks = [[], [], [], [], [], [], []];
   bool isLoading = false;
 
   @override
@@ -42,7 +42,6 @@ class _TodoViewState extends State<TodoView> {
   }
 
   void removeTask(TaskModel task) async {
-
     await TasksDatabase.instance.delete(task.taskId!);
 
     setState(() {
@@ -51,16 +50,19 @@ class _TodoViewState extends State<TodoView> {
   }
 
   Future refreshTasks() async {
+    UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
     setState(() {
       isLoading = true;
     });
 
-    tasks = await TasksDatabase.instance.readCurrentWeekTasks();
+    tasks = await TasksDatabase.instance.readCurrentWeekTasksByUser(
+      user: user,
+    );
     int size = 0;
     for (int i = 0; i < tasks.length; i++) {
       size += tasks[i].length;
     }
-    
+
     if (size == 0) {
       createTasksFromHabits();
     }
@@ -72,7 +74,8 @@ class _TodoViewState extends State<TodoView> {
 
   void createTasksFromHabits() async {
     UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
-    List<HabitModel> habits = Provider.of<HabitsProvider>(context, listen: false).getHabits;
+    List<HabitModel> habits =
+        Provider.of<HabitsProvider>(context, listen: false).getHabits;
 
     for (int i = 0; i < habits.length; i++) {
       HabitModel habit = habits[i];
@@ -80,21 +83,19 @@ class _TodoViewState extends State<TodoView> {
       for (int j = 0; j < habit.daysOfWeek.length; j++) {
         if (habit.daysOfWeek[j] == true) {
           TaskModel task = TaskModel(
-        userId: user.uid,
-        habitId: habit.habitId,
-        dayOfWeek: daysOfWeekString[j],
-        habitName: habit.name,
-        date: DateTime.now(),
-        status: "NOTCOMPLETED");
+              userId: user.uid,
+              habitId: habit.habitId,
+              dayOfWeek: daysOfWeekString[j],
+              habitName: habit.name,
+              date: DateTime.now(),
+              status: "NOTCOMPLETED");
 
-        await TasksDatabase.instance.create(task);
+          await TasksDatabase.instance.create(task);
         }
       }
-
     }
-
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -150,7 +151,6 @@ class _TodoViewState extends State<TodoView> {
               refreshPage: refreshTasks,
               removeTask: removeTask,
             ),
-            
           ],
         ),
         floatingActionButton: FloatingActionButton(

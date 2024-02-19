@@ -1,9 +1,11 @@
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/friends_service.dart';
 import 'package:boonjae/src/ui/profile/friends/explore_friends_view.dart';
 import 'package:boonjae/src/ui/profile/friends/friend_requests_view.dart';
 import 'package:boonjae/src/ui/profile/friends/my_friends_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FriendsView extends StatefulWidget {
   const FriendsView({super.key});
@@ -23,14 +25,35 @@ class _FriendsViewState extends State<FriendsView> {
     super.initState();
   }
 
-  void updateData() async {
+  @override
+  void dispose() {
+    // Cancel asynchronous operations here
+    super.dispose();
+  }
+
+  Future<void> updateData() async {
     List<UserModel> temp = await FriendsService().getOthersRequested();
     List<UserModel> temp2 = await FriendsService().getMyRequests();
 
-    setState(() {
-      othersRequested = temp;
-      myRequests = temp2;
-    });
+   
+      setState(() {
+        othersRequested = temp;
+        myRequests = temp2;
+      });
+   
+  }
+
+  Future<List<UserModel>> getFriends() async {
+    UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
+
+    await FriendsService().removeFriendsReceiver(user: user);
+
+    
+    // check for just accepted
+
+    await Provider.of<UserProvider>(context, listen: false).refreshUser();
+    List<UserModel> temp = await FriendsService().getFriends(user: user);
+    return temp;
   }
 
   @override
@@ -54,27 +77,28 @@ class _FriendsViewState extends State<FriendsView> {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            const MyFriendsView(
-              friends: [
-                UserModel(
-                    email: 'email',
-                    uid: 'uid',
-                    photoUrl: 'photoUrl',
-                    name: 'will lee',
-                    bio: 'bio',
-                    username: 'username',
-                    friends: [])
-              ],
-            ),
-            const ExploreFriendsView(),
-            FriendRequestsView(
-              othersRequested: othersRequested,
-              myRequests: myRequests,
-            ),
-          ],
-        ),
+        body: FutureBuilder(
+            future: getFriends(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return TabBarView(
+                  children: [
+                    MyFriendsView(
+                      friends: snapshot.data!,
+                    ),
+                    const ExploreFriendsView(),
+                    FriendRequestsView(
+                      othersRequested: othersRequested,
+                      myRequests: myRequests,
+                    ),
+                  ],
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
       ),
     );
   }
