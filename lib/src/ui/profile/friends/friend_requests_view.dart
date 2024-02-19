@@ -1,5 +1,4 @@
 import 'package:boonjae/src/models/user_model.dart';
-import 'package:boonjae/src/services/friends_service.dart';
 import 'package:boonjae/src/ui/widgets/friend_requests_list.dart';
 import 'package:flutter/material.dart';
 

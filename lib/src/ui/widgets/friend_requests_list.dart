@@ -1,6 +1,5 @@
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/ui/profile/friends/friend_search_card.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class FriendRequestsList extends StatelessWidget {

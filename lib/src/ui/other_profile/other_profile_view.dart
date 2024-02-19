@@ -5,9 +5,7 @@ import 'package:boonjae/src/services/friends_service.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/ui/other_profile/other_mid_sreen_user.dart';
 import 'package:boonjae/src/ui/widgets/habits_list_view.dart';
-import 'package:boonjae/src/ui/widgets/mid_screen_user_info.dart';
 import 'package:boonjae/src/ui/widgets/profile_app_bar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -93,7 +91,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                   ? SliverFixedExtentList(
                       delegate: SliverChildListDelegate(
                         [
-                          Container(
+                          SizedBox(
                             width: 100,
                             child: InkWell(
                               onTap: () {
@@ -101,8 +99,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                               },
                               child: ElevatedButton.icon(
                                 onPressed: () {},
-                                icon: Icon(Icons.cancel),
-                                label: Text('cancel request'),
+                                icon: const Icon(Icons.cancel),
+                                label: const Text('cancel request'),
                               ),
                             ),
                           ),
@@ -123,8 +121,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                     onPressed: () {
                                       updateHabits();
                                     },
-                                    icon: Icon(Icons.group_add),
-                                    label: Text('accept friend request'),
+                                    icon: const Icon(Icons.group_add),
+                                    label: const Text('accept friend request'),
                                   ),
                                 ),
                               ),
@@ -148,8 +146,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                             .createRequest(user: widget.user);
                                       });
                                     },
-                                    icon: Icon(Icons.group_add),
-                                    label: Text('add user'),
+                                    icon: const Icon(Icons.group_add),
+                                    label: const Text('add user'),
                                   ),
                                 ),
                               ),

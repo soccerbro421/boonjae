@@ -1,5 +1,4 @@
 import 'package:boonjae/src/models/user_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class OtherMidScreenUserInfoView extends StatelessWidget {

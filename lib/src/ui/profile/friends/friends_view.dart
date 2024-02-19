@@ -56,7 +56,7 @@ class _FriendsViewState extends State<FriendsView> {
         ),
         body: TabBarView(
           children: [
-            MyFriendsView(
+            const MyFriendsView(
               friends: [
                 UserModel(
                     email: 'email',
@@ -68,7 +68,7 @@ class _FriendsViewState extends State<FriendsView> {
                     friends: [])
               ],
             ),
-            ExploreFriendsView(),
+            const ExploreFriendsView(),
             FriendRequestsView(
               othersRequested: othersRequested,
               myRequests: myRequests,
