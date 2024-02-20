@@ -40,7 +40,8 @@ class OtherMidScreenUserInfoView extends StatelessWidget {
                       ? PopupMenuButton(
                           itemBuilder: (BuildContext context) => [
                             const PopupMenuItem(
-                                child: Text('Remove Friend'), value: 'REMOVE'),
+                                value: 'REMOVE',
+                                child: Text('Remove Friend')),
                           ],
                           onSelected: (value) {
                             if (value == "REMOVE") {

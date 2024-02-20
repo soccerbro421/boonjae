@@ -4,6 +4,7 @@ import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/user_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
+import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:flutter/material.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -72,8 +73,17 @@ class _EditProfileViewState extends State<EditProfileView> {
     if (res != 'success') {
       showSnackBar(res);
     } else {
-      Navigator.of(context).pop();
+      goHome();
     }
+  }
+
+  goHome() {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const MobileView(),
+      ),
+      (Route<dynamic> route) => false,
+    );
   }
 
   showSnackBar(String content) {
@@ -134,7 +144,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                 ? const Center(
                                     child: CircularProgressIndicator(),
                                   )
-                                : Text(_index == 3 ? 'SIGN UP' : 'NEXT'),
+                                : Text(_index == 3 ? 'UPDATE' : 'NEXT'),
                           ),
                         ),
                         const SizedBox(width: 12),

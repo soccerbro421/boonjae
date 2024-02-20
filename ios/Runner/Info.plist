@@ -46,10 +46,8 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>plz let me see photo</string>
-	<key>NSCameraUsageDescription</key>
-	<string>plz let me see camera</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>plz let me hear mic</string>
+	<string>plz allow photos in ur library</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-8947941959282735~7970417332</string>
 </dict>
 </plist>

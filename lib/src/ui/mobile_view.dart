@@ -1,4 +1,5 @@
 import 'package:boonjae/src/models/post_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/feed_service.dart';
@@ -26,19 +27,11 @@ class _MobileViewState extends State<MobileView> {
   void initState() {
     super.initState();
     updateData();
-    updatePosts();
-  }
-
-  updateData() async {
-    UserProvider userProvider = Provider.of(context, listen: false);
-    HabitsProvider habitsProvider = Provider.of(context, listen: false);
-
-    await userProvider.refreshUser();
-    await habitsProvider.refreshHabits();
   }
 
   updatePosts() async {
-    List<PostModel> temp = await FeedService().getFeed();
+    UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
+    List<PostModel> temp = await FeedService().getFeed(user: user);
     setState(() {
       feedPosts = temp;
       _widgetOptions = <Widget>[
@@ -52,6 +45,15 @@ class _MobileViewState extends State<MobileView> {
     });
   }
 
+  updateData() async {
+    UserProvider userProvider = Provider.of(context, listen: false);
+    HabitsProvider habitsProvider = Provider.of(context, listen: false);
+
+    await userProvider.refreshUser();
+    await updatePosts();
+    await habitsProvider.refreshHabits();
+  }
+
   void _navigationTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -59,13 +61,13 @@ class _MobileViewState extends State<MobileView> {
   }
 
   static List<Widget> _widgetOptions = <Widget>[
-        FeedView(
-          posts: const [],
-        ),
-        const TodoView(),
-        // SearchScreen(),
-        const ProfileView(),
-      ];
+    FeedView(
+      posts: const [],
+    ),
+    const TodoView(),
+    // SearchScreen(),
+    const ProfileView(),
+  ];
 
   @override
   Widget build(BuildContext context) {

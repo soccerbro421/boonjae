@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
@@ -7,32 +8,48 @@ import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
-class AddHabitView extends StatefulWidget {
-  const AddHabitView({
+class EditHabitView extends StatefulWidget {
+  final HabitModel habit;
+
+  const EditHabitView({
     super.key,
+    required this.habit,
   });
 
   @override
-  State<StatefulWidget> createState() {
-    return _AddHabitView();
-  }
+  State<EditHabitView> createState() => _EditHabitViewState();
 }
 
-class _AddHabitView extends State<AddHabitView> {
-  // final TextEditingController _emailController = TextEditingController();
-  // final TextEditingController _passwordController = TextEditingController();
+class _EditHabitViewState extends State<EditHabitView> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
   Uint8List? _image;
   bool _isLoading = false;
   int _index = 0;
-  final values = <bool>[false, false, false, false, false, false, false];
+  List<bool> values = [];
+
+  @override
+  void initState() {
+    _descriptionController.text = widget.habit.description;
+    _nameController.text = widget.habit.name;
+
+    values = widget.habit.daysOfWeek.map((dynamic element) {
+      if (element is bool) {
+        return element;
+      } else if (element is String) {
+        return element.toLowerCase() == 'true';
+      } else {
+        // Handle other cases or provide a default value
+        return false;
+      }
+    }).toList();
+
+    super.initState();
+  }
 
   @override
   void dispose() {
-    // _emailController.dispose();
-    // _passwordController.dispose();
     _descriptionController.dispose();
     _nameController.dispose();
     super.dispose();
@@ -46,16 +63,17 @@ class _AddHabitView extends State<AddHabitView> {
     );
   }
 
-  void createHabit() async {
+  void updateHabit() async {
     setState(() {
       _isLoading = true;
     });
 
-    String res = await HabitsService().addHabit(
+    String res = await HabitsService().updateHabit(
       name: _nameController.text,
       description: _descriptionController.text,
       file: _image,
       daysOfWeek: values,
+      oldHabit: widget.habit,
     );
 
     setState(() {
@@ -79,8 +97,6 @@ class _AddHabitView extends State<AddHabitView> {
     );
   }
 
-  
-
   void selectImage() async {
     final im = await ImageService().pickMedia();
 
@@ -93,9 +109,6 @@ class _AddHabitView extends State<AddHabitView> {
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -125,7 +138,7 @@ class _AddHabitView extends State<AddHabitView> {
                       _index += 1;
                     });
                   } else if (_index == 3) {
-                    createHabit();
+                    updateHabit();
                   }
                 },
                 onStepTapped: (idx) {
@@ -145,7 +158,7 @@ class _AddHabitView extends State<AddHabitView> {
                                 ? const Center(
                                     child: CircularProgressIndicator(),
                                   )
-                                : Text(_index == 3 ? 'ADD HABIT' : 'NEXT'),
+                                : Text(_index == 3 ? 'UPDATE' : 'NEXT'),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -198,15 +211,18 @@ class _AddHabitView extends State<AddHabitView> {
                   ),
                   Step(
                     title: const Text('Image (optional)'),
-                    content: Stack(
+                    content: Column(
                       children: [
-                        InkWell(
+                        const Text('if you don\'t upload photo, your old photo will remain'),
+                        Stack(
+                          children: [
+                            InkWell(
                               onTap: selectImage,
                               child: SizedBox(
                                 height: 150,
                                 width: 150,
                                 // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
-                              
+                        
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
                                   child: _image != null
@@ -216,13 +232,15 @@ class _AddHabitView extends State<AddHabitView> {
                                 ),
                               ),
                             ),
-                        Positioned(
-                          bottom: -10,
-                          left: 110,
-                          child: IconButton(
-                            onPressed: selectImage,
-                            icon: const Icon(Icons.add_a_photo),
-                          ),
+                            Positioned(
+                              bottom: -10,
+                              left: 110,
+                              child: IconButton(
+                                onPressed: selectImage,
+                                icon: const Icon(Icons.add_a_photo),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -230,7 +248,7 @@ class _AddHabitView extends State<AddHabitView> {
                   const Step(
                     title: Text('Submit'),
                     content: Text(
-                        'note: please refresh your profile page after creation'),
+                        'note: please refresh your profile page after update'),
                   ),
                 ],
               ),

@@ -1,6 +1,7 @@
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
+import 'package:boonjae/src/ui/profile/habits/edit_habit_view.dart';
 import 'package:flutter/material.dart';
 
 class HabitSettingsView extends StatelessWidget {
@@ -26,13 +27,13 @@ class HabitSettingsView extends StatelessWidget {
   }
 
 
-  // void navigateToEditProfileView(BuildContext context) {
-  //   Navigator.of(context).push(
-  //     MaterialPageRoute(
-  //       builder: (context) => EditProfileView(user: user,),
-  //     ),
-  //   );
-  // }
+  void navigateToEditHabitView(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => EditHabitView(habit: habit),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,7 @@ class HabitSettingsView extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                
+                navigateToEditHabitView(context);
               },
               child: const SizedBox(
                 width: double.infinity,

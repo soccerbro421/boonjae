@@ -9,10 +9,12 @@ import 'package:flutter/material.dart';
 import 'src/app.dart';
 import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
   // Make sure Widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   // Set up the SettingsController, which will glue user settings to multiple
   // Flutter Widgets.
   final settingsController = SettingsController(SettingsService());

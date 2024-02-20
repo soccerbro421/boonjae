@@ -1,15 +1,18 @@
 import 'package:boonjae/src/models/post_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/feed_service.dart';
+import 'package:boonjae/src/ui/ads/native_ads.dart';
 import 'package:boonjae/src/ui/feed/post_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // TODO: USE FUTURE BUILDER HERE !!!!!!
 
-
 //
 //
 //
-// USE FUTURE BUILDer
+// USE FUTURE BUILD
 //
 //
 //
@@ -49,7 +52,8 @@ class _FeedViewState extends State<FeedView> {
   }
 
   updateData() async {
-    List<PostModel> temp = await FeedService().getFeed();
+    UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
+    List<PostModel> temp = await FeedService().getFeed(user: user);
 
     setState(() {
       widget.posts = temp;
@@ -64,19 +68,54 @@ class _FeedViewState extends State<FeedView> {
       ),
       body: RefreshIndicator(
         onRefresh: refreshFeed,
-        child: CustomScrollView(
-          slivers: [
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: widget.posts.length,
-                (BuildContext context, int index) {
-                  final PostModel post = widget.posts[index];
-                  return PostTile(post: post);
-                },
+        child: widget.posts.isEmpty
+            ? ListView(
+                children: const [
+                  Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(child: Text('no posts!')),
+                      Center(
+                        child: Text(
+                            'go to todo page and click on task to create a post'),
+                      ),
+                    ],
+                  )
+                ],
+              )
+            : CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+
+                      (BuildContext context, int index) {
+                        final int totalItems = widget.posts.length + (widget.posts.length ~/ 5);
+                        if (widget.posts.length < 5 && index == totalItems - 1) {
+                          // Display an ad at the end of the list
+                          return NativeExample();
+                          // return Text('hi');
+                        } 
+                        else if (index % 6 == 5) {
+                          // Display an ad after every fifth post (assuming indexing starts from 0)
+                          return NativeExample();
+                        } 
+                        else {
+                          final int postIndex = index - (index ~/ 6);
+                          final PostModel post = widget.posts[postIndex];
+                          return PostTile(post: post);
+                        }
+                      },
+                      childCount: widget.posts.length + (widget.posts.length ~/ 5),
+                   
+                 
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

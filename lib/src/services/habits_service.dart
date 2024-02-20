@@ -173,6 +173,87 @@ class HabitsService {
     }
   }
 
+  Future<String> updateHabit({
+    required String name,
+    required String description,
+    required List<bool> daysOfWeek,
+    required HabitModel oldHabit,
+    Uint8List? file,
+    // required List<String> daysOfWeek,
+  }) async {
+    String res = 'error occurred';
+
+    String userId = _auth.currentUser!.uid;
+    String habitId = oldHabit.habitId;
+    String photoUrl = oldHabit.photoUrl;
+
+    if (!(daysOfWeek.any((element) => element))) {
+      return 'Please select at least one day';
+    }
+
+    try {
+      if (name.isNotEmpty && description.isNotEmpty) {
+        Reference habitsFolderRef = _storage
+            .ref()
+            .child('users/$userId')
+            .child('habits')
+            .child(habitId)
+            .child('coverPhoto');
+
+        if (file != null) {
+          file = await ImageService().compressImage(file);
+
+          photoUrl = await StorageService()
+              .uploadImageToStorageByReference(habitsFolderRef, file);
+        }
+
+        HabitModel h = HabitModel(
+          habitId: habitId,
+          photoUrl: photoUrl,
+          name: name,
+          description: description,
+          userId: userId,
+          daysOfWeek: daysOfWeek,
+          createdDate: oldHabit.createdDate,
+        );
+
+        // create tasks
+        for (int i = 0; i < daysOfWeek.length; i++) {
+          if (daysOfWeek[i] == true) {
+            TaskModel task = TaskModel(
+              userId: userId,
+              habitId: h.habitId,
+              dayOfWeek: daysOfWeekStrings[i],
+              habitName: h.name,
+              date: DateTime.now(),
+              status: "NOTCOMPLETED",
+            );
+            await TasksDatabase.instance.create(task);
+          }
+        }
+
+        CollectionReference habitsCollectionRef =
+            _firestore.collection('users').doc(userId).collection('habits');
+
+        await habitsCollectionRef.doc(habitId).update(h.toJson());
+
+        // await habitsCollectionRef.doc(habitId).set({
+        //   'name': habitName,
+        //   // 'created_at': FieldValue.serverTimestamp(),
+        //   // Add other habit-related fields as needed
+        // });
+
+        res = 'success';
+      } else {
+        res = 'fill in both name and description';
+      }
+    } catch (err) {
+      res = err.toString();
+    }
+
+    return res;
+  }
+
   Future<String> addHabit({
     required String name,
     required String description,
@@ -213,6 +294,7 @@ class HabitsService {
           description: description,
           userId: userId,
           daysOfWeek: daysOfWeek,
+          createdDate: DateTime.now(),
         );
 
         for (int i = 0; i < daysOfWeek.length; i++) {

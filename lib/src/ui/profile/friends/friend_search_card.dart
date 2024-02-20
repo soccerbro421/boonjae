@@ -19,7 +19,7 @@ class FriendSearchCard extends StatefulWidget {
 
 class _FriendSearchCardState extends State<FriendSearchCard> {
   UserModel currentUser = const UserModel(
-      email: 'email',
+
       uid: 'uid',
       photoUrl: 'photoUrl',
       name: 'name',

@@ -111,7 +111,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                           delegate: SliverChildListDelegate(
                             [
                               Padding(
-                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                                 child: ElevatedButton.icon(
                                   onPressed: () {
                                     updateHabits();
@@ -121,7 +121,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                                 child: ElevatedButton.icon(
                                   onPressed: () {
                                     setState(() {

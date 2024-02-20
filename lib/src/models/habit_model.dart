@@ -8,6 +8,7 @@ class HabitModel {
   final String userId;
   final List<dynamic> daysOfWeek;
   List? tasks;
+  final DateTime createdDate;
 
   HabitModel({
     required this.habitId,
@@ -17,6 +18,7 @@ class HabitModel {
     required this.userId,
     required this.daysOfWeek,
     this.tasks,
+    required this.createdDate,
   });
 
   Map<String, dynamic> toJson() => {
@@ -26,6 +28,7 @@ class HabitModel {
         'description': description,
         'userId': userId,
         'daysOfWeek': daysOfWeek,
+        'createdDate': createdDate,
       };
 
   static HabitModel fromSnap(DocumentSnapshot snap) {
@@ -40,6 +43,7 @@ class HabitModel {
       photoUrl: snapshot['photoUrl'],
       description: snapshot['description'],
       daysOfWeek: snapshot['daysOfWeek'],
+      createdDate: (snapshot['createdDate'] as Timestamp).toDate(),
     );
   }
 }

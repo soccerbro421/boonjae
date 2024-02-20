@@ -21,9 +21,11 @@ dependencies:
   flutter_image_compress: ^2.1.0
   flutter_localizations:
     sdk: flutter
+  google_mobile_ads: ^4.0.0
   image: ^4.1.7
   image_cropper: ^5.0.1
   image_picker: ^1.0.7
+  intl: ^0.18.1
   path: ^1.8.3
   path_provider: ^2.1.2
   provider: ^6.1.1

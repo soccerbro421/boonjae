@@ -9,21 +9,18 @@ class FriendsService {
 
   denyRequest({required UserModel denyingUser}) async {
     try {
-
       String currentUserId = _auth.currentUser!.uid;
       await _firestore
           .collection('requests')
           .doc(currentUserId)
           .collection('otherRequests')
           .doc(denyingUser.uid)
-          .set(
-            {'from': currentUserId, 'to': denyingUser.uid, 'status': 'REJECTED'}
-          );
-     
-
-    } catch (err) {
-
-    }
+          .set({
+        'from': currentUserId,
+        'to': denyingUser.uid,
+        'status': 'REJECTED'
+      });
+    } catch (err) {}
   }
 
   cancelRequest({required UserModel cancelledUser}) async {
@@ -136,8 +133,6 @@ class FriendsService {
           .where(FieldPath.documentId, whereIn: user.friends)
           .get();
 
-      
-
       List<UserModel> friends = userSnapshot.docs.map((doc) {
         return UserModel.fromSnap(doc);
       }).toList();
@@ -224,7 +219,6 @@ class FriendsService {
 
       // CHECK STATUS ON OTHERS
       List<String> acceptedFriends = [];
-      List<String> rejected = [];
 
       // going through my requests
       for (DocumentSnapshot document in documents) {
@@ -244,7 +238,6 @@ class FriendsService {
               .get();
 
           if (targetPersonMyRequestSnapshot.exists) {
-            
             Map<String, dynamic> data =
                 targetPersonMyRequestSnapshot.data() as Map<String, dynamic>;
             String status = data['status'];
@@ -265,7 +258,6 @@ class FriendsService {
                   .collection('myRequests')
                   .doc(targetId);
               await myRequestDocRef.delete();
-              
 
               DocumentReference otherRequestDocRef = _firestore
                   .collection('requests')
@@ -275,7 +267,7 @@ class FriendsService {
               await otherRequestDocRef.delete();
 
               acceptedFriends.add(targetId);
-            } else if(status == "REJECTED") {
+            } else if (status == "REJECTED") {
               // remove from other person's otherRequests and myRequests
               DocumentReference myRequestDocRef = _firestore
                   .collection('requests')
@@ -283,7 +275,6 @@ class FriendsService {
                   .collection('myRequests')
                   .doc(targetId);
               await myRequestDocRef.delete();
-              
 
               DocumentReference otherRequestDocRef = _firestore
                   .collection('requests')
@@ -332,12 +323,13 @@ class FriendsService {
     try {
       String currentUserId = _auth.currentUser!.uid;
 
+      List<String> statusToIgnore = ['FRIEND', 'REJECTED'];
+
       QuerySnapshot querySnapshot = await _firestore
           .collection('requests')
           .doc(currentUserId)
           .collection('otherRequests')
-          .where('status', isNotEqualTo: 'FRIEND')
-          .where('status', isNotEqualTo: 'REJECTED')
+          .where('status', whereNotIn: statusToIgnore)
           .get();
 
       List<DocumentSnapshot> documents = querySnapshot.docs;
@@ -353,11 +345,9 @@ class FriendsService {
         userIds.add(data['from']);
       }
 
-
       if (userIds.isNotEmpty) {
         CollectionReference usersReference = _firestore.collection('users');
 
-        
         QuerySnapshot queryUsersSnapshot = await usersReference
             .where(FieldPath.documentId, whereIn: userIds)
             .get();

@@ -46,7 +46,6 @@ class AuthService {
         }
 
         UserModel user = UserModel(
-          email: email,
           uid: creds.user!.uid,
           username: 'user${creds.user!.uid}',
           photoUrl: photoUrl,
