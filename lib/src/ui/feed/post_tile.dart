@@ -17,6 +17,8 @@ class PostTile extends StatefulWidget {
 }
 
 class _PostTileState extends State<PostTile> {
+  final double _adAspectRatioMedium = (370 / 355);
+
   void navigateToUser(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -79,7 +81,12 @@ class _PostTileState extends State<PostTile> {
               key: UniqueKey(),
               // width: double.infinity, // Make the image fill the width
               // height: 200.0, // Set a fixed height for better visual appeal
-              placeholder: (context, url) => const Text('Loading...'),
+              placeholder: (context, url) =>  SizedBox(
+                height:
+                    MediaQuery.of(context).size.width * _adAspectRatioMedium,
+                width: MediaQuery.of(context).size.width,
+                child: const Text('Loading...'),
+              ),
               errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),

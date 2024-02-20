@@ -1,5 +1,6 @@
 import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/ui/other_profile/other_profile_from_feed.dart';
+import 'package:boonjae/src/ui/widgets/report_post_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -22,51 +23,53 @@ class PostView extends StatelessWidget {
     );
   }
 
+  void reportPost(BuildContext context) async {
+    // await FriendsService().removeFriend(friendToBeRemoved: user);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem(value: 'REPORT', child: Text('Report post')),
+            ],
+            onSelected: (value) {
+              if (value == "REPORT") {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ReportPostView(
+                      post: post,
+                    ),
+                    fullscreenDialog: true,
+                  ),
+                );
+              }
+            },
+          )
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 16, 16, 0),
-                child: InkWell(
-                  onTap: () {
-                    navigateToUser(context);
-                  },
-                  child: Text(
-                    post.userName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                      // color: Color.fromARGB(255, 213, 178, 255)
-                    ),
-                  ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 16, 16, 0),
+            child: InkWell(
+              onTap: () {
+                navigateToUser(context);
+              },
+              child: Text(
+                post.userName,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                  // color: Color.fromARGB(255, 213, 178, 255)
                 ),
               ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 16, 8, 0),
-                child: InkWell(
-                  onTap: () {
-                    navigateToUser(context);
-                  },
-                  child: const Text(
-                    'hi',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                      // color: Color.fromARGB(255, 213, 178, 255)
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
