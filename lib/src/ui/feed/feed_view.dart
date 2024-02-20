@@ -93,15 +93,16 @@ class _FeedViewState extends State<FeedView> {
                     delegate: SliverChildBuilderDelegate(
 
                       (BuildContext context, int index) {
-                        final int totalItems = widget.posts.length + (widget.posts.length ~/ 5);
+                        int tempTotal = widget.posts.length + (widget.posts.length ~/ 5);
+                        final int totalItems = widget.posts.length < 5 ? tempTotal + 1 : tempTotal;
                         if (widget.posts.length < 5 && index == totalItems - 1) {
                           // Display an ad at the end of the list
-                          return NativeExample();
+                          return const NativeExample();
                           // return Text('hi');
                         } 
                         else if (index % 6 == 5) {
                           // Display an ad after every fifth post (assuming indexing starts from 0)
-                          return NativeExample();
+                          return const NativeExample();
                         } 
                         else {
                           final int postIndex = index - (index ~/ 6);
@@ -109,7 +110,7 @@ class _FeedViewState extends State<FeedView> {
                           return PostTile(post: post);
                         }
                       },
-                      childCount: widget.posts.length + (widget.posts.length ~/ 5),
+                      childCount: widget.posts.length < 5 ? widget.posts.length + (widget.posts.length ~/ 5) + 1 : widget.posts.length + (widget.posts.length ~/ 5),
                    
                  
                     ),

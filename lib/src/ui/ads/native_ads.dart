@@ -14,20 +14,24 @@ class NativeExample extends StatefulWidget {
 class NativeExampleState extends State<NativeExample> {
   NativeAd? _nativeAd;
   bool _nativeAdIsLoaded = false;
-  String? _versionString;
+  // String? _versionString;
   // final double _adAspectRatioSmall = (91 / 355);
   final double _adAspectRatioMedium = (370 / 355);
 
   final String _adUnitId = Platform.isAndroid
       ? 'ca-app-pub-3940256099942544/2247696110'
-      : 'ca-app-pub-3940256099942544/3986624511';
+      : 'ca-app-pub-8947941959282735/3337516688';
+      // : 'ca-app-pub-8947941959282735/7970417332';
+      // : 'ca-app-pub-3940256099942544/3986624511';
+
+      
 
   @override
   void initState() {
     super.initState();
 
     _loadAd();
-    _loadVersionString();
+    // _loadVersionString();
   }
 
   @override
@@ -108,13 +112,13 @@ class NativeExampleState extends State<NativeExample> {
       ..load();
   }
 
-  void _loadVersionString() {
-    MobileAds.instance.getVersionString().then((value) {
-      setState(() {
-        _versionString = value;
-      });
-    });
-  }
+  // void _loadVersionString() {
+  //   MobileAds.instance.getVersionString().then((value) {
+  //     setState(() {
+  //       _versionString = value;
+  //     });
+  //   });
+  // }
 
   @override
   void dispose() {

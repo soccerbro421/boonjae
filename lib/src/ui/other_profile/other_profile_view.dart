@@ -11,12 +11,12 @@ import 'package:provider/provider.dart';
 
 class OtherProfileView extends StatefulWidget {
   final UserModel user;
-  final bool isFriend;
+  final String relationship;
 
   const OtherProfileView({
     super.key,
     required this.user,
-    required this.isFriend,
+    required this.relationship,
   });
 
   @override
@@ -40,7 +40,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
     });
 
     List<HabitModel> habitsTemp = [];
-    if (widget.isFriend) {
+    if (widget.relationship == 'FRIEND' || widget.relationship == 'ME') {
       habitsTemp = await HabitsService().getHabitsByUser(user: widget.user);
     }
 
@@ -75,9 +75,9 @@ class _OtherProfileViewState extends State<OtherProfileView> {
           ),
           OtherMidScreenUserInfoView(
             user: widget.user,
-            isFriend: widget.isFriend,
+            isFriend: widget.relationship == 'FRIEND',
           ),
-          friendStatus == "FRIEND" || widget.isFriend
+          friendStatus == "FRIEND" || widget.relationship == 'FRIEND' || widget.relationship == 'ME'
               ? HabitsListView(
                   habits: otherUsersHabits,
                   user: widget.user,

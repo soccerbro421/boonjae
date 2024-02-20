@@ -1,8 +1,7 @@
 import 'package:boonjae/src/models/user_model.dart';
-import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/friends_service.dart';
+import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class OtherMidScreenUserInfoView extends StatelessWidget {
   final UserModel user;
@@ -15,9 +14,18 @@ class OtherMidScreenUserInfoView extends StatelessWidget {
   });
 
   void removeFriend(BuildContext context) async {
-    Navigator.of(context).pop();
+    
     await FriendsService().removeFriend(friendToBeRemoved: user);
-    Provider.of<UserProvider>(context, listen: false).refreshUser();
+    goBack(context);
+  }
+
+  goBack(BuildContext context) {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const MobileView(),
+      ),
+      (Route<dynamic> route) => false,
+    );
   }
 
   @override

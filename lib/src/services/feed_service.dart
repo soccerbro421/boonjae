@@ -7,6 +7,27 @@ class FeedService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<UserModel> getUserByUserId({required String userId}) async {
+    try {
+      CollectionReference usersCollection =
+            _firestore.collection('users');
+
+      QuerySnapshot querySnapshot = await usersCollection.where('uid', isEqualTo: userId).get();
+      List<DocumentSnapshot> docs = querySnapshot.docs;
+    // Check if the query returned any documents
+    if (docs.isNotEmpty) {
+      // Return the first document found (assuming userId is unique)
+      UserModel user = UserModel.fromSnap(docs[0]);
+      return user;
+    } else {
+      // No user found with the specified userId
+      return const UserModel(uid: 'uid', photoUrl: 'photoUrl', name: 'name', bio: 'bio', username: 'username', friends: []);
+    }
+    } catch (err) {
+        return const UserModel(uid: 'uid', photoUrl: 'photoUrl', name: 'name', bio: 'bio', username: 'username', friends: []);
+    }
+  }
+
   Future<List<PostModel>> getFeed({required UserModel user}) async {
     try {
       List<PostModel> allPosts = [];

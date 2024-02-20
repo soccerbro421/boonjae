@@ -28,11 +28,12 @@ class _FriendSearchCardState extends State<FriendSearchCard> {
       friends: []);
 
   void navigateToOtherProfileView(BuildContext context, UserModel currentUser) {
+    UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => OtherProfileView(
           user: widget.user,
-          isFriend: currentUser.friends.contains(widget.user.uid),
+          relationship: user.uid == widget.user.uid ? 'ME' : currentUser.friends.contains(widget.user.uid) ? 'FRIEND' : 'nah',
         ),
       ),
     );
