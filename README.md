@@ -43,6 +43,9 @@ Install the Flutter package and Pubspec Assist
 * follow the steps here: https://firebase.google.com/codelabs/get-started-firebase-emulators-and-flutter#0 
 * 
 
+## Possible areas to use Cloud Functions
+* deleting a user
+* friend process
 
 
 ## todo

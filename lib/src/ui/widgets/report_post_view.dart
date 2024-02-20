@@ -66,7 +66,7 @@ class _ReportPostViewState extends State<ReportPostView> {
                       const InputDecoration(labelText: 'Type your reason'),
                 ),
 
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               // Submit button
               ElevatedButton(
                 child: const Text('Submit'),

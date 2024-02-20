@@ -1,6 +1,9 @@
 import 'dart:typed_data';
 
+import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/services/friends_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/storage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +14,97 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  deleteUser({required UserModel user}) async {
+    try {
+      User currentUser = _auth.currentUser!;
+
+      String currentUserId = currentUser.uid;
+      // remove friends
+      List<UserModel> friendsToRemove = [];
+
+      for (String friendId in user.friends) {
+        DocumentSnapshot friendSnapshot =
+            await _firestore.collection('users').doc(friendId).get();
+
+        if (friendSnapshot.exists) {
+          UserModel friend = UserModel.fromSnap(friendSnapshot);
+          friendsToRemove.add(friend);
+        }
+      }
+
+      for (UserModel friend in friendsToRemove) {
+        await FriendsService().removeFriend(friendToBeRemoved: friend);
+      }
+
+      Reference profilePicRef = _storage.ref().child('users/$currentUserId');
+
+// List all items in the folder
+      ListResult result = await profilePicRef.listAll();
+
+// Check if there are items before attempting deletion
+      if (result.items.isNotEmpty) {
+        // Delete files in Firestore Storage
+        await profilePicRef
+            .child('profilePic')
+            .delete();
+      }
+
+      // delete firestore data
+
+      CollectionReference usersCollection = _firestore.collection('users');
+
+      QuerySnapshot querySnapshot =
+          await usersCollection.where('uid', isEqualTo: currentUserId).get();
+      List<DocumentSnapshot> docs = querySnapshot.docs;
+
+      if (docs.isNotEmpty) {
+        DocumentSnapshot snap = docs[0];
+
+        CollectionReference habitsCollection =
+            usersCollection.doc(currentUserId).collection('habits');
+        QuerySnapshot querySnapshotHabits = await habitsCollection.get();
+        List<DocumentSnapshot> habitDocs = querySnapshotHabits.docs;
+
+        if (habitDocs.isNotEmpty) {
+          for (DocumentSnapshot habitSnap in habitDocs) {
+            HabitModel habit = HabitModel.fromSnap(habitSnap);
+
+            // delete photos
+            Reference habitsStorageRef = _storage
+                .ref()
+                .child('users/$currentUserId/habits/${habit.habitId}');
+
+            await habitsStorageRef.child('coverPhoto').delete();
+
+            CollectionReference postsCollection =
+                habitsCollection.doc(habit.habitId).collection('posts');
+            QuerySnapshot querySnapshotPosts = await postsCollection.get();
+            List<DocumentSnapshot> postDocs = querySnapshotPosts.docs;
+            Reference postsStorageRef = _storage
+                .ref()
+                .child('users/$currentUserId/habits/${habit.habitId}/posts');
+
+            for (DocumentSnapshot postSnap in postDocs) {
+              PostModel post = PostModel.fromSnap(postSnap);
+              await postsStorageRef.child(post.postId).delete();
+
+              await postSnap.reference.delete();
+            }
+
+            await habitSnap.reference.delete();
+          }
+        }
+
+        await snap.reference.delete();
+      }
+
+      // Delete from FirebaseAuth
+      await currentUser.delete();
+    } catch (err) {
+      print(err.toString());
+    }
+  }
 
   Future<String> signUpUser({
     required String email,
@@ -31,18 +125,15 @@ class AuthService {
         String photoUrl = '';
 
         if (file != null) {
- 
-
           Reference profilePicRef = _storage
               .ref()
               .child('users/${creds.user!.uid}')
               .child('profilePic');
-          
+
           file = await ImageService().compressImage(file);
-              
 
           photoUrl = await StorageService()
-              .uploadImageToStorageByReference(profilePicRef, file);    
+              .uploadImageToStorageByReference(profilePicRef, file);
         }
 
         UserModel user = UserModel(
@@ -53,8 +144,6 @@ class AuthService {
           bio: bio,
           friends: [],
         );
-
-        
 
         // add user
         // doc(creds.user!.uid) sets the document id

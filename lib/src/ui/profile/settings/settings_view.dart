@@ -1,11 +1,12 @@
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/ui/auth/login_screen.dart';
+import 'package:boonjae/src/ui/profile/settings/delete_profile_view.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_profile_view.dart';
+import 'package:boonjae/src/ui/profile/settings/settings_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatelessWidget {
-
   final UserModel user;
 
   const SettingsView({
@@ -23,11 +24,22 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-
   void navigateToEditProfileView(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => EditProfileView(user: user,),
+        builder: (context) => EditProfileView(
+          user: user,
+        ),
+      ),
+    );
+  }
+
+  void navigateToDeleteProfileView(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => DeleteProfileView(
+          user: user,
+        ),
       ),
     );
   }
@@ -52,27 +64,25 @@ class SettingsView extends StatelessWidget {
               height: 1,
               thickness: 1,
             ),
-            InkWell(
-              onTap: () {
-                navigateToEditProfileView(context);
-              },
-              child: const SizedBox(
-                width: double.infinity,
-                height: 70,
-                child: Row(
-                  children: [
-                    Icon(Icons.person),
-                    SizedBox(width: 10),
-                    Text('Edit Profile'),
-                    Spacer(),
-                    Icon(Icons.chevron_right)
-                  ],
-                ),
-              ),
+            SettingsCard(
+              onTap: navigateToEditProfileView,
+              text: 'Edit Profile',
+              icon: const Icon(Icons.person),
             ),
-            const Divider(
-              height: 1,
-              thickness: 1,
+            SettingsCard(
+              onTap: navigateToEditProfileView,
+              text: 'Contact Us',
+              icon: const Icon(Icons.contact_mail),
+            ),
+            SettingsCard(
+              onTap: navigateToEditProfileView,
+              text: 'About',
+              icon: const Icon(Icons.info),
+            ),
+            SettingsCard(
+              onTap: navigateToDeleteProfileView,
+              text: 'Delete Account',
+              icon: const Icon(Icons.person_remove),
             ),
             const SizedBox(height: 30),
             Center(
