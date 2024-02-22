@@ -77,100 +77,131 @@ class _OtherProfileViewState extends State<OtherProfileView> {
             user: widget.user,
             isFriend: widget.relationship == 'FRIEND',
           ),
-          friendStatus == "FRIEND" || widget.relationship == 'FRIEND' || widget.relationship == 'ME'
+          friendStatus == "FRIEND" ||
+                  widget.relationship == 'FRIEND' ||
+                  widget.relationship == 'ME'
               ? HabitsListView(
                   habits: otherUsersHabits,
                   user: widget.user,
                 )
-              : friendStatus == "PENDING"
+              : friendStatus == 'BLOCK'
                   ? SliverFixedExtentList(
                       delegate: SliverChildListDelegate(
                         [
                           SizedBox(
                             width: 100,
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                // navigateToFriendsView(context);
+                              },
                               child: ElevatedButton.icon(
                                 onPressed: () {
                                   setState(() {
-                                    friendStatus = '';
+                                    friendStatus = "";
+                                    FriendsService()
+                                        .unblockUser(userToBeUnblocked: widget.user);
                                   });
-                                  FriendsService().cancelRequest(
-                                      cancelledUser: widget.user);
                                 },
-                                icon: const Icon(Icons.cancel),
-                                label: const Text('cancel request'),
+                                icon: const Icon(Icons.group),
+                                label: const Text('unblock user'),
                               ),
                             ),
                           ),
                         ],
                       ),
                       itemExtent: 50)
-                  : friendStatus == "OTHER_REQUEST"
+                  : friendStatus == "PENDING"
                       ? SliverFixedExtentList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    updateHabits();
-                                  },
-                                  icon: const Icon(Icons.group_add),
-                                  label: const Text('accept friend request'),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    setState(() {
-                                      friendStatus = '';
-                                    });
-                                    FriendsService()
-                                        .denyRequest(denyingUser: widget.user);
-                                  },
-                                  icon: const Icon(Icons.group_remove),
-                                  label: const Text('deny friend request'),
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            const Color.fromARGB(255, 255, 133,
-                                                125)), // Text color
-                                    overlayColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.redAccent), // Ripple color
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          itemExtent: 50)
-                      : SliverFixedExtentList(
                           delegate: SliverChildListDelegate(
                             [
                               SizedBox(
                                 width: 100,
                                 child: InkWell(
-                                  onTap: () {
-                                    // navigateToFriendsView(context);
-                                  },
+                                  onTap: () {},
                                   child: ElevatedButton.icon(
                                     onPressed: () {
                                       setState(() {
-                                        friendStatus = "PENDING";
-                                        FriendsService()
-                                            .createRequest(user: widget.user);
+                                        friendStatus = '';
                                       });
+                                      FriendsService().cancelRequest(
+                                          cancelledUser: widget.user);
                                     },
-                                    icon: const Icon(Icons.group_add),
-                                    label: const Text('add user'),
+                                    icon: const Icon(Icons.cancel),
+                                    label: const Text('cancel request'),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                           itemExtent: 50)
+                      : friendStatus == "OTHER_REQUEST"
+                          ? SliverFixedExtentList(
+                              delegate: SliverChildListDelegate(
+                                [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                    child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        updateHabits();
+                                      },
+                                      icon: const Icon(Icons.group_add),
+                                      label:
+                                          const Text('accept friend request'),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                    child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        setState(() {
+                                          friendStatus = '';
+                                        });
+                                        FriendsService().denyRequest(
+                                            denyingUser: widget.user);
+                                      },
+                                      icon: const Icon(Icons.group_remove),
+                                      label: const Text('deny friend request'),
+                                      style: ButtonStyle(
+                                        foregroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                const Color.fromARGB(255, 255,
+                                                    133, 125)), // Text color
+                                        overlayColor: MaterialStateProperty.all<
+                                                Color>(
+                                            Colors.redAccent), // Ripple color
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              itemExtent: 50)
+                          : SliverFixedExtentList(
+                              delegate: SliverChildListDelegate(
+                                [
+                                  SizedBox(
+                                    width: 100,
+                                    child: InkWell(
+                                      onTap: () {
+                                        // navigateToFriendsView(context);
+                                      },
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          setState(() {
+                                            friendStatus = "PENDING";
+                                            FriendsService().createRequest(
+                                                user: widget.user);
+                                          });
+                                        },
+                                        icon: const Icon(Icons.group_add),
+                                        label: const Text('add user'),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              itemExtent: 50)
         ],
       ),
     );

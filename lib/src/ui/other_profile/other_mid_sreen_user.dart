@@ -13,6 +13,12 @@ class OtherMidScreenUserInfoView extends StatelessWidget {
     required this.isFriend,
   });
 
+  void blockUser(BuildContext context) async {
+    
+    await FriendsService().blockUser(userToBeBlocked: user);
+    goBack(context);
+  }
+
   void removeFriend(BuildContext context) async {
     
     await FriendsService().removeFriend(friendToBeRemoved: user);
@@ -58,7 +64,19 @@ class OtherMidScreenUserInfoView extends StatelessWidget {
                             }
                           },
                         )
-                      : const Text(''),
+                      : PopupMenuButton(
+                          itemBuilder: (BuildContext context) => [
+                            const PopupMenuItem(
+                                value: 'BLOCK',
+                                child: Text('Block User')),
+                          ],
+                          onSelected: (value) {
+                            if (value == "BLOCK") {
+                  
+                              blockUser(context);
+                            }
+                          },
+                        ),
                 ],
               ),
             ),

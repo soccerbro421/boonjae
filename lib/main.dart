@@ -9,12 +9,11 @@ import 'package:flutter/material.dart';
 import 'src/app.dart';
 import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
   // Make sure Widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
+
   // Set up the SettingsController, which will glue user settings to multiple
   // Flutter Widgets.
   final settingsController = SettingsController(SettingsService());
@@ -28,7 +27,6 @@ void main() async {
 
   if (kDebugMode) {
     try {
-
       // comment/uncomment the following code block to disable/enable local emulator
       // FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
       // FirebaseFirestore.instance.settings = Settings(
@@ -39,8 +37,6 @@ void main() async {
       // FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
       // FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
       // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
-      
-      
     } catch (e) {
       print(e);
     }

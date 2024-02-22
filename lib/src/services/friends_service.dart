@@ -43,6 +43,49 @@ class FriendsService {
     } catch (err) {}
   }
 
+  Future<List<String>> blockUsersReceiver() async {
+    try {
+      String currentUserId = _auth.currentUser!.uid;
+
+      CollectionReference otherRequestsReference = _firestore
+          .collection('requests')
+          .doc(currentUserId)
+          .collection('otherRequests');
+
+      QuerySnapshot querySnapshot = await otherRequestsReference
+          .where('status', isEqualTo: 'BLOCK')
+          .get();
+
+      List<DocumentSnapshot> documents = querySnapshot.docs;
+
+      if (documents.isEmpty) {
+        return [];
+      }
+
+      List<String> userIdsBlockedMe = [];
+
+      for (DocumentSnapshot document in documents) {
+        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+
+        userIdsBlockedMe.add(data['from']);
+      }
+
+      if (userIdsBlockedMe.isNotEmpty) {
+        DocumentReference userDocRef =
+            _firestore.collection('users').doc(currentUserId);
+
+        await userDocRef.update({
+          'friends': FieldValue.arrayRemove(userIdsBlockedMe),
+        });
+        return userIdsBlockedMe;
+      }
+      return [];
+    } catch (err) {
+      return [];
+      // print(err.toString());
+    }
+  }
+
   removeFriendsReceiver({required UserModel user}) async {
     try {
       String currentUserId = _auth.currentUser!.uid;
@@ -87,6 +130,42 @@ class FriendsService {
       }
     } catch (err) {
       // print(err.toString());
+    }
+  }
+
+  unblockUser({
+    required UserModel userToBeUnblocked,
+  }) async {
+    try {
+      String currentUserId = _auth.currentUser!.uid;
+
+      await _firestore
+          .collection('requests')
+          .doc(userToBeUnblocked.uid)
+          .collection('otherRequests')
+          .doc(currentUserId)
+          .delete();
+    } catch (err) {
+      // print(err);
+    }
+  }
+
+  blockUser({
+    required UserModel userToBeBlocked,
+  }) async {
+    try {
+      String currentUserId = _auth.currentUser!.uid;
+
+      await _firestore
+          .collection('requests')
+          .doc(userToBeBlocked.uid)
+          .collection('otherRequests')
+          .doc(currentUserId)
+          .set(
+        {'from': currentUserId, 'to': userToBeBlocked.uid, 'status': 'BLOCK'},
+      );
+    } catch (err) {
+      // print(err);
     }
   }
 
@@ -323,7 +402,7 @@ class FriendsService {
     try {
       String currentUserId = _auth.currentUser!.uid;
 
-      List<String> statusToIgnore = ['FRIEND', 'REJECTED'];
+      List<String> statusToIgnore = ['FRIEND', 'REJECTED', 'BLOCK'];
 
       QuerySnapshot querySnapshot = await _firestore
           .collection('requests')
@@ -396,7 +475,7 @@ class FriendsService {
         SetOptions(merge: true),
       );
     } catch (err) {
-      print(err.toString());
+      // print(err.toString());
     }
   }
 
@@ -420,6 +499,19 @@ class FriendsService {
           .doc(user.uid)
           .get();
 
+      DocumentSnapshot myBlockThem = await _firestore
+          .collection('requests')
+          .doc(user.uid)
+          .collection('otherRequests')
+          .doc(currentUserId)
+          .get();
+
+      if (myBlockThem.exists) {
+        if (myBlockThem['status'] == 'BLOCK') {
+          return 'BLOCK';
+        }
+      }
+
       if (myRequestsDoc.exists) {
         String status = myRequestsDoc['status'];
         return status;
@@ -437,6 +529,9 @@ class FriendsService {
     required String searchKeyword,
   }) async {
     try {
+      List<String> usersThatBlockedMe = await blockUsersReceiver();
+      print(usersThatBlockedMe);
+
       QuerySnapshot querySnapshot = await _firestore
           .collection('users')
           .orderBy('username')
@@ -450,8 +545,11 @@ class FriendsService {
       List<UserModel> users =
           querySnapshot.docs.map((doc) => UserModel.fromSnap(doc)).toList();
 
-      return users;
+      return users
+          .where((user) => !usersThatBlockedMe.contains(user.uid))
+          .toList();
     } catch (err) {
+      print(err.toString());
       return [];
     }
   }

@@ -1,5 +1,6 @@
 import 'package:boonjae/src/services/auth_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
+import 'package:boonjae/src/ui/auth/initialize_screen.dart';
 import 'package:boonjae/src/ui/auth/signup_screen.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (res == 'success') {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MobileView()),
+        MaterialPageRoute(
+          builder: (context) => const InitializeScreen(
+            targetWidget: MobileView(),
+          ),
+        ),
       );
     } else {
       showSnackBar(res);

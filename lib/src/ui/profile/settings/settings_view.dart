@@ -1,18 +1,34 @@
+import 'package:async_preferences/async_preferences.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/ui/auth/login_screen.dart';
+import 'package:boonjae/src/ui/profile/settings/contact_us_view.dart';
 import 'package:boonjae/src/ui/profile/settings/delete_profile_view.dart';
+import 'package:boonjae/src/ui/profile/settings/edit_privacy_view.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_profile_view.dart';
 import 'package:boonjae/src/ui/profile/settings/settings_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   final UserModel user;
 
   const SettingsView({
     super.key,
     required this.user,
   });
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  late final Future<bool> _isGDPR;
+
+  @override
+  void initState() {
+    _isGDPR = _isUnderGdpr();
+    super.initState();
+  }
 
   void logoutUser(BuildContext context) {
     FirebaseAuth.instance.signOut();
@@ -28,8 +44,24 @@ class SettingsView extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => EditProfileView(
-          user: user,
+          user: widget.user,
         ),
+      ),
+    );
+  }
+
+  void navigateToContactUsView(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const ContactUsView(),
+      ),
+    );
+  }
+
+  void navigateToEditPrivacyView(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const EditPrivacyView(),
       ),
     );
   }
@@ -38,7 +70,7 @@ class SettingsView extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => DeleteProfileView(
-          user: user,
+          user: widget.user,
         ),
       ),
     );
@@ -70,7 +102,7 @@ class SettingsView extends StatelessWidget {
               icon: const Icon(Icons.person),
             ),
             SettingsCard(
-              onTap: navigateToEditProfileView,
+              onTap: navigateToContactUsView,
               text: 'Contact Us',
               icon: const Icon(Icons.contact_mail),
             ),
@@ -79,6 +111,19 @@ class SettingsView extends StatelessWidget {
               text: 'About',
               icon: const Icon(Icons.info),
             ),
+            FutureBuilder<bool>(
+                future: _isGDPR,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data! == true) {
+                    return SettingsCard(
+                      onTap: navigateToEditPrivacyView,
+                      text: 'Update Data Privacy',
+                      icon: const Icon(Icons.privacy_tip),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
             SettingsCard(
               onTap: navigateToDeleteProfileView,
               text: 'Delete Account',
@@ -98,4 +143,9 @@ class SettingsView extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<bool> _isUnderGdpr() async {
+  final preferences = AsyncPreferences();
+  return await preferences.getInt('IABTCF_gdprApplies') == 1;
 }

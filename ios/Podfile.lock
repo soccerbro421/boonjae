@@ -628,6 +628,8 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
+  - async_preferences (0.0.1):
+    - Flutter
   - BoringSSL-GRPC (0.0.24):
     - BoringSSL-GRPC/Implementation (= 0.0.24)
     - BoringSSL-GRPC/Interface (= 0.0.24)
@@ -833,6 +835,8 @@ PODS:
     - gRPC-Core/Interface (= 1.49.1)
   - gRPC-Core/Interface (1.49.1)
   - GTMSessionFetcher/Core (3.3.1)
+  - iabtcf_consent_info (1.0.0):
+    - Flutter
   - image_cropper (0.0.4):
     - Flutter
     - TOCropViewController (~> 2.6.1)
@@ -874,10 +878,14 @@ PODS:
     - Flutter
     - FlutterMacOS
   - TOCropViewController (2.6.1)
+  - user_messaging_platform (0.0.1):
+    - Flutter
+    - GoogleUserMessagingPlatform (~> 2.1)
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
 
 DEPENDENCIES:
+  - async_preferences (from `.symlinks/plugins/async_preferences/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -886,10 +894,12 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
+  - iabtcf_consent_info (from `.symlinks/plugins/iabtcf_consent_info/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
+  - user_messaging_platform (from `.symlinks/plugins/user_messaging_platform/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
@@ -927,6 +937,8 @@ SPEC REPOS:
     - TOCropViewController
 
 EXTERNAL SOURCES:
+  async_preferences:
+    :path: ".symlinks/plugins/async_preferences/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   cloud_functions:
@@ -943,6 +955,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_image_compress_common/ios"
   google_mobile_ads:
     :path: ".symlinks/plugins/google_mobile_ads/ios"
+  iabtcf_consent_info:
+    :path: ".symlinks/plugins/iabtcf_consent_info/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker_ios:
@@ -951,11 +965,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   sqflite:
     :path: ".symlinks/plugins/sqflite/darwin"
+  user_messaging_platform:
+    :path: ".symlinks/plugins/user_messaging_platform/ios"
   webview_flutter_wkwebview:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
+  async_preferences: f3268e3d74e9fa7cae14b53be5ba23a4f657a7a1
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   cloud_firestore: ba576bee785a05ff952e4da7fa4e23c196917436
   cloud_functions: 5974cfe154f4e8a0459c2aa03cd69c7055b6777f
@@ -985,6 +1002,7 @@ SPEC CHECKSUMS:
   "gRPC-C++": 2df8cba576898bdacd29f0266d5236fa0e26ba6a
   gRPC-Core: a21a60aefc08c68c247b439a9ef97174b0c54f96
   GTMSessionFetcher: 8a1b34ad97ebe6f909fb8b9b77fba99943007556
+  iabtcf_consent_info: 6c0171fceda8b8d09a7a51b0ca26a32c1dc3f830
   image_cropper: a3291c624a953049bc6a02e1f8c8ceb162a24b25
   image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
@@ -998,6 +1016,7 @@ SPEC CHECKSUMS:
   SDWebImageWebPCoder: c94f09adbca681822edad9e532ac752db713eabf
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
+  user_messaging_platform: 6dbd1633fe91f750fad2fe886e55ef5a66f7ea22
   webview_flutter_wkwebview: be0f0d33777f1bfd0c9fdcb594786704dbf65f36
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796

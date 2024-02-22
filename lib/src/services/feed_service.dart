@@ -87,7 +87,7 @@ class FeedService {
 
       return allPosts;
     } catch (err) {
-      print(err.toString());
+      // print(err.toString());
       return [];
     }
   }

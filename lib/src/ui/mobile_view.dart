@@ -49,6 +49,9 @@ class _MobileViewState extends State<MobileView> {
     UserProvider userProvider = Provider.of(context, listen: false);
     HabitsProvider habitsProvider = Provider.of(context, listen: false);
 
+
+    
+
     await userProvider.refreshUser();
     await updatePosts();
     await habitsProvider.refreshHabits();

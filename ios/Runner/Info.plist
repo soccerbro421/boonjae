@@ -47,6 +47,8 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>plz allow photos in ur library</string>
+  <key>NSUserTrackingUsageDescription</key>
+  <string>Plz allow</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-8947941959282735~7970417332</string>
 	<key>SKAdNetworkItems</key>

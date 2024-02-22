@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:boonjae/src/services/auth_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
+import 'package:boonjae/src/ui/auth/initialize_screen.dart';
 import 'package:boonjae/src/ui/auth/login_screen.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       showSnackBar(res);
     } else {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MobileView()),
+        MaterialPageRoute(
+          builder: (context) => const InitializeScreen(
+            targetWidget: MobileView(),
+          ),
+        ),
       );
     }
   }

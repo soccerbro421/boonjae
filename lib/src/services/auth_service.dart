@@ -102,7 +102,7 @@ class AuthService {
       // Delete from FirebaseAuth
       await currentUser.delete();
     } catch (err) {
-      print(err.toString());
+      // err
     }
   }
 

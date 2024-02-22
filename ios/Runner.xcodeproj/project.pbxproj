@@ -17,6 +17,7 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		C0BBFEAB2B8550B200F5AB22 /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0BBFEAA2B8550B200F5AB22 /* AppTrackingTransparency.framework */; };
 		C0FECE2B2B769A94008A11B4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C0FECE2A2B769A94008A11B4 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +69,7 @@
 		A9292A897F19290C38DA91ED /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB723F9524E363C78314F1C4 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		B1677AB8FAECA4320EE0A510 /* GoogleService-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Runner/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C0BBFEAA2B8550B200F5AB22 /* AppTrackingTransparency.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppTrackingTransparency.framework; path = System/Library/Frameworks/AppTrackingTransparency.framework; sourceTree = SDKROOT; };
 		C0FECE2A2B769A94008A11B4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -77,6 +79,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8AAD7EEA89C71FCA11915DB2 /* Pods_Runner.framework in Frameworks */,
+				C0BBFEAB2B8550B200F5AB22 /* AppTrackingTransparency.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +154,7 @@
 		C9367922AE8E9CAAF7FF5A7F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C0BBFEAA2B8550B200F5AB22 /* AppTrackingTransparency.framework */,
 				85341E28354FD52AD667B3E7 /* Pods_Runner.framework */,
 				A9292A897F19290C38DA91ED /* Pods_RunnerTests.framework */,
 			);

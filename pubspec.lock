@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  async_preferences:
+    dependency: "direct main"
+    description:
+      name: async_preferences
+      sha256: "38c13248b978ca9d63befbd20e772030184ba17829f76541f15bf8a73a23374f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -397,6 +405,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  iabtcf_consent_info:
+    dependency: "direct main"
+    description:
+      name: iabtcf_consent_info
+      sha256: c902ed5024ba63163b7f8b8c7921e9f1483a3ef7602f487cad0597f07be16b8b
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
+  iabtcf_consent_info_platform_interface:
+    dependency: transitive
+    description:
+      name: iabtcf_consent_info_platform_interface
+      sha256: "394ea3742bc4edc42ce6350ea038ab43e7f43841c47eeba1c735a46651e679bb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
+  iabtcf_consent_info_web:
+    dependency: transitive
+    description:
+      name: iabtcf_consent_info_web
+      sha256: d088d4726fcfb78adbf36ce74f993aefbdd8d8fe4082b2160217304cce34780a
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   image:
     dependency: "direct main"
     description:
@@ -762,6 +794,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  user_messaging_platform:
+    dependency: "direct main"
+    description:
+      name: user_messaging_platform
+      sha256: "4843f6a6d92e12ed72eeb1acac7694f9fdd82ec7deac10cae9c0b2d7535d62e9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.0"
   uuid:
     dependency: "direct main"
     description:
