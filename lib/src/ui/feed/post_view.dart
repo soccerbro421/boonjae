@@ -1,4 +1,7 @@
 import 'package:boonjae/src/models/post_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/services/post_service.dart';
+import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:boonjae/src/ui/other_profile/other_profile_from_feed.dart';
 import 'package:boonjae/src/ui/widgets/report_post_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,10 +10,12 @@ import 'package:intl/intl.dart';
 
 class PostView extends StatelessWidget {
   final PostModel post;
+  final bool isCurrentUser;
 
-  const PostView({
+  PostView({
     super.key,
     required this.post,
+    this.isCurrentUser = false,
   });
 
   void navigateToUser(BuildContext context) {
@@ -20,6 +25,15 @@ class PostView extends StatelessWidget {
           userId: post.userId,
         ),
       ),
+    );
+  }
+
+  goBack(BuildContext context) {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const MobileView(),
+      ),
+      (Route<dynamic> route) => false,
     );
   }
 
@@ -33,23 +47,37 @@ class PostView extends StatelessWidget {
       appBar: AppBar(
         title: const Text(''),
         actions: [
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(value: 'REPORT', child: Text('Report post')),
-            ],
-            onSelected: (value) {
-              if (value == "REPORT") {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ReportPostView(
-                      post: post,
-                    ),
-                    fullscreenDialog: true,
-                  ),
-                );
-              }
-            },
-          )
+          isCurrentUser
+              ? PopupMenuButton(
+                  itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem(
+                        value: 'DELETE', child: Text('Delete post')),
+                  ],
+                  onSelected: (value) async {
+                    if (value == "DELETE") {
+                      await PostService().deletePost(post: post);
+                      goBack(context);
+                    }
+                  },
+                )
+              : PopupMenuButton(
+                  itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem(
+                        value: 'REPORT', child: Text('Report post')),
+                  ],
+                  onSelected: (value) {
+                    if (value == "REPORT") {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ReportPostView(
+                            post: post,
+                          ),
+                          fullscreenDialog: true,
+                        ),
+                      );
+                    }
+                  },
+                )
         ],
       ),
       body: Column(

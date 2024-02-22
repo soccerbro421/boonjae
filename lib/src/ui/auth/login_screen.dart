@@ -86,9 +86,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 flex: 2,
                 child: Container(),
               ),
-              const CircleAvatar(
-                // Display the Flutter Logo image asset.
-                foregroundImage: AssetImage('assets/images/flutter_logo.png'),
+              SizedBox(
+                height: 100.0, // Set the desired height
+                width: 100.0, // Set the desired width
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                      10.0), // Adjust the radius as needed
+                  child: Image.asset('assets/images/icon.png'),
+                ),
               ),
               const SizedBox(height: 64),
               TextFieldInput(

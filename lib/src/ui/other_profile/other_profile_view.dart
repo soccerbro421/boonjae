@@ -195,7 +195,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                           });
                                         },
                                         icon: const Icon(Icons.group_add),
-                                        label: const Text('add user'),
+                                        label: const Text('send friend request'),
                                       ),
                                     ),
                                   ),

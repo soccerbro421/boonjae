@@ -34,11 +34,11 @@ class InitializerHelper {
   Future<FormError?> initialize() async {
     final completer = Completer<FormError?>();
 
-    // final params = ConsentRequestParameters();
+    final params = ConsentRequestParameters();
 
-    final params = ConsentRequestParameters(
-        consentDebugSettings: ConsentDebugSettings(
-            debugGeography: DebugGeography.debugGeographyEea));
+    // final params = ConsentRequestParameters(
+    //     consentDebugSettings: ConsentDebugSettings(
+    //         debugGeography: DebugGeography.debugGeographyEea));
 
     ConsentInformation.instance.requestConsentInfoUpdate(params, () async {
       if (await ConsentInformation.instance.isConsentFormAvailable()) {

@@ -212,7 +212,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   Step(
-                    title: const Text('About you (optional)'),
+                    title: const Text('About you'),
                     content: Column(
                       children: [
                         TextFieldInput(
@@ -230,7 +230,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   Step(
-                    title: const Text('Profile pic (optional)'),
+                    title: const Text('Profile pic'),
                     content: Stack(
                       children: [
                         InkWell(
@@ -245,7 +245,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               child: _image != null
                                   ? Image.memory(_image!)
                                   : Image.asset(
-                                      'assets/images/flutter_logo.png'),
+                                      'assets/images/icon.png'),
                             ),
                           ),
                         ),
@@ -255,6 +255,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           child: IconButton(
                             onPressed: selectImage,
                             icon: const Icon(Icons.add_a_photo),
+                            color: Colors.white,
                           ),
                         ),
                       ],

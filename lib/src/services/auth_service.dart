@@ -138,7 +138,7 @@ class AuthService {
 
         UserModel user = UserModel(
           uid: creds.user!.uid,
-          username: 'user${creds.user!.uid}',
+          username: 'plz-change-username',
           photoUrl: photoUrl,
           name: name,
           bio: bio,

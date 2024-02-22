@@ -228,7 +228,7 @@ class _EditHabitViewState extends State<EditHabitView> {
                                   child: _image != null
                                       ? Image.memory(_image!)
                                       : Image.asset(
-                                          'assets/images/flutter_logo.png'),
+                                          'assets/images/icon.png'),
                                 ),
                               ),
                             ),
@@ -238,6 +238,7 @@ class _EditHabitViewState extends State<EditHabitView> {
                               child: IconButton(
                                 onPressed: selectImage,
                                 icon: const Icon(Icons.add_a_photo),
+                                color: Colors.white,
                               ),
                             ),
                           ],

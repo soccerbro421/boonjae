@@ -12,7 +12,6 @@ class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-
   bool isCurrentUser({required UserModel user}) {
     return user.uid == _auth.currentUser!.uid;
   }
@@ -31,8 +30,25 @@ class UserService {
       return 'please enter all fields';
     }
 
+    if (username.length < 5) {
+      return 'please have your username be at least 5 characters long';
+    }
+
+    if (username.contains(RegExp(r'\s'))) {
+      return 'please ensure no whitespaces';
+    }
+
     try {
       User currentUser = _auth.currentUser!;
+
+      QuerySnapshot userSnapshot = await _firestore
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .get();
+      
+      if (userSnapshot.docs.isNotEmpty) {
+        return 'sorry that username is taken';
+      }
 
       if (file != null) {
         Reference profilePicRef = _storage

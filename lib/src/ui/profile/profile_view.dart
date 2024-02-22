@@ -44,27 +44,50 @@ class _ProfileViewState extends State<ProfileView> {
 
     HabitsProvider habitsProvider = Provider.of(context, listen: false);
     await habitsProvider.refreshHabits();
-
   }
 
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).getUser;
     habits = Provider.of<HabitsProvider>(context).getHabits;
-    
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          
-            ProfileAppBar(
-              user: user!,
-              refreshPage: refreshPage,
-              isCurrentUser: true,
-            ),
-          MidScreenUserInfoView(user: user!,),
-          HabitsListView(habits: habits!, user: user!),
+          ProfileAppBar(
+            user: user!,
+            refreshPage: refreshPage,
+            isCurrentUser: true,
+          ),
+          MidScreenUserInfoView(
+            user: user!,
+          ),
+          habits != null && habits!.isNotEmpty
+              ? HabitsListView(habits: habits!, user: user!)
+              : const EmptyHabitsMessage(),
         ],
       ),
     );
+  }
+}
+
+class EmptyHabitsMessage extends StatelessWidget {
+  const EmptyHabitsMessage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverFixedExtentList(
+        delegate: SliverChildListDelegate(
+          [
+            const Center(
+              child: Text('click on the + to add a habit',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold, // Make it bold
+                    fontSize: 16.0, // Adjust the font size
+                  )),
+            )
+          ],
+        ),
+        itemExtent: 50);
   }
 }

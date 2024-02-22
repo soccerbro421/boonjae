@@ -161,7 +161,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 },
                 steps: [
                   Step(
-                    title: const Text('Login info'),
+                    title: const Text('username'),
                     content: Column(
                       children: [
                         TextFieldInput(
@@ -211,16 +211,17 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   child: _image != null
                                       ? Image.memory(_image!)
                                       : Image.asset(
-                                          'assets/images/flutter_logo.png'),
+                                          'assets/images/icon.png'),
                                 ),
                               ),
                             ),
                             Positioned(
                               bottom: -10,
-                              left: 80,
+                              left: 100,
                               child: IconButton(
                                 onPressed: selectImage,
                                 icon: const Icon(Icons.add_a_photo),
+                                color: Colors.white,
                               ),
                             ),
                           ],

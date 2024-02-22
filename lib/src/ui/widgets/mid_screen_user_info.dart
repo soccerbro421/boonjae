@@ -38,7 +38,9 @@ class MidScreenUserInfoView extends StatelessWidget {
               color: Theme.of(context).scaffoldBackgroundColor,
               child: Row(
                 children: [
-                  Text(user.username),
+                  Text(
+                    user.username,
+                  ),
                   const SizedBox(
                     width: 10,
                   ),
@@ -61,7 +63,6 @@ class MidScreenUserInfoView extends StatelessWidget {
                 children: [
                   Text(user.bio),
                   const Spacer(),
-
                   InkWell(
                     onTap: () {
                       navigateToAddHabitView(context);

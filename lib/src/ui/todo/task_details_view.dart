@@ -165,7 +165,7 @@ class _TaskDetailsViewState extends State<TaskDetailsView> {
                                   child: _image != null
                                       ? Image.memory(_image!)
                                       : Image.asset(
-                                          'assets/images/flutter_logo.png'),
+                                          'assets/images/icon.png'),
                                 ),
                               ),
                             ),
@@ -175,6 +175,7 @@ class _TaskDetailsViewState extends State<TaskDetailsView> {
                               child: IconButton(
                                 onPressed: selectImage,
                                 icon: const Icon(Icons.add_a_photo),
+                                color: Colors.white,
                               ),
                             ),
                           ],

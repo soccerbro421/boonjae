@@ -51,6 +51,7 @@ class HabitView extends StatelessWidget {
         PostsGridView(
           habit: habit,
           user: user,
+          isCurrentUser: isCurrentUser(),
         ),
       ]),
     );
