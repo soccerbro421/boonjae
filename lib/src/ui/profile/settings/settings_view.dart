@@ -6,6 +6,7 @@ import 'package:boonjae/src/ui/profile/settings/delete_profile_view.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_privacy_view.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_profile_view.dart';
 import 'package:boonjae/src/ui/profile/settings/settings_card.dart';
+import 'package:boonjae/src/ui/widgets/privacy_policy_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -76,6 +77,14 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
+  void navigateToPrivacyPolicyView(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const PrivacyPolicyView(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +116,7 @@ class _SettingsViewState extends State<SettingsView> {
               icon: const Icon(Icons.contact_mail),
             ),
             SettingsCard(
-              onTap: navigateToEditProfileView,
+              onTap: navigateToPrivacyPolicyView,
               text: 'About',
               icon: const Icon(Icons.info),
             ),
