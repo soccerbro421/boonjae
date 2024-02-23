@@ -232,7 +232,7 @@ class FriendsService {
   createRequest({required UserModel user}) async {
     try {
       String currentUserId = _auth.currentUser!.uid;
-      String requestId = Uuid().v1();
+      String requestId = const Uuid().v1();
 // Create or update the 'myRequests' document for the current user
       await _firestore.collection('friendRequests').doc(requestId).set(
         {'from': currentUserId, 'to': user.uid, 'status': 'PENDING'},

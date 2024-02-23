@@ -1,5 +1,4 @@
 import 'package:boonjae/src/models/post_model.dart';
-import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/services/post_service.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:boonjae/src/ui/other_profile/other_profile_from_feed.dart';
@@ -12,7 +11,7 @@ class PostView extends StatelessWidget {
   final PostModel post;
   final bool isCurrentUser;
 
-  PostView({
+  const PostView({
     super.key,
     required this.post,
     this.isCurrentUser = false,

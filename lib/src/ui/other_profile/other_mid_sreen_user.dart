@@ -107,7 +107,7 @@ class _OtherMidScreenUserInfoViewState extends State<OtherMidScreenUserInfoView>
                 ),
               ),
               if (_isLoading)
-                Positioned.fill(
+                const Positioned.fill(
                 
                     
                     child: Center(

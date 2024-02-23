@@ -155,7 +155,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                               delegate: SliverChildListDelegate(
                                 [
                                   _isLoading
-                                      ? Positioned.fill(
+                                      ? const Positioned.fill(
                                           child: Center(
                                             child: CircularProgressIndicator(),
                                           ),

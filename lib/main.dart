@@ -29,7 +29,7 @@ void main() async {
     try {
       // comment/uncomment the following code block to disable/enable local emulator
       FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-      FirebaseFirestore.instance.settings = Settings(
+      FirebaseFirestore.instance.settings = const Settings(
         host: 'localhost:8080',
         sslEnabled: false,
         persistenceEnabled: false,
