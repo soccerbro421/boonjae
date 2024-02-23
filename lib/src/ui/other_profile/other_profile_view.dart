@@ -26,6 +26,7 @@ class OtherProfileView extends StatefulWidget {
 class _OtherProfileViewState extends State<OtherProfileView> {
   String friendStatus = '';
   List<HabitModel> otherUsersHabits = [];
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -50,11 +51,19 @@ class _OtherProfileViewState extends State<OtherProfileView> {
   }
 
   void updateHabits() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     List<HabitModel> temp =
         await FriendsService().acceptFriendRequest(user: widget.user);
 
     UserProvider userProvider = Provider.of(context, listen: false);
     await userProvider.refreshUser();
+
+    setState(() {
+      _isLoading = false;
+    });
 
     setState(() {
       otherUsersHabits = temp;
@@ -97,9 +106,16 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                               child: ElevatedButton.icon(
                                 onPressed: () {
                                   setState(() {
+                                    _isLoading = true;
+                                  });
+                                  FriendsService().unblockUser(
+                                      userToBeUnblocked: widget.user);
+
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                  setState(() {
                                     friendStatus = "";
-                                    FriendsService()
-                                        .unblockUser(userToBeUnblocked: widget.user);
                                   });
                                 },
                                 icon: const Icon(Icons.group),
@@ -110,7 +126,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                         ],
                       ),
                       itemExtent: 50)
-                  : friendStatus == "PENDING"
+                  : friendStatus == "requestSent"
                       ? SliverFixedExtentList(
                           delegate: SliverChildListDelegate(
                             [
@@ -134,22 +150,28 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                             ],
                           ),
                           itemExtent: 50)
-                      : friendStatus == "OTHER_REQUEST"
+                      : friendStatus == "requestReceived"
                           ? SliverFixedExtentList(
                               delegate: SliverChildListDelegate(
                                 [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                    child: ElevatedButton.icon(
-                                      onPressed: () {
-                                        updateHabits();
-                                      },
-                                      icon: const Icon(Icons.group_add),
-                                      label:
-                                          const Text('accept friend request'),
-                                    ),
-                                  ),
+                                  _isLoading
+                                      ? Positioned.fill(
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        )
+                                      : Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 10, 0, 10),
+                                          child: ElevatedButton.icon(
+                                            onPressed: () {
+                                              updateHabits();
+                                            },
+                                            icon: const Icon(Icons.group_add),
+                                            label: const Text(
+                                                'accept friend request'),
+                                          ),
+                                        ),
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -189,13 +211,14 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                       child: ElevatedButton.icon(
                                         onPressed: () {
                                           setState(() {
-                                            friendStatus = "PENDING";
+                                            friendStatus = "requestSent";
                                             FriendsService().createRequest(
                                                 user: widget.user);
                                           });
                                         },
                                         icon: const Icon(Icons.group_add),
-                                        label: const Text('send friend request'),
+                                        label:
+                                            const Text('send friend request'),
                                       ),
                                     ),
                                   ),

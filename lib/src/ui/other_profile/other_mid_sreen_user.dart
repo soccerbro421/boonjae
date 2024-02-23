@@ -3,7 +3,7 @@ import 'package:boonjae/src/services/friends_service.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:flutter/material.dart';
 
-class OtherMidScreenUserInfoView extends StatelessWidget {
+class OtherMidScreenUserInfoView extends StatefulWidget {
   final UserModel user;
   final bool isFriend;
 
@@ -13,15 +13,38 @@ class OtherMidScreenUserInfoView extends StatelessWidget {
     required this.isFriend,
   });
 
+  @override
+  State<OtherMidScreenUserInfoView> createState() => _OtherMidScreenUserInfoViewState();
+}
+
+class _OtherMidScreenUserInfoViewState extends State<OtherMidScreenUserInfoView> {
+
+  bool _isLoading = false;
+
   void blockUser(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
     
-    await FriendsService().blockUser(userToBeBlocked: user);
+    await FriendsService().blockUser(userToBeBlocked: widget.user);
+
+    setState(() {
+      _isLoading = false;
+    });
     goBack(context);
   }
 
   void removeFriend(BuildContext context) async {
+
+    setState(() {
+      _isLoading = true;
+    });
     
-    await FriendsService().removeFriend(friendToBeRemoved: user);
+    await FriendsService().removeFriendCloudFunction(friendToBeRemoved: widget.user);
+
+    setState(() {
+      _isLoading = false;
+    });
     goBack(context);
   }
 
@@ -39,47 +62,60 @@ class OtherMidScreenUserInfoView extends StatelessWidget {
     return SliverFixedExtentList(
       delegate: SliverChildListDelegate(
         [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Row(
-                children: [
-                  Text(user.username),
-                  const SizedBox(
-                    width: 10,
+          Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: Row(
+                    children: [
+                      Text(widget.user.username),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      const Spacer(),
+                      widget.isFriend == true
+                          ? PopupMenuButton(
+                              itemBuilder: (BuildContext context) => [
+                                const PopupMenuItem(
+                                    value: 'REMOVE',
+                                    child: Text('Remove Friend')),
+                              ],
+                              onSelected: (value) {
+                                if (value == "REMOVE") {
+                      
+                                  removeFriend(context);
+                                }
+                              },
+                            )
+                          : PopupMenuButton(
+                              itemBuilder: (BuildContext context) => [
+                                const PopupMenuItem(
+                                    value: 'BLOCK',
+                                    child: Text('Block User')),
+                              ],
+                              onSelected: (value) {
+                                if (value == "BLOCK") {
+                      
+                                  blockUser(context);
+                                }
+                              },
+                            ),
+                    ],
                   ),
-                  const Spacer(),
-                  isFriend == true
-                      ? PopupMenuButton(
-                          itemBuilder: (BuildContext context) => [
-                            const PopupMenuItem(
-                                value: 'REMOVE',
-                                child: Text('Remove Friend')),
-                          ],
-                          onSelected: (value) {
-                            if (value == "REMOVE") {
-                  
-                              removeFriend(context);
-                            }
-                          },
-                        )
-                      : PopupMenuButton(
-                          itemBuilder: (BuildContext context) => [
-                            const PopupMenuItem(
-                                value: 'BLOCK',
-                                child: Text('Block User')),
-                          ],
-                          onSelected: (value) {
-                            if (value == "BLOCK") {
-                  
-                              blockUser(context);
-                            }
-                          },
-                        ),
-                ],
+                ),
               ),
-            ),
+              if (_isLoading)
+                Positioned.fill(
+                
+                    
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                   
+                  ),
+                ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -87,7 +123,7 @@ class OtherMidScreenUserInfoView extends StatelessWidget {
               color: Theme.of(context).scaffoldBackgroundColor,
               child: Row(
                 children: [
-                  Text(user.bio),
+                  Text(widget.user.bio),
                   const Spacer(),
                 ],
               ),

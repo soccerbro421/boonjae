@@ -34,7 +34,7 @@ class AuthService {
       }
 
       for (UserModel friend in friendsToRemove) {
-        await FriendsService().removeFriend(friendToBeRemoved: friend);
+        await FriendsService().removeFriendCloudFunction(friendToBeRemoved: friend);
       }
 
       Reference profilePicRef = _storage.ref().child('users/$currentUserId');

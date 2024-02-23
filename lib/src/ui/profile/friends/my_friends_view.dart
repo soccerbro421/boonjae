@@ -55,7 +55,7 @@ class _MyFriendsViewState extends State<MyFriendsView> {
     Future<List<UserModel>> getFriends() async {
     UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
 
-    await FriendsService().removeFriendsReceiver(user: user);
+    // await FriendsService().removeFriendsReceiver(user: user);
 
     
     // check for just accepted

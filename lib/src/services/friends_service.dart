@@ -1,136 +1,44 @@
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uuid/uuid.dart';
 
 class FriendsService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFunctions _functions = FirebaseFunctions.instance;
 
   denyRequest({required UserModel denyingUser}) async {
     try {
       String currentUserId = _auth.currentUser!.uid;
-      await _firestore
-          .collection('requests')
-          .doc(currentUserId)
-          .collection('otherRequests')
-          .doc(denyingUser.uid)
-          .set({
-        'from': currentUserId,
-        'to': denyingUser.uid,
-        'status': 'REJECTED'
-      });
+      QuerySnapshot friendRequestsSnapshot = await _firestore
+          .collection('friendRequests')
+          .where('from', isEqualTo: denyingUser.uid)
+          .where('to', isEqualTo: currentUserId)
+          .get();
+
+      for (QueryDocumentSnapshot doc in friendRequestsSnapshot.docs) {
+        await doc.reference.delete();
+      }
     } catch (err) {}
   }
 
   cancelRequest({required UserModel cancelledUser}) async {
     try {
       String currentUserId = _auth.currentUser!.uid;
-      await _firestore
-          .collection('requests')
-          .doc(currentUserId)
-          .collection('myRequests')
-          .doc(cancelledUser.uid)
-          .delete();
 
-      // create
-      await _firestore
-          .collection('requests')
-          .doc(cancelledUser.uid)
-          .collection('otherRequests')
-          .doc(currentUserId)
-          .delete();
+      QuerySnapshot friendRequestsSnapshot = await _firestore
+          .collection('friendRequests')
+          .where('from', isEqualTo: currentUserId)
+          .where('to', isEqualTo: cancelledUser.uid)
+          .get();
+
+      for (QueryDocumentSnapshot doc in friendRequestsSnapshot.docs) {
+        await doc.reference.delete();
+      }
     } catch (err) {}
-  }
-
-  Future<List<String>> blockUsersReceiver() async {
-    try {
-      String currentUserId = _auth.currentUser!.uid;
-
-      CollectionReference otherRequestsReference = _firestore
-          .collection('requests')
-          .doc(currentUserId)
-          .collection('otherRequests');
-
-      QuerySnapshot querySnapshot = await otherRequestsReference
-          .where('status', isEqualTo: 'BLOCK')
-          .get();
-
-      List<DocumentSnapshot> documents = querySnapshot.docs;
-
-      if (documents.isEmpty) {
-        return [];
-      }
-
-      List<String> userIdsBlockedMe = [];
-
-      for (DocumentSnapshot document in documents) {
-        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-        userIdsBlockedMe.add(data['from']);
-      }
-
-      if (userIdsBlockedMe.isNotEmpty) {
-        DocumentReference userDocRef =
-            _firestore.collection('users').doc(currentUserId);
-
-        await userDocRef.update({
-          'friends': FieldValue.arrayRemove(userIdsBlockedMe),
-        });
-        return userIdsBlockedMe;
-      }
-      return [];
-    } catch (err) {
-      return [];
-      // print(err.toString());
-    }
-  }
-
-  removeFriendsReceiver({required UserModel user}) async {
-    try {
-      String currentUserId = _auth.currentUser!.uid;
-
-      CollectionReference otherRequestsReference = _firestore
-          .collection('requests')
-          .doc(currentUserId)
-          .collection('otherRequests');
-
-      QuerySnapshot querySnapshot = await otherRequestsReference
-          .where('status', isEqualTo: 'REMOVE')
-          .get();
-
-      List<DocumentSnapshot> documents = querySnapshot.docs;
-
-      if (documents.isEmpty) {
-        return;
-      }
-
-      List<String> userIdsToRemove = [];
-
-      for (DocumentSnapshot document in documents) {
-        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-        userIdsToRemove.add(data['from']);
-
-        await _firestore
-            .collection('requests')
-            .doc(currentUserId)
-            .collection('otherRequests')
-            .doc(document.id) // Use document.id to get the document's ID
-            .delete();
-      }
-
-      if (userIdsToRemove.isNotEmpty) {
-        DocumentReference userDocRef =
-            _firestore.collection('users').doc(currentUserId);
-
-        await userDocRef.update({
-          'friends': FieldValue.arrayRemove(userIdsToRemove),
-        });
-      }
-    } catch (err) {
-      // print(err.toString());
-    }
   }
 
   unblockUser({
@@ -139,12 +47,16 @@ class FriendsService {
     try {
       String currentUserId = _auth.currentUser!.uid;
 
-      await _firestore
-          .collection('requests')
-          .doc(userToBeUnblocked.uid)
-          .collection('otherRequests')
-          .doc(currentUserId)
-          .delete();
+      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+        'unblockUser',
+      );
+
+      final Map<String, dynamic> data = {
+        'unblockerUid': currentUserId,
+        'unblockedUid': userToBeUnblocked.uid,
+      };
+
+      final HttpsCallableResult<dynamic> result = await callable.call(data);
     } catch (err) {
       // print(err);
     }
@@ -156,45 +68,35 @@ class FriendsService {
     try {
       String currentUserId = _auth.currentUser!.uid;
 
-      await _firestore
-          .collection('requests')
-          .doc(userToBeBlocked.uid)
-          .collection('otherRequests')
-          .doc(currentUserId)
-          .set(
-        {'from': currentUserId, 'to': userToBeBlocked.uid, 'status': 'BLOCK'},
+      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+        'blockUser',
       );
+
+      final Map<String, dynamic> data = {
+        'blockerUid': currentUserId,
+        'blockedUid': userToBeBlocked.uid,
+      };
+
+      await callable.call(data);
     } catch (err) {
       // print(err);
     }
   }
 
-  removeFriend({
+  removeFriendCloudFunction({
     required UserModel friendToBeRemoved,
   }) async {
     try {
       String currentUserId = _auth.currentUser!.uid;
+      String friendId = friendToBeRemoved.uid;
 
-      DocumentReference userDocRef =
-          _firestore.collection('users').doc(currentUserId);
-
-      // add to my friends list
-      await userDocRef.update({
-        'friends': FieldValue.arrayRemove([friendToBeRemoved.uid]),
+      HttpsCallableResult<dynamic> result =
+          await _functions.httpsCallable('removeFriend').call({
+        'uid1': currentUserId,
+        'uid2': friendId,
       });
 
-      await _firestore
-          .collection('requests')
-          .doc(friendToBeRemoved.uid)
-          .collection('otherRequests')
-          .doc(currentUserId)
-          .set(
-        {
-          'from': currentUserId,
-          'to': friendToBeRemoved.uid,
-          'status': 'REMOVE'
-        },
-      );
+      print(result.data);
     } catch (err) {
       print(err);
     }
@@ -236,12 +138,11 @@ class FriendsService {
     try {
       String currentUserId = _auth.currentUser!.uid;
 
-      DocumentReference userDocRef =
-          _firestore.collection('users').doc(currentUserId);
-
-      // add to my friends list
-      await userDocRef.update({
-        'friends': FieldValue.arrayUnion([user.uid]),
+      // add users to each other
+      final HttpsCallableResult<dynamic> result =
+          await _functions.httpsCallable('addFriend').call({
+        'uid1': currentUserId,
+        'uid2': user.uid, // Assuming UserModel has a uid property
       });
 
       List<HabitModel> habits = [];
@@ -263,16 +164,15 @@ class FriendsService {
         // Use 'habitData' as needed
       }
 
-      // update requests collection
-      DocumentReference otherRequestsReference = _firestore
-          .collection('requests')
-          .doc(currentUserId)
-          .collection('otherRequests')
-          .doc(user.uid);
+      QuerySnapshot friendRequestsSnapshot = await _firestore
+          .collection('friendRequests')
+          .where('from', isEqualTo: user.uid)
+          .where('to', isEqualTo: currentUserId)
+          .get();
 
-      await otherRequestsReference.update({
-        'status': 'FRIEND',
-      });
+      for (QueryDocumentSnapshot doc in friendRequestsSnapshot.docs) {
+        await doc.reference.delete();
+      }
 
       return habits;
     } catch (err) {
@@ -281,170 +181,49 @@ class FriendsService {
     }
   }
 
-  Future<List<UserModel>> getMyRequests() async {
+  Future<List<List<UserModel>>> getAllFriendRequests() async {
     try {
       String currentUserId = _auth.currentUser!.uid;
 
-      CollectionReference otherRequestsReference = _firestore
-          .collection('requests')
-          .doc(currentUserId)
-          .collection('myRequests');
+      List<List<UserModel>> res = [];
 
-      QuerySnapshot querySnapshot = await otherRequestsReference.get();
-
-      List<DocumentSnapshot> documents = querySnapshot.docs;
-
-      List<String> inProgress = [];
-
-      // CHECK STATUS ON OTHERS
-      List<String> acceptedFriends = [];
-
-      // going through my requests
-      for (DocumentSnapshot document in documents) {
-        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-        inProgress.add(data['to']);
-      }
-
-      if (inProgress.isNotEmpty) {
-        for (int i = 0; i < inProgress.length; i++) {
-          String targetId = inProgress[i];
-          DocumentSnapshot targetPersonMyRequestSnapshot = await _firestore
-              .collection('requests')
-              .doc(targetId)
-              .collection('otherRequests')
-              .doc(currentUserId)
-              .get();
-
-          if (targetPersonMyRequestSnapshot.exists) {
-            Map<String, dynamic> data =
-                targetPersonMyRequestSnapshot.data() as Map<String, dynamic>;
-            String status = data['status'];
-
-            if (status == "FRIEND") {
-              DocumentReference userDocRef =
-                  _firestore.collection('users').doc(currentUserId);
-
-              // add to my friends list
-              await userDocRef.update({
-                'friends': FieldValue.arrayUnion([targetId]),
-              });
-
-              // remove from other person's otherRequests and myRequests
-              DocumentReference myRequestDocRef = _firestore
-                  .collection('requests')
-                  .doc(currentUserId)
-                  .collection('myRequests')
-                  .doc(targetId);
-              await myRequestDocRef.delete();
-
-              DocumentReference otherRequestDocRef = _firestore
-                  .collection('requests')
-                  .doc(targetId)
-                  .collection('otherRequests')
-                  .doc(currentUserId);
-              await otherRequestDocRef.delete();
-
-              acceptedFriends.add(targetId);
-            } else if (status == "REJECTED") {
-              // remove from other person's otherRequests and myRequests
-              DocumentReference myRequestDocRef = _firestore
-                  .collection('requests')
-                  .doc(currentUserId)
-                  .collection('myRequests')
-                  .doc(targetId);
-              await myRequestDocRef.delete();
-
-              DocumentReference otherRequestDocRef = _firestore
-                  .collection('requests')
-                  .doc(targetId)
-                  .collection('otherRequests')
-                  .doc(currentUserId);
-              await otherRequestDocRef.delete();
-            }
-          } else {
-            print('Document does not exist for $targetId');
-          }
-        }
-
-        if (acceptedFriends.isNotEmpty) {
-          inProgress
-              .removeWhere((element) => acceptedFriends.contains(element));
-        }
-
-        if (inProgress.isNotEmpty) {
-          CollectionReference usersReference = _firestore.collection('users');
-
-          QuerySnapshot queryUsersSnapshot = await usersReference
-              .where(FieldPath.documentId, whereIn: inProgress)
-              .get();
-
-          List<DocumentSnapshot> userDocuments = queryUsersSnapshot.docs;
-
-          if (userDocuments.isNotEmpty) {
-            List<UserModel> usersRequested = userDocuments.map((document) {
-              return UserModel.fromSnap(document);
-            }).toList();
-
-            return usersRequested;
-          }
-        }
-      }
-
-      return [];
-    } catch (err) {
-      print(err.toString());
-      return [];
-    }
-  }
-
-  Future<List<UserModel>> getOthersRequested() async {
-    try {
-      String currentUserId = _auth.currentUser!.uid;
-
-      List<String> statusToIgnore = ['FRIEND', 'REJECTED', 'BLOCK'];
-
-      QuerySnapshot querySnapshot = await _firestore
-          .collection('requests')
-          .doc(currentUserId)
-          .collection('otherRequests')
-          .where('status', whereNotIn: statusToIgnore)
+      QuerySnapshot fromMe = await _firestore
+          .collection('friendRequests')
+          .where('from', isEqualTo: currentUserId)
           .get();
 
-      List<DocumentSnapshot> documents = querySnapshot.docs;
+      // Check if inputted user is in the 'to' field and current user is in the 'from' field
+      QuerySnapshot toMe = await _firestore
+          .collection('friendRequests')
+          .where('to', isEqualTo: currentUserId)
+          .get();
 
-      List<String> userIds = [];
+      List<String> usersFromMeIds = [];
+      List<String> usersRequestedMeIds = [];
 
-      // Now 'documents' contains all documents from the 'otherRequests' collection
-      for (DocumentSnapshot document in documents) {
-        // Access data using document.data()
-        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-        // Process the data as needed
-        userIds.add(data['from']);
+      if (fromMe.docs.isNotEmpty) {
+        usersFromMeIds = fromMe.docs.map((doc) => doc['to'] as String).toList();
       }
 
-      if (userIds.isNotEmpty) {
-        CollectionReference usersReference = _firestore.collection('users');
-
-        QuerySnapshot queryUsersSnapshot = await usersReference
-            .where(FieldPath.documentId, whereIn: userIds)
-            .get();
-
-        List<DocumentSnapshot> userDocuments = queryUsersSnapshot.docs;
-
-        if (userDocuments.isNotEmpty) {
-          List<UserModel> usersRequested = userDocuments.map((document) {
-            return UserModel.fromSnap(document);
-          }).toList();
-
-          return usersRequested;
-        }
+      if (toMe.docs.isNotEmpty) {
+        usersRequestedMeIds =
+            toMe.docs.map((doc) => doc['from'] as String).toList();
       }
 
-      return [];
+      // Get userIds for usersFromMe and usersRequestedMe
+
+      // Retrieve user data for usersFromMe
+      List<UserModel> usersFromMe = await getUsersByIds(usersFromMeIds);
+
+      // Retrieve user data for usersRequestedMe
+      List<UserModel> usersRequestedMe =
+          await getUsersByIds(usersRequestedMeIds);
+
+      res.add(usersFromMe);
+      res.add(usersRequestedMe);
+
+      return res;
     } catch (err) {
-      print(err.toString());
       return [];
     }
   }
@@ -453,24 +232,9 @@ class FriendsService {
   createRequest({required UserModel user}) async {
     try {
       String currentUserId = _auth.currentUser!.uid;
+      String requestId = Uuid().v1();
 // Create or update the 'myRequests' document for the current user
-      await _firestore
-          .collection('requests')
-          .doc(currentUserId)
-          .collection('myRequests')
-          .doc(user.uid)
-          .set(
-        {'from': currentUserId, 'to': user.uid, 'status': 'PENDING'},
-        SetOptions(merge: true),
-      );
-
-      // create
-      await _firestore
-          .collection('requests')
-          .doc(user.uid)
-          .collection('otherRequests')
-          .doc(currentUserId)
-          .set(
+      await _firestore.collection('friendRequests').doc(requestId).set(
         {'from': currentUserId, 'to': user.uid, 'status': 'PENDING'},
         SetOptions(merge: true),
       );
@@ -485,40 +249,41 @@ class FriendsService {
     try {
       String currentUserId = _auth.currentUser!.uid;
 
-      DocumentSnapshot myRequestsDoc = await _firestore
-          .collection('requests')
+      // TODO: CHECK BLOCK STATUS
+
+      DocumentSnapshot blockedUserDoc = await FirebaseFirestore.instance
+          .collection('users')
           .doc(currentUserId)
-          .collection('myRequests')
+          .collection('usersIBlocked')
           .doc(user.uid)
           .get();
 
-      DocumentSnapshot otherRequestsDoc = await _firestore
-          .collection('requests')
-          .doc(currentUserId)
-          .collection('otherRequests')
-          .doc(user.uid)
-          .get();
-
-      DocumentSnapshot myBlockThem = await _firestore
-          .collection('requests')
-          .doc(user.uid)
-          .collection('otherRequests')
-          .doc(currentUserId)
-          .get();
-
-      if (myBlockThem.exists) {
-        if (myBlockThem['status'] == 'BLOCK') {
-          return 'BLOCK';
-        }
+      if (blockedUserDoc.exists) {
+        return 'BLOCK';
       }
 
-      if (myRequestsDoc.exists) {
-        String status = myRequestsDoc['status'];
-        return status;
-      } else if (otherRequestsDoc.exists) {
-        return 'OTHER_REQUEST';
+      QuerySnapshot fromQuery = await _firestore
+          .collection('friendRequests')
+          .where('from', isEqualTo: currentUserId)
+          .where('to', isEqualTo: user.uid)
+          .get();
+
+      // Check if inputted user is in the 'to' field and current user is in the 'from' field
+      QuerySnapshot toQuery = await _firestore
+          .collection('friendRequests')
+          .where('from', isEqualTo: user.uid)
+          .where('to', isEqualTo: currentUserId)
+          .get();
+
+      if (fromQuery.docs.isNotEmpty) {
+        // The inputted user sent a friend request to the current user
+        return 'requestSent';
+      } else if (toQuery.docs.isNotEmpty) {
+        // The current user sent a friend request to the inputted user
+        return 'requestReceived';
       } else {
-        return 'not_found';
+        // No friend request between the two users
+        return 'notFriends';
       }
     } catch (err) {
       return err.toString();
@@ -529,8 +294,17 @@ class FriendsService {
     required String searchKeyword,
   }) async {
     try {
-      List<String> usersThatBlockedMe = await blockUsersReceiver();
-      print(usersThatBlockedMe);
+      String currentUserId = _auth.currentUser!.uid;
+      QuerySnapshot blockedMeSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUserId)
+          .collection('usersBlockedMe')
+          .get();
+
+      // Extract user IDs from the documents in the 'usersBlockedMe' collection
+      List<String> blockedUserIds =
+          blockedMeSnapshot.docs.map((DocumentSnapshot doc) => doc.id).toList();
+      print(blockedUserIds);
 
       QuerySnapshot querySnapshot = await _firestore
           .collection('users')
@@ -545,11 +319,32 @@ class FriendsService {
       List<UserModel> users =
           querySnapshot.docs.map((doc) => UserModel.fromSnap(doc)).toList();
 
-      return users
-          .where((user) => !usersThatBlockedMe.contains(user.uid))
-          .toList();
+      return users.where((user) => !blockedUserIds.contains(user.uid)).toList();
     } catch (err) {
       print(err.toString());
+      return [];
+    }
+  }
+
+  Future<List<UserModel>> getUsersByIds(List<String> userIds) async {
+    try {
+      List<UserModel> users = [];
+
+      // Retrieve users based on userIds
+      for (String userId in userIds) {
+        DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(userId).get();
+        if (userDoc.exists) {
+          UserModel user = UserModel.fromSnap(
+              userDoc); // Replace with your UserModel mapping logic
+          users.add(user);
+        }
+      }
+
+      return users;
+    } catch (error) {
+      print('Error: $error');
+      // Handle the error
       return [];
     }
   }

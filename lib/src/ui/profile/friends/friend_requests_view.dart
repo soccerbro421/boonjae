@@ -36,12 +36,11 @@ setState(() {
 
   updateData() async {
 
-    List<UserModel> temp = await FriendsService().getOthersRequested();
-    List<UserModel> temp2 = await FriendsService().getMyRequests();
+    List<List<UserModel>> temp = await FriendsService().getAllFriendRequests();
 
     setState(() {
-        widget.othersRequested = temp;
-        widget.myRequests = temp2;
+        widget.othersRequested = temp[1];
+        widget.myRequests = temp[0];
       });
 
   }

@@ -32,24 +32,17 @@ class _FriendsViewState extends State<FriendsView> {
   }
 
   Future<void> updateData() async {
-    List<UserModel> temp = await FriendsService().getOthersRequested();
-    List<UserModel> temp2 = await FriendsService().getMyRequests();
+    List<List<UserModel>> temp = await FriendsService().getAllFriendRequests();
 
-   
-      setState(() {
-        othersRequested = temp;
-        myRequests = temp2;
-      });
-   
+    setState(() {
+      othersRequested = temp[1];
+      myRequests = temp[0];
+    });
   }
 
   Future<List<UserModel>> getFriends() async {
     UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
 
-    await FriendsService().removeFriendsReceiver(user: user);
-
-    
-    // check for just accepted
 
     await Provider.of<UserProvider>(context, listen: false).refreshUser();
     List<UserModel> temp = await FriendsService().getFriends(user: user);

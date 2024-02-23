@@ -117,7 +117,7 @@ class _SettingsViewState extends State<SettingsView> {
             ),
             SettingsCard(
               onTap: navigateToPrivacyPolicyView,
-              text: 'About',
+              text: 'Privacy Policy/Terms of Use',
               icon: const Icon(Icons.info),
             ),
             FutureBuilder<bool>(
