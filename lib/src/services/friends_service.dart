@@ -22,7 +22,9 @@ class FriendsService {
       for (QueryDocumentSnapshot doc in friendRequestsSnapshot.docs) {
         await doc.reference.delete();
       }
-    } catch (err) {}
+    } catch (err) {
+      // print()
+    }
   }
 
   cancelRequest({required UserModel cancelledUser}) async {
@@ -38,7 +40,9 @@ class FriendsService {
       for (QueryDocumentSnapshot doc in friendRequestsSnapshot.docs) {
         await doc.reference.delete();
       }
-    } catch (err) {}
+    } catch (err) {
+      //print
+    }
   }
 
   unblockUser({
@@ -96,9 +100,9 @@ class FriendsService {
         'uid2': friendId,
       });
 
-      print(result.data);
+
     } catch (err) {
-      print(err);
+      // print(err);
     }
   }
 
@@ -120,7 +124,7 @@ class FriendsService {
 
       return friends;
     } catch (err) {
-      print(err.toString());
+      // print(err.toString());
       return [];
     }
   }
@@ -176,7 +180,7 @@ class FriendsService {
 
       return habits;
     } catch (err) {
-      print(err.toString());
+      // print(err.toString());
       return [];
     }
   }
@@ -249,7 +253,6 @@ class FriendsService {
     try {
       String currentUserId = _auth.currentUser!.uid;
 
-      // TODO: CHECK BLOCK STATUS
 
       DocumentSnapshot blockedUserDoc = await FirebaseFirestore.instance
           .collection('users')
@@ -304,7 +307,7 @@ class FriendsService {
       // Extract user IDs from the documents in the 'usersBlockedMe' collection
       List<String> blockedUserIds =
           blockedMeSnapshot.docs.map((DocumentSnapshot doc) => doc.id).toList();
-      print(blockedUserIds);
+      // print(blockedUserIds);
 
       QuerySnapshot querySnapshot = await _firestore
           .collection('users')
@@ -321,7 +324,7 @@ class FriendsService {
 
       return users.where((user) => !blockedUserIds.contains(user.uid)).toList();
     } catch (err) {
-      print(err.toString());
+
       return [];
     }
   }
@@ -343,7 +346,7 @@ class FriendsService {
 
       return users;
     } catch (error) {
-      print('Error: $error');
+
       // Handle the error
       return [];
     }

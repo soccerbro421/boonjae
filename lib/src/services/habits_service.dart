@@ -81,7 +81,9 @@ class HabitsService {
       });
 
       await coverPhotoRef.delete();
-    } catch (err) {}
+    } catch (err) {
+      //sdf
+    }
   }
 
   Future<List<PostModel>> getPostsByHabitAndUser({
@@ -101,7 +103,9 @@ class HabitsService {
 
       List<PostModel> posts = [];
 
-      QuerySnapshot querySnapshot = await postsCollectionRef.get();
+      QuerySnapshot querySnapshot = await postsCollectionRef
+          .orderBy('createdDate', descending: true)
+          .get();
 
       posts = [];
 

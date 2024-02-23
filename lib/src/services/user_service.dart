@@ -45,9 +45,14 @@ class UserService {
           .collection('users')
           .where('username', isEqualTo: username)
           .get();
-      
+
       if (userSnapshot.docs.isNotEmpty) {
-        return 'sorry that username is taken';
+        DocumentSnapshot docsnap = userSnapshot.docs[0];
+        UserModel currUserModel = UserModel.fromSnap(docsnap);
+
+        if (currUserModel.username != username) {
+          return 'sorry that username is taken';
+        }
       }
 
       if (file != null) {
@@ -55,8 +60,6 @@ class UserService {
             .ref()
             .child('users/${currentUser.uid}')
             .child('profilePic');
-
-        // TODO: check if username exists
 
         file = await ImageService().compressImage(file);
 

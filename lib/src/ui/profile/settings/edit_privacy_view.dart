@@ -13,7 +13,7 @@ class _EditPrivacyViewState extends State<EditPrivacyView> {
   late Stream<BasicConsentInfo?> consentInfoStream;
 
   final _initializationHelper = InitializerHelper();
-  late final Future<bool> _future;
+
 
   @override
   void initState() {

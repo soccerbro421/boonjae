@@ -17,11 +17,11 @@ admin.initializeApp();
 
 export const removeFriend = functions
   .runWith({
-    enforceAppCheck: true, // Reject requests with missing or invalid App Check tokens.
+    enforceAppCheck: true, //  App Check .
   }).https.onCall(
     async (data, context) => {
       try {
-        const { uid1, uid2 } = data;
+        const {uid1, uid2} = data;
 
         // Check if the request is authenticated
         if (!context.auth) {
@@ -50,28 +50,30 @@ export const removeFriend = functions
         const user1Friends = user1.data()?.friends || [];
         const user2Friends = user2.data()?.friends || [];
 
-        const updatedUser1Friends = user1Friends.filter((friendId: string) => friendId !== uid2);
-        const updatedUser2Friends = user2Friends.filter((friendId: string) => friendId !== uid1);
+        const updatedUser1Friends = user1Friends.
+          filter((friendId: string) => friendId !== uid2);
+        const updatedUser2Friends = user2Friends.
+          filter((friendId: string) => friendId !== uid1);
 
         // Update the friend lists in Firestore
-        await user1Ref.update({ friends: updatedUser1Friends });
-        await user2Ref.update({ friends: updatedUser2Friends });
+        await user1Ref.update({friends: updatedUser1Friends});
+        await user2Ref.update({friends: updatedUser2Friends});
 
-        return { success: true };
+        return {success: true};
       } catch (error) {
         console.error("Error:", error);
-        throw new functions.https.HttpsError("internal", "Something went wrong.");
+        throw new functions.https.HttpsError("internal", "Something bad");
       }
     });
 
 
 export const addFriend = functions
   .runWith({
-    enforceAppCheck: true, // Reject requests with missing or invalid App Check tokens.
+    enforceAppCheck: true, //  App Check tokens.
   })
   .https.onCall(async (data, context) => {
     try {
-      const { uid1, uid2 } = data;
+      const {uid1, uid2} = data;
 
       // Check if the request is authenticated
       if (!context.auth) {
@@ -104,10 +106,10 @@ export const addFriend = functions
       const updatedUser2Friends = [...user2Friends, uid1];
 
       // Update the friend lists in Firestore
-      await user1Ref.update({ friends: updatedUser1Friends });
-      await user2Ref.update({ friends: updatedUser2Friends });
+      await user1Ref.update({friends: updatedUser1Friends});
+      await user2Ref.update({friends: updatedUser2Friends});
 
-      return { success: true };
+      return {success: true};
     } catch (error) {
       console.error("Error:", error);
       throw new functions.https.HttpsError("internal", "Something went wrong.");
@@ -116,10 +118,10 @@ export const addFriend = functions
 
 
 export const blockUser = functions.runWith({
-  enforceAppCheck: true, // Reject requests with missing or invalid App Check tokens.
+  enforceAppCheck: true, //  App Check tokens.
 }).https.onCall(async (data, context) => {
   try {
-    const { blockerUid, blockedUid } = data;
+    const {blockerUid, blockedUid} = data;
 
     // Check if the request is authenticated
     if (!context.auth) {
@@ -130,21 +132,30 @@ export const blockUser = functions.runWith({
     }
 
     // Get references to the user documents
-    const blockerUserRef = admin.firestore().collection("users").doc(blockerUid);
-    const blockedUserRef = admin.firestore().collection("users").doc(blockedUid);
+    const blockerUserRef = admin
+      .firestore()
+      .collection("users")
+      .doc(blockerUid);
+    const blockedUserRef = admin
+      .firestore()
+      .collection("users")
+      .doc(blockedUid);
 
-    // Create 'private' collection for blocker user and add blocked user to 'usersIBlocked'
-    // Create 'usersIBlocked' subcollection for blocker user and add blocked user
-    await blockerUserRef.collection("usersIBlocked").doc(blockedUid).set({
-      val: true,
-    });
+    await blockerUserRef
+      .collection("usersIBlocked")
+      .doc(blockedUid)
+      .set({
+        val: true,
+      });
 
-    // Create 'usersBlockedMe' subcollection for blocked user and add blocker user
-    await blockedUserRef.collection("usersBlockedMe").doc(blockerUid).set({
-      val: true,
-    });
+    await blockedUserRef
+      .collection("usersBlockedMe")
+      .doc(blockerUid)
+      .set({
+        val: true,
+      });
 
-    return { success: true };
+    return {success: true};
   } catch (error) {
     console.error("Error:", error);
     throw new functions.https.HttpsError("internal", "Something went wrong.");
@@ -152,10 +163,10 @@ export const blockUser = functions.runWith({
 });
 
 export const unblockUser = functions.runWith({
-  enforceAppCheck: true, // Reject requests with missing or invalid App Check tokens.
+  enforceAppCheck: true,
 }).https.onCall(async (data, context) => {
   try {
-    const { unblockerUid, unblockedUid } = data;
+    const {unblockerUid, unblockedUid} = data;
 
     // Check if the request is authenticated
     if (!context.auth) {
@@ -166,23 +177,29 @@ export const unblockUser = functions.runWith({
     }
 
     // Get references to the user documents
-    const unblockerUserRef = admin.firestore().collection("users").doc(unblockerUid);
-    const unblockedUserRef = admin.firestore().collection("users").doc(unblockedUid);
+    const unblockerUserRef = admin.
+      firestore().
+      collection("users").
+      doc(unblockerUid);
+    const unblockedUserRef = admin
+      .firestore()
+      .collection("users")
+      .doc(unblockedUid);
+    await unblockerUserRef
+      .collection("usersIBlocked")
+      .doc(unblockedUid)
+      .delete();
+    await unblockedUserRef
+      .collection("usersBlockedMe")
+      .doc(unblockerUid)
+      .delete();
 
-    // Delete the documents from 'usersIBlocked' and 'usersBlockedMe' subcollections
-    await unblockerUserRef.collection("usersIBlocked").doc(unblockedUid).delete();
-    await unblockedUserRef.collection("usersBlockedMe").doc(unblockerUid).delete();
-
-    return { success: true };
+    return {success: true};
   } catch (error) {
     console.error("Error:", error);
     throw new functions.https.HttpsError("internal", "Something went wrong.");
   }
 });
-
-
-
-
 
 // export const helloWorld = onRequest((request, response) => {
 //     // debugger;
