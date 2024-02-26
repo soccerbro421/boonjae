@@ -29,9 +29,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>plz allow photos in ur library</string>
+	<string>To enhance your experience, we need your permission to access photos. Please allow access to your photo library to upload and share posts with images.</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>Plz allow</string>
+	<string>In order to provide personalized advertisements and improve your overall app experience, we collect and track non-identifiable information. Your privacy is important to us, and this data is used solely for delivering more relevant ads.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>SKAdNetworkItems</key>
