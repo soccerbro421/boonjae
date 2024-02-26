@@ -1,5 +1,6 @@
 import 'package:boonjae/src/services/auth_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
+import 'package:boonjae/src/ui/auth/forgot_password_view.dart';
 import 'package:boonjae/src/ui/auth/initialize_screen.dart';
 import 'package:boonjae/src/ui/auth/signup_screen.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
@@ -128,6 +129,28 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: CircularProgressIndicator(),
                         )
                       : const Text('Log in'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap:(){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return const ForgotPasswordView();
+                        },),);
+                      },
+                      child: const Text(
+                        'Forgot password?',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 192, 159, 225),
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
               const SizedBox(height: 64),
