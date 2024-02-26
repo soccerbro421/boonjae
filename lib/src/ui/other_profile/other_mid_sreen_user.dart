@@ -14,18 +14,19 @@ class OtherMidScreenUserInfoView extends StatefulWidget {
   });
 
   @override
-  State<OtherMidScreenUserInfoView> createState() => _OtherMidScreenUserInfoViewState();
+  State<OtherMidScreenUserInfoView> createState() =>
+      _OtherMidScreenUserInfoViewState();
 }
 
-class _OtherMidScreenUserInfoViewState extends State<OtherMidScreenUserInfoView> {
-
+class _OtherMidScreenUserInfoViewState
+    extends State<OtherMidScreenUserInfoView> {
   bool _isLoading = false;
 
   void blockUser(BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
-    
+
     await FriendsService().blockUser(userToBeBlocked: widget.user);
 
     setState(() {
@@ -35,12 +36,12 @@ class _OtherMidScreenUserInfoViewState extends State<OtherMidScreenUserInfoView>
   }
 
   void removeFriend(BuildContext context) async {
-
     setState(() {
       _isLoading = true;
     });
-    
-    await FriendsService().removeFriendCloudFunction(friendToBeRemoved: widget.user);
+
+    await FriendsService()
+        .removeFriendCloudFunction(friendToBeRemoved: widget.user);
 
     setState(() {
       _isLoading = false;
@@ -75,44 +76,28 @@ class _OtherMidScreenUserInfoViewState extends State<OtherMidScreenUserInfoView>
                         width: 10,
                       ),
                       const Spacer(),
-                      widget.isFriend == true
-                          ? PopupMenuButton(
-                              itemBuilder: (BuildContext context) => [
-                                const PopupMenuItem(
-                                    value: 'REMOVE',
-                                    child: Text('Remove Friend')),
-                              ],
-                              onSelected: (value) {
-                                if (value == "REMOVE") {
-                      
-                                  removeFriend(context);
-                                }
-                              },
-                            )
-                          : PopupMenuButton(
-                              itemBuilder: (BuildContext context) => [
-                                const PopupMenuItem(
-                                    value: 'BLOCK',
-                                    child: Text('Block User')),
-                              ],
-                              onSelected: (value) {
-                                if (value == "BLOCK") {
-                      
-                                  blockUser(context);
-                                }
-                              },
-                            ),
+                      PopupMenuButton(
+                        itemBuilder: (BuildContext context) => [
+                          const PopupMenuItem(
+                              value: 'BLOCK', child: Text('Block User')),
+                          if (widget.isFriend == true)
+                            const PopupMenuItem(
+                                value: 'REMOVE', child: Text('Remove Friend')),
+                        ],
+                        onSelected: (value) {
+                          if (value == "BLOCK") {
+                            blockUser(context);
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ),
               ),
               if (_isLoading)
                 const Positioned.fill(
-                
-                    
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                   
+                  child: Center(
+                    child: CircularProgressIndicator(),
                   ),
                 ),
             ],

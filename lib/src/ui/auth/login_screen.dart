@@ -4,6 +4,7 @@ import 'package:boonjae/src/ui/auth/forgot_password_view.dart';
 import 'package:boonjae/src/ui/auth/initialize_screen.dart';
 import 'package:boonjae/src/ui/auth/signup_screen.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
+import 'package:boonjae/src/ui/widgets/user_agreement_view.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -158,6 +159,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 flex: 2,
                 child: Container(),
               ),
+              const SizedBox(height: 32),
+              GestureDetector(
+                      onTap:(){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return const UserAgreementView();
+                        },),);
+                      },
+                      child: const Text(
+                        
+                        'By using this app, you confirm that you agree to our Terms of Service and Privacy Policy',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 134, 133, 135),
+                          
+                          // fontWeight: FontWeight.bold
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

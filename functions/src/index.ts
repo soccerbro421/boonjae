@@ -131,6 +131,33 @@ export const blockUser = onCall(
       const blockerUid = request.data.blockerUid;
       const blockedUid = request.data.blockedUid;
 
+      // remove friends
+      const user1Ref = admin.firestore().collection("users").doc(blockerUid);
+      const user2Ref = admin.firestore().collection("users").doc(blockedUid);
+
+      // Get the friend lists of both users
+      const user1 = await user1Ref.get();
+      const user2 = await user2Ref.get();
+
+      if (!user1.exists || !user2.exists) {
+        throw new v2.https.HttpsError(
+          "not-found",
+          "One or both users not found."
+        );
+      }
+      // Remove the friends from each other's friend lists
+      const user1Friends = user1.data()?.friends || [];
+      const user2Friends = user2.data()?.friends || [];
+
+      const updatedUser1Friends = user1Friends.
+        filter((friendId: string) => friendId !== blockedUid);
+      const updatedUser2Friends = user2Friends.
+        filter((friendId: string) => friendId !== blockerUid);
+
+      // Update the friend lists in Firestore
+      await user1Ref.update({ friends: updatedUser1Friends });
+      await user2Ref.update({ friends: updatedUser2Friends });
+
       // Check if the request is authenticated
       // if (!context.auth) {
       //   throw new v2.https.HttpsError(
@@ -140,6 +167,7 @@ export const blockUser = onCall(
       // }
 
       // Get references to the user documents
+      // block users
       const blockerUserRef = admin
         .firestore()
         .collection("users")
