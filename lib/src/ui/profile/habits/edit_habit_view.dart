@@ -82,11 +82,15 @@ class _EditHabitViewState extends State<EditHabitView> {
     });
 
     if (res != 'success') {
-      ScaffoldMessenger.of(context).clearSnackBars();
+      clearSnack();
       showSnackBar(res);
     } else {
       goHome();
     }
+  }
+
+  clearSnack() {
+    ScaffoldMessenger.of(context).clearSnackBars();
   }
 
   goHome() {

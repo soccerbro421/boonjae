@@ -47,30 +47,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void signUpUserWithPhone() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    String res = await AuthService().signUpUser(
-      email: _emailController.text,
-      password: _passwordController.text,
-      name: _nameController.text,
-      bio: _bioController.text,
-      file: _image,
+  goToMobile() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const InitializeScreen(
+          targetWidget: MobileView(),
+        ),
+      ),
     );
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (res != 'success') {
-      showSnackBar(res);
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MobileView()),
-      );
-    }
   }
 
   void signUpUser() async {
@@ -93,13 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (res != 'success') {
       showSnackBar(res);
     } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const InitializeScreen(
-            targetWidget: MobileView(),
-          ),
-        ),
-      );
+      goToMobile();
     }
   }
 
@@ -188,7 +166,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     title: const Text('Login info'),
                     content: Column(
                       children: [
-                        const Text('Your email is only used for login purposes'),
+                        const Text(
+                            'Your email is only used for login purposes'),
                         const SizedBox(height: 16),
                         TextFieldInput(
                           textEditingController: _emailController,
@@ -246,8 +225,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderRadius: BorderRadius.circular(15),
                               child: _image != null
                                   ? Image.memory(_image!)
-                                  : Image.asset(
-                                      'assets/images/icon.png'),
+                                  : Image.asset('assets/images/icon.png'),
                             ),
                           ),
                         ),

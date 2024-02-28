@@ -63,11 +63,16 @@ class _AddHabitView extends State<AddHabitView> {
     });
 
     if (res != 'success') {
-      ScaffoldMessenger.of(context).clearSnackBars();
+      clearSnack();
+
       showSnackBar(res);
     } else {
       goHome();
     }
+  }
+
+  clearSnack() {
+    ScaffoldMessenger.of(context).clearSnackBars();
   }
 
   goHome() {
@@ -78,8 +83,6 @@ class _AddHabitView extends State<AddHabitView> {
       (Route<dynamic> route) => false,
     );
   }
-
-  
 
   void selectImage() async {
     final im = await ImageService().pickMedia();
@@ -93,9 +96,6 @@ class _AddHabitView extends State<AddHabitView> {
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -201,21 +201,20 @@ class _AddHabitView extends State<AddHabitView> {
                     content: Stack(
                       children: [
                         InkWell(
-                              onTap: selectImage,
-                              child: SizedBox(
-                                height: 150,
-                                width: 150,
-                                // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
-                              
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: _image != null
-                                      ? Image.memory(_image!)
-                                      : Image.asset(
-                                          'assets/images/icon.png'),
-                                ),
-                              ),
+                          onTap: selectImage,
+                          child: SizedBox(
+                            height: 150,
+                            width: 150,
+                            // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
+
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: _image != null
+                                  ? Image.memory(_image!)
+                                  : Image.asset('assets/images/icon.png'),
                             ),
+                          ),
+                        ),
                         Positioned(
                           bottom: -10,
                           left: 110,

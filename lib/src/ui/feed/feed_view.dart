@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 //
 //
 
+// ignore: must_be_immutable
 class FeedView extends StatefulWidget {
   List<PostModel> posts;
 

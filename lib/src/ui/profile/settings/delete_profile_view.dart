@@ -29,17 +29,17 @@ class _DeleteProfileViewState extends State<DeleteProfileView> {
       _isLoading = false;
     });
 
-
     FirebaseAuth.instance.signOut();
+    goToLogin();
+  }
+
+  void goToLogin() {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (context) => const LoginScreen(),
       ),
       (Route<dynamic> route) => false,
     );
-
-
-
   }
 
   @override

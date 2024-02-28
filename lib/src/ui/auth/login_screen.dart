@@ -39,6 +39,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  goToMobile() {
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const InitializeScreen(
+            targetWidget: MobileView(),
+          ),
+        ),
+      );
+  }
+
   void loginUser() async {
     setState(() {
       _isLoading = true;
@@ -50,13 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (res == 'success') {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const InitializeScreen(
-            targetWidget: MobileView(),
-          ),
-        ),
-      );
+      goToMobile();
     } else {
       showSnackBar(res);
     }

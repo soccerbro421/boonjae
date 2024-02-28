@@ -7,7 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class PostView extends StatelessWidget {
+class PostView extends StatefulWidget {
   final PostModel post;
   final bool isCurrentUser;
 
@@ -17,17 +17,22 @@ class PostView extends StatelessWidget {
     this.isCurrentUser = false,
   });
 
+  @override
+  State<PostView> createState() => _PostViewState();
+}
+
+class _PostViewState extends State<PostView> {
   void navigateToUser(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => OtherProfileFromFeed(
-          userId: post.userId,
+          userId: widget.post.userId,
         ),
       ),
     );
   }
 
-  goBack(BuildContext context) {
+  goBack() {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (context) => const MobileView(),
@@ -36,17 +41,13 @@ class PostView extends StatelessWidget {
     );
   }
 
-  void reportPost(BuildContext context) async {
-    // await FriendsService().removeFriend(friendToBeRemoved: user);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
         actions: [
-          isCurrentUser
+          widget.isCurrentUser
               ? PopupMenuButton(
                   itemBuilder: (BuildContext context) => [
                     const PopupMenuItem(
@@ -54,8 +55,8 @@ class PostView extends StatelessWidget {
                   ],
                   onSelected: (value) async {
                     if (value == "DELETE") {
-                      await PostService().deletePost(post: post);
-                      goBack(context);
+                      await PostService().deletePost(post: widget.post);
+                      goBack();
                     }
                   },
                 )
@@ -69,7 +70,7 @@ class PostView extends StatelessWidget {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => ReportPostView(
-                            post: post,
+                            post: widget.post,
                           ),
                           fullscreenDialog: true,
                         ),
@@ -89,7 +90,7 @@ class PostView extends StatelessWidget {
                 navigateToUser(context);
               },
               child: Text(
-                post.userName,
+                widget.post.userName,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18.0,
@@ -101,7 +102,7 @@ class PostView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
             child: Text(
-              post.habitName,
+              widget.post.habitName,
               style: const TextStyle(
                 color: Colors.grey,
                 fontStyle: FontStyle.italic,
@@ -112,7 +113,7 @@ class PostView extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
             child: CachedNetworkImage(
-              imageUrl: post.photoUrl,
+              imageUrl: widget.post.photoUrl,
               fit: BoxFit.cover,
               key: UniqueKey(),
               // width: double.infinity, // Make the image fill the width
@@ -127,14 +128,14 @@ class PostView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 32),
                   child: Text(
-                    post.description,
+                    widget.post.description,
                     style: const TextStyle(
                       fontSize: 16.0,
                     ),
                   ),
                 ),
                 Text(
-                  DateFormat('dd MMMM yyyy').format(post.createdDate),
+                  DateFormat('dd MMMM yyyy').format(widget.post.createdDate),
                   style: const TextStyle(
                     color: Colors.grey,
                     fontStyle: FontStyle.italic,

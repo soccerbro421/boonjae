@@ -32,7 +32,7 @@ class _OtherMidScreenUserInfoViewState
     setState(() {
       _isLoading = false;
     });
-    goBack(context);
+    goBack();
   }
 
   void removeFriend(BuildContext context) async {
@@ -46,10 +46,10 @@ class _OtherMidScreenUserInfoViewState
     setState(() {
       _isLoading = false;
     });
-    goBack(context);
+    goBack();
   }
 
-  goBack(BuildContext context) {
+  goBack() {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (context) => const MobileView(),

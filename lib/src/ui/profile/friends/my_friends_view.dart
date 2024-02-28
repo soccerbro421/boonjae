@@ -5,6 +5,7 @@ import 'package:boonjae/src/ui/profile/friends/friend_search_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class MyFriendsView extends StatefulWidget {
    List<UserModel> friends;
 

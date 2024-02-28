@@ -11,7 +11,7 @@ class ReportPostView extends StatefulWidget {
   });
 
   @override
-  _ReportPostViewState createState() => _ReportPostViewState();
+  State<ReportPostView> createState() => _ReportPostViewState();
 }
 
 class _ReportPostViewState extends State<ReportPostView> {

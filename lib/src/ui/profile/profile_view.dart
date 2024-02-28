@@ -42,6 +42,10 @@ class _ProfileViewState extends State<ProfileView> {
     UserProvider userProvider = Provider.of(context, listen: false);
     await userProvider.refreshUser();
 
+    updateHabitProvider();
+  }
+
+  void updateHabitProvider() async {
     HabitsProvider habitsProvider = Provider.of(context, listen: false);
     await habitsProvider.refreshHabits();
   }

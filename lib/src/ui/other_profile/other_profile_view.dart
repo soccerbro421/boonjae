@@ -50,6 +50,11 @@ class _OtherProfileViewState extends State<OtherProfileView> {
     });
   }
 
+  refreshUserProvider() async {
+    UserProvider userProvider = Provider.of(context, listen: false);
+    await userProvider.refreshUser();
+  }
+
   void updateHabits() async {
     setState(() {
       _isLoading = true;
@@ -58,8 +63,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
     List<HabitModel> temp =
         await FriendsService().acceptFriendRequest(user: widget.user);
 
-    UserProvider userProvider = Provider.of(context, listen: false);
-    await userProvider.refreshUser();
+    refreshUserProvider();
 
     setState(() {
       _isLoading = false;

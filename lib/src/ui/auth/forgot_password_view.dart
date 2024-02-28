@@ -30,8 +30,17 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
   Future passwordReset() async {
     try {
+
+      setState(() {
+        _isLoading = true;
+      });
+
       await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailController.text.trim());
       showSnackBar('email has been sent');
+
+      setState(() {
+        _isLoading = false;
+      });
     } catch(err){
       showSnackBar(err.toString());
     }

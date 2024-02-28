@@ -3,6 +3,7 @@ import 'package:boonjae/src/services/friends_service.dart';
 import 'package:boonjae/src/ui/widgets/friend_requests_list.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class FriendRequestsView extends StatefulWidget {
    List<UserModel> othersRequested;
    List<UserModel> myRequests;
@@ -74,6 +75,7 @@ setState(() {
   }
 }
 
+// ignore: must_be_immutable
 class RequestSliverHeader extends StatelessWidget {
   final String text;
   bool soleText;
