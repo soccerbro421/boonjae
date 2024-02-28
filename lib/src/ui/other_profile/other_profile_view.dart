@@ -154,47 +154,59 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                           ? SliverFixedExtentList(
                               delegate: SliverChildListDelegate(
                                 [
-                                  _isLoading
-                                      ? const Positioned.fill(
-                                          child: Center(
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        )
-                                      : Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 10, 0, 10),
-                                          child: ElevatedButton.icon(
-                                            onPressed: () {
-                                              updateHabits();
-                                            },
-                                            icon: const Icon(Icons.group_add),
-                                            label: const Text(
-                                                'accept friend request'),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 10, 0, 10),
+                                        child: ElevatedButton.icon(
+                                          onPressed: () {
+                                            setState(() {
+                                              friendStatus = '';
+                                            });
+                                            FriendsService().denyRequest(
+                                                denyingUser: widget.user);
+                                          },
+                                          icon: const Icon(Icons.group_remove),
+                                          label:
+                                              const Text('deny friend request'),
+                                          style: ButtonStyle(
+                                            foregroundColor:
+                                                MaterialStateProperty.all<
+                                                        Color>(
+                                                    const Color.fromARGB(
+                                                        255,
+                                                        255,
+                                                        133,
+                                                        125)), // Text color
+                                            overlayColor: MaterialStateProperty
+                                                .all<Color>(Colors
+                                                    .redAccent), // Ripple color
                                           ),
                                         ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                    child: ElevatedButton.icon(
-                                      onPressed: () {
-                                        setState(() {
-                                          friendStatus = '';
-                                        });
-                                        FriendsService().denyRequest(
-                                            denyingUser: widget.user);
-                                      },
-                                      icon: const Icon(Icons.group_remove),
-                                      label: const Text('deny friend request'),
-                                      style: ButtonStyle(
-                                        foregroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                const Color.fromARGB(255, 255,
-                                                    133, 125)), // Text color
-                                        overlayColor: MaterialStateProperty.all<
-                                                Color>(
-                                            Colors.redAccent), // Ripple color
                                       ),
-                                    ),
+                                      _isLoading
+                                          ? const Positioned.fill(
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            )
+                                          : Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 10, 0, 10),
+                                              child: ElevatedButton.icon(
+                                                onPressed: () {
+                                                  updateHabits();
+                                                },
+                                                icon:
+                                                    const Icon(Icons.group_add),
+                                                label: const Text(
+                                                    'accept friend request'),
+                                              ),
+                                            ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -208,18 +220,28 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                       onTap: () {
                                         // navigateToFriendsView(context);
                                       },
-                                      child: ElevatedButton.icon(
-                                        onPressed: () {
-                                          setState(() {
-                                            friendStatus = "requestSent";
-                                            FriendsService().createRequest(
-                                                user: widget.user);
-                                          });
-                                        },
-                                        icon: const Icon(Icons.group_add),
-                                        label:
-                                            const Text('send friend request'),
-                                      ),
+                                      child: _isLoading
+                                          ? const CircularProgressIndicator()
+                                          : ElevatedButton.icon(
+                                              onPressed: () {
+                                                setState(() {
+                                                  _isLoading = true;
+                                                });
+
+                                                FriendsService().createRequest(
+                                                    user: widget.user);
+
+                                                setState(() {
+                                                  _isLoading = false;
+                                                });
+                                                setState(() {
+                                                  friendStatus = "requestSent";
+                                                });
+                                              },
+                                              icon: const Icon(Icons.group_add),
+                                              label: const Text(
+                                                  'send friend request'),
+                                            ),
                                     ),
                                   ),
                                 ],

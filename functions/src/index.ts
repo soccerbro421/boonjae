@@ -13,6 +13,7 @@
 // import * as functions from "firebase-functions";
 import * as v2 from "firebase-functions/v2";
 const {onCall} = require("firebase-functions/v2/https");
+const messaging = require("firebase-admin/messaging");
 import * as admin from "firebase-admin";
 
 admin.initializeApp({
@@ -116,12 +117,89 @@ export const addFriend = onCall(
       await user1Ref.update({ friends: updatedUser1Friends });
       await user2Ref.update({ friends: updatedUser2Friends });
 
+
+      // send notification to second user
+      const user2TokenSnapshot = await admin.firestore().collection("users").doc(uid2).collection("tokens").get();
+        
+        if (!user2TokenSnapshot.empty) {
+            const user2Token = user2TokenSnapshot.docs[0].data().token;
+
+            // Construct the message payload
+            const message = {
+                notification: {
+                    title: "New Friend Added",
+                    body: "You have a new friend on Boonjae!",
+                },
+                token: user2Token,
+            };
+      
+            await messaging.getMessaging().send(message);
+
+            // Send the FCM notification
+            // await admin.messaging().send;
+        }
+
       return { success: true };
     } catch (error) {
       console.error("Error:", error);
       throw new v2.https.HttpsError("internal", "Something went wrong.");
     }
   });
+
+  export const createFriendRequest = onCall(
+    {
+      enforceAppCheck: true, // Reject requests with missing or invalid App Check tokens.
+    },
+    async (request: any) => {
+      try {
+        const requestorUid = request.data.requestorUid;
+        const requesteeUid = request.data.requesteeUid;
+  
+        // Check if the requestor and requestee are different
+        if (requestorUid === requesteeUid) {
+          throw new v2.https.HttpsError(
+            "invalid-argument",
+            "Requestor and requestee cannot be the same user."
+          );
+        }
+  
+
+        // Create or update the friend request document
+        const requestId = admin.firestore().collection('friendRequests').doc().id;
+        const friendRequestRef = admin.firestore().collection('friendRequests').doc(requestId);
+  
+        await friendRequestRef.set({
+          from: requestorUid,
+          to: requesteeUid,
+          status: 'PENDING',
+        });
+  
+        // send notification to requestee
+        const requesteeTokenSnapshot = await admin.firestore().collection("users").doc(requesteeUid).collection("tokens").get();
+  
+        if (!requesteeTokenSnapshot.empty) {
+          const requesteeToken = requesteeTokenSnapshot.docs[0].data().token;
+  
+          // Construct the message payload
+          const message = {
+            notification: {
+              title: "New Friend Request",
+              body: "You have a new friend request on Boonjae!",
+            },
+            token: requesteeToken,
+          };
+  
+          await messaging.getMessaging().send(message);
+        }
+  
+        return { success: true };
+      } catch (error) {
+        console.error("Error:", error);
+        throw new v2.https.HttpsError("internal", "Something went wrong.");
+      }
+    }
+  );
+  
 
 export const blockUser = onCall(
   {

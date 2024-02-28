@@ -87,6 +87,8 @@ class _OtherMidScreenUserInfoViewState
                         onSelected: (value) {
                           if (value == "BLOCK") {
                             blockUser(context);
+                          } else if(value == 'REMOVE') {
+                            removeFriend(context);
                           }
                         },
                       ),

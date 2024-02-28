@@ -35,7 +35,7 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>FirebaseMessagingAutoInitEnabled</key>
-	<string>NO</string>
+	<false/>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

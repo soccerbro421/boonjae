@@ -3,7 +3,6 @@ import 'package:boonjae/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:uuid/uuid.dart';
 
 class FriendsService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -60,7 +59,7 @@ class FriendsService {
         'unblockedUid': userToBeUnblocked.uid,
       };
 
-      final HttpsCallableResult<dynamic> result = await callable.call(data);
+      await callable.call(data);
     } catch (err) {
       // print(err);
     }
@@ -94,13 +93,11 @@ class FriendsService {
       String currentUserId = _auth.currentUser!.uid;
       String friendId = friendToBeRemoved.uid;
 
-      HttpsCallableResult<dynamic> result =
+   
           await _functions.httpsCallable('removeFriend').call({
         'uid1': currentUserId,
         'uid2': friendId,
       });
-
-
     } catch (err) {
       // print(err);
     }
@@ -143,7 +140,7 @@ class FriendsService {
       String currentUserId = _auth.currentUser!.uid;
 
       // add users to each other
-      final HttpsCallableResult<dynamic> result =
+      
           await _functions.httpsCallable('addFriend').call({
         'uid1': currentUserId,
         'uid2': user.uid, // Assuming UserModel has a uid property
@@ -236,12 +233,19 @@ class FriendsService {
   createRequest({required UserModel user}) async {
     try {
       String currentUserId = _auth.currentUser!.uid;
-      String requestId = const Uuid().v1();
+
 // Create or update the 'myRequests' document for the current user
-      await _firestore.collection('friendRequests').doc(requestId).set(
-        {'from': currentUserId, 'to': user.uid, 'status': 'PENDING'},
-        SetOptions(merge: true),
-      );
+      // await _firestore.collection('friendRequests').doc(requestId).set(
+      //   {'from': currentUserId, 'to': user.uid, 'status': 'PENDING'},
+      //   SetOptions(merge: true),
+      // );
+
+      final HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('createFriendRequest');
+      await callable.call({
+        'requestorUid': currentUserId,
+        'requesteeUid': user.uid,
+      });
     } catch (err) {
       // print(err.toString());
     }
@@ -252,7 +256,6 @@ class FriendsService {
   }) async {
     try {
       String currentUserId = _auth.currentUser!.uid;
-
 
       DocumentSnapshot blockedUserDoc = await FirebaseFirestore.instance
           .collection('users')
@@ -324,7 +327,6 @@ class FriendsService {
 
       return users.where((user) => !blockedUserIds.contains(user.uid)).toList();
     } catch (err) {
-
       return [];
     }
   }
@@ -346,7 +348,6 @@ class FriendsService {
 
       return users;
     } catch (error) {
-
       // Handle the error
       return [];
     }

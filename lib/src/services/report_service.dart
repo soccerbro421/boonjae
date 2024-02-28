@@ -10,7 +10,7 @@ class ReportService {
     required PostModel post,
     required String reason,
   }) async {
-    String res = 'some error occurred';
+    // String res = 'some error occurred';
 
     if (reason.isEmpty) {
       return 'please fill out form';
