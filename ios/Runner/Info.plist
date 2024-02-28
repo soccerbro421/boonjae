@@ -34,6 +34,8 @@
 	<string>In order to provide personalized advertisements and improve your overall app experience, we collect and track non-identifiable information. Your privacy is important to us, and this data is used solely for delivering more relevant ads.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<string>NO</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

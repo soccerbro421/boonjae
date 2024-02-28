@@ -188,6 +188,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     title: const Text('Login info'),
                     content: Column(
                       children: [
+                        const Text('Your email is only used for login purposes'),
+                        const SizedBox(height: 16),
                         TextFieldInput(
                           textEditingController: _emailController,
                           hintText: 'Enter your email',

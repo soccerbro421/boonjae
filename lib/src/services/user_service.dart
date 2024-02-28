@@ -26,8 +26,8 @@ class UserService {
     String photoUrl = '';
     Map<String, dynamic> map = {};
 
-    if (username.isEmpty || bio.isEmpty || name.isEmpty) {
-      return 'please enter all fields';
+    if (username.isEmpty) {
+      return 'please enter username';
     }
 
     if (username.length < 5) {

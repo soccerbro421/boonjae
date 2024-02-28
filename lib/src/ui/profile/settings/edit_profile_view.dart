@@ -5,6 +5,7 @@ import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/services/user_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -161,7 +162,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 },
                 steps: [
                   Step(
-                    title: const Text('username'),
+                    title: const Text('Username'),
                     content: Column(
                       children: [
                         TextFieldInput(
@@ -169,6 +170,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                           hintText: 'Enter your username',
                           textInputType: TextInputType.text,
                         ),
+                        const SizedBox(height: 8),
+                        const Text('Username must be at least 5 characters'),
                       ],
                     ),
                   ),
@@ -191,12 +194,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                     ),
                   ),
                   Step(
-                    title: const Text('Profile pic (optional)'),
+                    title: const Text('Profile pic'),
                     content: Column(
                       children: [
-                        const Text(
-                            'note: if new pic not provided, will not update current profile pic'),
-                        const SizedBox(height: 20),
+                        // const Text(
+                        //     'note: if new pic not provided, will not update current profile pic'),
+                        // const SizedBox(height: 20),
                         Stack(
                           children: [
                             InkWell(
@@ -210,8 +213,15 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   borderRadius: BorderRadius.circular(15),
                                   child: _image != null
                                       ? Image.memory(_image!)
-                                      : Image.asset(
-                                          'assets/images/icon.png'),
+                                      : CachedNetworkImage(
+                                          imageUrl: widget.user.photoUrl,
+                                          fit: BoxFit.cover,
+                                          key: UniqueKey(),
+                                          placeholder: (context, url) =>
+                                              const Text(''),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.person),
+                                        ),
                                 ),
                               ),
                             ),
@@ -229,9 +239,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ],
                     ),
                   ),
-                  const Step(
-                    title: Text('Submit'),
-                    content: Text('note: refresh after submitting'),
+                  Step(
+                    title: const Text('Submit'),
+                    content: Container(),
                     // content: Stack(
                     //   children: [const Text('submit')],
                     // ),

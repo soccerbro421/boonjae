@@ -30,7 +30,6 @@ class ProfileAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      
       // title: Text('my profile'),
       stretch: true,
       onStretchTrigger: () async {
@@ -47,15 +46,19 @@ class ProfileAppBar extends StatelessWidget {
         ],
         title: Row(
           children: [
-            Text(user.name, softWrap: true,),
+            Text(
+              user.name,
+              softWrap: true,
+            ),
             const Spacer(),
-            isCurrentUser == true ?
-              IconButton(
-                onPressed: () {
-                  navigateToSettings(context);
-                },
-                icon: const Icon(Icons.more_horiz_sharp),
-              ) : const Text(''),
+            isCurrentUser == true
+                ? IconButton(
+                    onPressed: () {
+                      navigateToSettings(context);
+                    },
+                    icon: const Icon(Icons.more_horiz_sharp),
+                  )
+                : const Text(''),
           ],
         ),
         background: DecoratedBox(

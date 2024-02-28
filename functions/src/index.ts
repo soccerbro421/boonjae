@@ -15,7 +15,9 @@ import * as v2 from "firebase-functions/v2";
 const {onCall} = require("firebase-functions/v2/https");
 import * as admin from "firebase-admin";
 
-admin.initializeApp();
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+});
 
 export const removeFriend = onCall(
   {

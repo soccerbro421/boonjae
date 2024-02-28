@@ -196,7 +196,7 @@ class HabitsService {
     }
 
     try {
-      if (name.isNotEmpty && description.isNotEmpty) {
+      if (name.isNotEmpty) {
         Reference habitsFolderRef = _storage
             .ref()
             .child('users/$userId')
@@ -249,7 +249,7 @@ class HabitsService {
 
         res = 'success';
       } else {
-        res = 'fill in both name and description';
+        res = 'please enter habit name';
       }
     } catch (err) {
       res = err.toString();

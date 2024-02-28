@@ -5,6 +5,7 @@ import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
@@ -210,10 +211,9 @@ class _EditHabitViewState extends State<EditHabitView> {
                     ),
                   ),
                   Step(
-                    title: const Text('Image (optional)'),
+                    title: const Text('Image'),
                     content: Column(
                       children: [
-                        const Text('if you don\'t upload photo, your old photo will remain'),
                         Stack(
                           children: [
                             InkWell(
@@ -227,8 +227,15 @@ class _EditHabitViewState extends State<EditHabitView> {
                                   borderRadius: BorderRadius.circular(15),
                                   child: _image != null
                                       ? Image.memory(_image!)
-                                      : Image.asset(
-                                          'assets/images/icon.png'),
+                                      : CachedNetworkImage(
+                                          imageUrl: widget.habit.photoUrl,
+                                          fit: BoxFit.cover,
+                                          key: UniqueKey(),
+                                          placeholder: (context, url) =>
+                                              const Text(''),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.person),
+                                        ),
                                 ),
                               ),
                             ),
@@ -246,10 +253,11 @@ class _EditHabitViewState extends State<EditHabitView> {
                       ],
                     ),
                   ),
-                  const Step(
-                    title: Text('Submit'),
-                    content: Text(
-                        'note: please refresh your profile page after update'),
+                  Step(
+                    title: const Text('Submit'),
+                    content: Container(),
+                    // Text(
+                    //     'note: please refresh your profile page after update'),
                   ),
                 ],
               ),

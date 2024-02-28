@@ -145,7 +145,7 @@ class _AddHabitView extends State<AddHabitView> {
                                 ? const Center(
                                     child: CircularProgressIndicator(),
                                   )
-                                : Text(_index == 3 ? 'ADD HABIT' : 'NEXT'),
+                                : Text(_index == 3 ? 'ADD' : 'NEXT'),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -228,10 +228,9 @@ class _AddHabitView extends State<AddHabitView> {
                       ],
                     ),
                   ),
-                  const Step(
-                    title: Text('Submit'),
-                    content: Text(
-                        'note: please refresh your profile page after creation'),
+                  Step(
+                    title: const Text('Submit'),
+                    content: Container(),
                   ),
                 ],
               ),
