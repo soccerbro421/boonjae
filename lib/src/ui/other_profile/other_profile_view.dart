@@ -94,7 +94,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                   widget.relationship == 'FRIEND' ||
                   widget.relationship == 'ME'
               ? HabitsListView(
-                  habits: otherUsersHabits,
+                  habits: otherUsersHabits
+                    ..sort((a, b) => a.order.compareTo(b.order)),
                   user: widget.user,
                 )
               : friendStatus == 'BLOCK'
@@ -160,60 +161,60 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                 [
                                   Stack(
                                     children: [
-                                      
-                                              
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 10, 0, 10),
-                                            child: ElevatedButton.icon(
-                                              onPressed: () {
-                                                setState(() {
-                                                  friendStatus = '';
-                                                });
-                                                FriendsService().denyRequest(
-                                                    denyingUser: widget.user);
-                                              },
-                                              icon: const Icon(Icons.group_remove),
-                                              label:
-                                                  const Text('deny friend request'),
-                                              style: ButtonStyle(
-                                                foregroundColor:
-                                                    MaterialStateProperty.all<
-                                                            Color>(
-                                                        const Color.fromARGB(
-                                                            255,
-                                                            255,
-                                                            133,
-                                                            125)), // Text color
-                                                overlayColor: MaterialStateProperty
-                                                    .all<Color>(Colors
-                                                        .redAccent), // Ripple color
+                                          ElevatedButton.icon(
+                                            onPressed: () {
+                                              setState(() {
+                                                friendStatus = '';
+                                              });
+                                              FriendsService().denyRequest(
+                                                  denyingUser: widget.user);
+                                            },
+                                            icon:
+                                                const Icon(Icons.group_remove),
+                                            label: const Text('Deny'),
+                                            style: ButtonStyle(
+                                              foregroundColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(
+                                                const Color.fromARGB(
+                                                    255, 255, 133, 125),
+                                              ),
+                                              overlayColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(
+                                                Colors.redAccent,
+                                              ),
+                                              minimumSize: MaterialStateProperty
+                                                  .all<Size>(
+                                                const Size(120,
+                                                    40), // Adjust width and height as needed
                                               ),
                                             ),
                                           ),
-                                          Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          0, 10, 0, 10),
-                                                  child: ElevatedButton.icon(
-                                                    onPressed: () {
-                                                      updateHabits();
-                                                    },
-                                                    icon:
-                                                        const Icon(Icons.group_add),
-                                                    label: const Text(
-                                                        'accept friend request'),
-                                                  ),
-                                                ),
+                                          ElevatedButton.icon(
+                                            onPressed: () {
+                                              updateHabits();
+                                            },
+                                            icon: const Icon(Icons.group_add),
+                                            label: const Text('Accept'),
+                                            style: ButtonStyle(
+                                              minimumSize: MaterialStateProperty
+                                                  .all<Size>(
+                                                const Size(120,
+                                                    40), // Adjust width and height as needed
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       if (_isLoading)
                                         const Positioned.fill(
                                           child: Center(
-                                            child:
-                                                CircularProgressIndicator(),
+                                            child: CircularProgressIndicator(),
                                           ),
                                         ),
                                     ],

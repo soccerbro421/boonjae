@@ -1,10 +1,13 @@
 import 'dart:typed_data';
 
+import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
 class AddHabitView extends StatefulWidget {
@@ -47,6 +50,10 @@ class _AddHabitView extends State<AddHabitView> {
   }
 
   void createHabit() async {
+
+    List<HabitModel> habits = Provider.of<HabitsProvider>(context, listen: false).getHabits;
+    int order = habits.length;
+
     setState(() {
       _isLoading = true;
     });
@@ -56,6 +63,7 @@ class _AddHabitView extends State<AddHabitView> {
       description: _descriptionController.text,
       file: _image,
       daysOfWeek: values,
+      order: order,
     );
 
     setState(() {

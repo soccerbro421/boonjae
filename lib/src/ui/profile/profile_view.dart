@@ -67,7 +67,7 @@ class _ProfileViewState extends State<ProfileView> {
             user: user!,
           ),
           habits != null && habits!.isNotEmpty
-              ? HabitsListView(habits: habits!, user: user!)
+              ? HabitsListView(habits: habits!..sort((a, b) => a.order.compareTo(b.order)), user: user!)
               : const EmptyHabitsMessage(),
         ],
       ),

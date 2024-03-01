@@ -1,14 +1,18 @@
 import 'package:async_preferences/async_preferences.dart';
+import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/ui/auth/login_screen.dart';
 import 'package:boonjae/src/ui/profile/settings/contact_us_view.dart';
 import 'package:boonjae/src/ui/profile/settings/delete_profile_view.dart';
+import 'package:boonjae/src/ui/profile/settings/edit_habit_order_view.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_privacy_view.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_profile_view.dart';
 import 'package:boonjae/src/ui/profile/settings/settings_card.dart';
 import 'package:boonjae/src/ui/widgets/privacy_policy_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingsView extends StatefulWidget {
   final UserModel user;
@@ -46,6 +50,17 @@ class _SettingsViewState extends State<SettingsView> {
       MaterialPageRoute(
         builder: (context) => EditProfileView(
           user: widget.user,
+        ),
+      ),
+    );
+  }
+
+  void navigateToEditHabitOrderView(BuildContext context) {
+    List<HabitModel> habits = Provider.of<HabitsProvider>(context, listen: false).getHabits;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => EditHabitOrderView(
+          habits: habits,
         ),
       ),
     );
@@ -109,6 +124,11 @@ class _SettingsViewState extends State<SettingsView> {
               onTap: navigateToEditProfileView,
               text: 'Edit Profile',
               icon: const Icon(Icons.person),
+            ),
+            SettingsCard(
+              onTap: navigateToEditHabitOrderView,
+              text: 'Edit Habit Order',
+              icon: const Icon(Icons.format_list_bulleted),
             ),
             SettingsCard(
               onTap: navigateToContactUsView,

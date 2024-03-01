@@ -27,6 +27,28 @@ class HabitsService {
     "Saturday",
   ];
 
+  Future<String> saveHabitOrder({required List<HabitModel> habits}) async {
+    try {
+      String currentUserId = _auth.currentUser!.uid;
+      // Assuming you have a Firestore collection named 'habits'
+      CollectionReference habitsCollection =
+          _firestore.collection('users').doc(currentUserId).collection('habits');
+
+      for (int newIndex = 0; newIndex < habits.length; newIndex++) {
+        final HabitModel habit = habits[newIndex];
+
+        // Update the order attribute in Firestore
+        await habitsCollection.doc(habit.habitId).update({'order': newIndex});
+      }
+
+      return 'Saved order successfully';
+  
+    } catch (error) {
+      // print('Error saving habit order: $error');
+      return error.toString();
+    }
+  }
+
   Future<List<HabitModel>> getHabitsByUser({required UserModel user}) async {
     try {
       List<HabitModel> habits = [];
@@ -219,6 +241,7 @@ class HabitsService {
           userId: userId,
           daysOfWeek: daysOfWeek,
           createdDate: oldHabit.createdDate,
+          order: oldHabit.order
         );
 
         // create tasks
@@ -263,6 +286,7 @@ class HabitsService {
     required String description,
     required List<bool> daysOfWeek,
     Uint8List? file,
+    required int order,
     // required List<String> daysOfWeek,
   }) async {
     String res = 'error occurred';
@@ -299,6 +323,7 @@ class HabitsService {
           userId: userId,
           daysOfWeek: daysOfWeek,
           createdDate: DateTime.now(),
+          order: order,
         );
 
         for (int i = 0; i < daysOfWeek.length; i++) {
