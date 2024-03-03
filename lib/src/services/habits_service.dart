@@ -142,6 +142,66 @@ class HabitsService {
     }
   }
 
+  Future<String> uploadPostFromTab({
+    required HabitModel habit,
+    required Uint8List file,
+    required String description,
+    required UserModel user,
+  }) async {
+
+    String photoUrl = '';
+    String postId = const Uuid().v1();
+
+    if (description.isEmpty) {
+      return 'please enter all fields';
+    }
+
+    try {
+      String currentUserId = _auth.currentUser!.uid;
+
+      Reference postPicRef = _storage
+          .ref()
+          .child('users/$currentUserId')
+          .child('habits')
+          .child(habit.habitId)
+          .child('posts')
+          .child(postId);
+
+      file = await ImageService().compressImage(file);
+
+      photoUrl = await StorageService()
+          .uploadImageToStorageByReference(postPicRef, file);
+
+      PostModel p = PostModel(
+        habitId: habit.habitId,
+        photoUrl: photoUrl,
+        postId: postId,
+        description: description,
+        userId: currentUserId,
+        createdDate: DateTime.now(),
+        habitName: habit.name,
+        userName: user.username,
+      );
+
+      DocumentReference userDocRef =
+          _firestore.collection('users').doc(currentUserId);
+
+      // Reference to the 'habits' subcollection for the user
+      DocumentReference habitsDocRef =
+          userDocRef.collection('habits').doc(habit.habitId);
+
+      CollectionReference postsCollectionRef = habitsDocRef.collection('posts');
+
+      await postsCollectionRef.doc(postId).set(p.toJson());
+
+      return 'successful upload !';
+
+    } catch (err) {
+      return err.toString();
+    }
+
+  }
+
   Future<String> uploadPost({
     required TaskModel task,
     Uint8List? file,

@@ -43,7 +43,18 @@ class TaskList extends StatelessWidget {
                 ),
                 Center(
                   child: Text(
-                      'no tasks for today! \n(plz pull down to refresh if no tasks for the week)'),
+                    'no tasks for today!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0, // You can adjust the font size as needed
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: Text('(refresh if no tasks for the week)'),
                 ),
               ],
             ),

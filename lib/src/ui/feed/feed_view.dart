@@ -78,11 +78,7 @@ class _FeedViewState extends State<FeedView> {
                       SizedBox(
                         height: 20,
                       ),
-                      Center(child: Text('no posts!')),
-                      Center(
-                        child: Text(
-                            'go to todo page and click on task to create a post'),
-                      ),
+                      Center(child: Text('no posts')),
                     ],
                   )
                 ],
