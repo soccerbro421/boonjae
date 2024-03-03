@@ -1,8 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:boonjae/src/db/tasks_database.dart';
 import 'package:boonjae/src/models/habit_model.dart';
-import 'package:boonjae/src/models/task_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
@@ -10,9 +8,7 @@ import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:weekday_selector/weekday_selector.dart';
 
 class CreatePostTabView extends StatefulWidget {
   const CreatePostTabView({super.key});
