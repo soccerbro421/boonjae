@@ -41,7 +41,7 @@ class FeedService {
       startOfWeek = currentDate.weekday == 7
           ? DateTime(currentDate.year, currentDate.month, currentDate.day)
           : startOfSunday;
-      DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
+      DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
 
       String currentUserId = _auth.currentUser!.uid;
 

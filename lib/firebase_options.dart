@@ -17,15 +17,24 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return android;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for android - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,39 +52,12 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA1AfiypZ_Q9coX664MVES1i1olLp5V8t0',
-    appId: '1:976427213364:web:dc70221786da1608832061',
-    messagingSenderId: '976427213364',
-    projectId: 'instagram-practice-1b313',
-    authDomain: 'instagram-practice-1b313.firebaseapp.com',
-    storageBucket: 'instagram-practice-1b313.appspot.com',
-    measurementId: 'G-6MY3L602PZ',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCiWbO-_KBAyFtLaNFCjfuwLS0UKakZ3HM',
-    appId: '1:976427213364:android:ba7e01d7b9094943832061',
-    messagingSenderId: '976427213364',
-    projectId: 'instagram-practice-1b313',
-    storageBucket: 'instagram-practice-1b313.appspot.com',
-  );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDQYq6K-vvD9G7ZI-Ab8Ne7_J6TyXhFVzo',
-    appId: '1:976427213364:ios:534494cb6fe329a2832061',
-    messagingSenderId: '976427213364',
-    projectId: 'instagram-practice-1b313',
-    storageBucket: 'instagram-practice-1b313.appspot.com',
-    iosBundleId: 'com.example.boonjae',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDQYq6K-vvD9G7ZI-Ab8Ne7_J6TyXhFVzo',
-    appId: '1:976427213364:ios:5cdce91e84b77c07832061',
-    messagingSenderId: '976427213364',
-    projectId: 'instagram-practice-1b313',
-    storageBucket: 'instagram-practice-1b313.appspot.com',
-    iosBundleId: 'com.example.boonjae.RunnerTests',
+    apiKey: 'AIzaSyCXaeolOnWBJYC8DJMKRSj5ibzx5C4DjEc',
+    appId: '1:3779730765:ios:b41bc63c850196323dab04',
+    messagingSenderId: '3779730765',
+    projectId: 'boonjae-bb6b1',
+    storageBucket: 'boonjae-bb6b1.appspot.com',
+    iosBundleId: 'com.boonjae.boonjae',
   );
 }
