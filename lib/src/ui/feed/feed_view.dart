@@ -4,9 +4,10 @@ import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/feed_service.dart';
 import 'package:boonjae/src/ui/ads/native_ads.dart';
 import 'package:boonjae/src/ui/feed/post_tile.dart';
+import 'package:boonjae/src/ui/widgets/idle_ellie.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:rive/rive.dart';
 
 //
 //
@@ -76,41 +77,59 @@ class _FeedViewState extends State<FeedView> {
                     // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
+                        height: 125.0,
+                        child: RiveAnimation.asset(
+                            'assets/rive/sleepy_lottie.riv'),
+                      ),
+                      SizedBox(
                         height: 20,
                       ),
-                      Center(child: Text('no posts')),
+                      Center(
+                          child: Text(
+                        'no posts for the week',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                              18.0, // You can adjust the font size as needed
+                        ),
+                      )),
+                      Center(
+                          child: Text(
+                              '(upload post to wake Ellie up!)')),
                     ],
                   )
                 ],
               )
             : CustomScrollView(
                 slivers: [
+                  const IdleEllie(),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
-
                       (BuildContext context, int index) {
-                        int tempTotal = widget.posts.length + (widget.posts.length ~/ 5);
-                        final int totalItems = widget.posts.length < 5 ? tempTotal + 1 : tempTotal;
-                        if (widget.posts.length < 5 && index == totalItems - 1) {
+                        int tempTotal =
+                            widget.posts.length + (widget.posts.length ~/ 5);
+                        final int totalItems =
+                            widget.posts.length < 5 ? tempTotal + 1 : tempTotal;
+                        if (widget.posts.length < 5 &&
+                            index == totalItems - 1) {
                           // Display an ad at the end of the list
                           return const NativeExample();
                           // return Text('hi');
-                        } 
-                        else if (index % 6 == 5) {
+                        } else if (index % 6 == 5) {
                           // Display an ad after every fifth post (assuming indexing starts from 0)
                           return const NativeExample();
-                        } 
-                        else {
+                        } else {
                           final int postIndex = index - (index ~/ 6);
                           final PostModel post = widget.posts[postIndex];
                           return PostTile(post: post);
                         }
                       },
-                      childCount: widget.posts.length < 5 ? widget.posts.length + (widget.posts.length ~/ 5) + 1 : widget.posts.length + (widget.posts.length ~/ 5),
-                   
-                 
+                      childCount: widget.posts.length < 5
+                          ? widget.posts.length + (widget.posts.length ~/ 5) + 1
+                          : widget.posts.length + (widget.posts.length ~/ 5),
                     ),
                   ),
+                  
                 ],
               ),
       ),

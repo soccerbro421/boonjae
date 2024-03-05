@@ -6,6 +6,7 @@ import 'package:boonjae/src/ui/auth/signup_screen.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:boonjae/src/ui/widgets/user_agreement_view.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
@@ -89,20 +90,30 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Flexible(
-                flex: 2,
-                child: Container(),
+              // Flexible(
+              //   flex: 2,
+              //   child: Container(),
+              // ),
+               const SizedBox(
+                height: 300.0, // Set the desired height
+                // width: 00.0, // Set the desired width
+
+                child: 
+                // Container( color: Colors.blue, child: 
+                // Expanded (child: 
+                  RiveAnimation.asset('assets/rive/sleepy_lottie.riv')
+                // ,),
+                // )
+                
+                
+                
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(
+                //       10.0), // Adjust the radius as needed
+                //   child: Image.asset('assets/images/icon.png'),
+                // ),
               ),
-              SizedBox(
-                height: 100.0, // Set the desired height
-                width: 100.0, // Set the desired width
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                      10.0), // Adjust the radius as needed
-                  child: Image.asset('assets/images/icon.png'),
-                ),
-              ),
-              const SizedBox(height: 64),
+              // const SizedBox(height: 32),
               TextFieldInput(
                 textEditingController: _emailController,
                 hintText: 'Enter you email',

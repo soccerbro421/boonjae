@@ -936,6 +936,8 @@ PODS:
     - FlutterMacOS
   - PromisesObjC (2.3.1)
   - RecaptchaInterop (100.0.0)
+  - rive_common (0.0.1):
+    - Flutter
   - SDWebImage (5.18.11):
     - SDWebImage/Core (= 5.18.11)
   - SDWebImage/Core (5.18.11)
@@ -971,6 +973,7 @@ DEPENDENCIES:
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - rive_common (from `.symlinks/plugins/rive_common/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
   - user_messaging_platform (from `.symlinks/plugins/user_messaging_platform/ios`)
@@ -1049,6 +1052,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  rive_common:
+    :path: ".symlinks/plugins/rive_common/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   sqflite:
@@ -1109,6 +1114,7 @@ SPEC CHECKSUMS:
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
+  rive_common: 3a4c254c6e4db7e4b9e05daeb3d1f47ae4f7bf76
   SDWebImage: a3ba0b8faac7228c3c8eadd1a55c9c9fe5e16457
   SDWebImageWebPCoder: c94f09adbca681822edad9e532ac752db713eabf
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68

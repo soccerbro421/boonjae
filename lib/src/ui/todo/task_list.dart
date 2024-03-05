@@ -1,6 +1,7 @@
 import 'package:boonjae/src/models/task_model.dart';
 import 'package:boonjae/src/ui/todo/task_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class TaskList extends StatelessWidget {
   final List<TaskModel> tasks;
@@ -39,7 +40,11 @@ class TaskList extends StatelessWidget {
           : ListView(
               children: const [
                 SizedBox(
-                  height: 50,
+                  height: 125.0,
+                  child: RiveAnimation.asset('assets/rive/sleepy_lottie.riv'),
+                ),
+                SizedBox(
+                  height: 20,
                 ),
                 Center(
                   child: Text(
