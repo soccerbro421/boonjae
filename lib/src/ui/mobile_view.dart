@@ -1,5 +1,6 @@
 import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/providers/friend_request_provider.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/feed_service.dart';
@@ -50,13 +51,13 @@ class _MobileViewState extends State<MobileView> {
   updateData() async {
     UserProvider userProvider = Provider.of(context, listen: false);
     HabitsProvider habitsProvider = Provider.of(context, listen: false);
-
-
-    
+    FriendRequestProvider friendRequestProvider =
+        Provider.of(context, listen: false);
 
     await userProvider.refreshUser();
     await updatePosts();
     await habitsProvider.refreshHabits();
+    await friendRequestProvider.refreshNumFriendRequests();
   }
 
   void _navigationTapped(int index) {
@@ -73,7 +74,6 @@ class _MobileViewState extends State<MobileView> {
     // SearchScreen(),
     const CreatePostTabView(),
     const ProfileView(),
-    
   ];
 
   @override
@@ -102,7 +102,6 @@ class _MobileViewState extends State<MobileView> {
             icon: Icon(Icons.person),
             label: 'profile',
           ),
-          
         ],
         onTap: _navigationTapped,
         currentIndex: _selectedIndex,

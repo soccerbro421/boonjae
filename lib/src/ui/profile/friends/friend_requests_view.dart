@@ -1,17 +1,19 @@
 import 'package:boonjae/src/models/user_model.dart';
-import 'package:boonjae/src/services/friends_service.dart';
 import 'package:boonjae/src/ui/widgets/friend_requests_list.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class FriendRequestsView extends StatefulWidget {
-   List<UserModel> othersRequested;
-   List<UserModel> myRequests;
+  List<UserModel> othersRequested;
+  List<UserModel> myRequests;
+  final Function updateNumFriendRequests;
+  
 
-   FriendRequestsView({
-  super.key,
+  FriendRequestsView({
+    super.key,
     required this.othersRequested,
     required this.myRequests,
+    required this.updateNumFriendRequests,
   });
 
   @override
@@ -19,33 +21,28 @@ class FriendRequestsView extends StatefulWidget {
 }
 
 class _FriendRequestsViewState extends State<FriendRequestsView> {
-
   bool isLoading = false;
 
-
   Future refreshRequests() async {
-setState(() {
+    setState(() {
       isLoading = true;
     });
 
-    await updateData();
+    await widget.updateNumFriendRequests();
 
     setState(() {
       isLoading = false;
     });
   }
 
-  updateData() async {
+  // updateData() async {
+  //   List<List<UserModel>> temp = await FriendsService().getAllFriendRequests();
 
-    List<List<UserModel>> temp = await FriendsService().getAllFriendRequests();
-
-    setState(() {
-        widget.othersRequested = temp[1];
-        widget.myRequests = temp[0];
-      });
-
-  }
-
+  //   setState(() {
+  //     widget.othersRequested = temp[1];
+  //     widget.myRequests = temp[0];
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

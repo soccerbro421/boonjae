@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 
 class MidScreenUserInfoView extends StatelessWidget {
   final UserModel user;
+  final int numFriendRequests;
 
   const MidScreenUserInfoView({
     required this.user,
+    required this.numFriendRequests,
     super.key,
   });
 
@@ -27,6 +29,7 @@ class MidScreenUserInfoView extends StatelessWidget {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return SliverFixedExtentList(
@@ -45,11 +48,41 @@ class MidScreenUserInfoView extends StatelessWidget {
                     width: 10,
                   ),
                   const Spacer(),
-                  InkWell(
-                    onTap: () {
-                      navigateToFriendsView(context);
-                    },
-                    child: const Icon(Icons.group),
+                  // FutureBuilder<int>(
+                  //     future: getNumOfFriendRequested(),
+                  //     builder: (context, snapshot) {
+                  //       if (snapshot.hasData) {
+                  //         return Badge(
+                  //           label: Text(snapshot.data.toString()),
+                  //           isLabelVisible: snapshot.data != 0,
+                  //           backgroundColor:
+                  //               const Color.fromARGB(255, 235, 183, 244),
+                  //           child: InkWell(
+                  //             onTap: () {
+                  //               navigateToFriendsView(context);
+                  //             },
+                  //             child: const Icon(Icons.group),
+                  //           ),
+                  //         );
+                  //       } else {
+                  //         return InkWell(
+                  //           onTap: () {
+                  //             navigateToFriendsView(context);
+                  //           },
+                  //           child: const Icon(Icons.group),
+                  //         );
+                  //       }
+                  //     }),
+                  Badge(
+                    label: Text(numFriendRequests.toString()),
+                    isLabelVisible: numFriendRequests != 0,
+                    backgroundColor: const Color.fromARGB(255, 235, 183, 244),
+                    child: InkWell(
+                      onTap: () {
+                        navigateToFriendsView(context);
+                      },
+                      child: const Icon(Icons.group),
+                    ),
                   ),
                 ],
               ),
@@ -68,7 +101,7 @@ class MidScreenUserInfoView extends StatelessWidget {
                       navigateToAddHabitView(context);
                     },
                     child: const Icon(Icons.add),
-                  )
+                  ),
                 ],
               ),
             ),

@@ -17,6 +17,7 @@ class FriendsView extends StatefulWidget {
 class _FriendsViewState extends State<FriendsView> {
   List<UserModel> othersRequested = [];
   List<UserModel> myRequests = [];
+  int numFriendRequests = 0;
 
   // CALL ALL DATA ONCE HERE
   @override
@@ -35,7 +36,9 @@ class _FriendsViewState extends State<FriendsView> {
     List<List<UserModel>> temp = await FriendsService().getAllFriendRequests();
 
     setState(() {
+      
       othersRequested = temp[1];
+      numFriendRequests = othersRequested.length;
       myRequests = temp[0];
     });
   }
@@ -56,16 +59,23 @@ class _FriendsViewState extends State<FriendsView> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('friends'),
-          bottom: const TabBar(
+          bottom:  TabBar(
             tabs: [
-              Tab(
+              const Tab(
                 text: 'my friends',
               ),
-              Tab(
+              const Tab(
                 text: 'explore',
               ),
               Tab(
-                text: 'requests',
+                // text: 'requests',
+                child: Badge(
+                  label: Text(numFriendRequests.toString()),
+                  isLabelVisible: numFriendRequests != 0,
+                  backgroundColor: const Color.fromARGB(255, 235, 183, 244),
+                  offset: const Offset(10, -10),
+                  child: const Text('requests')
+                ),
               ),
             ],
           ),
@@ -83,6 +93,7 @@ class _FriendsViewState extends State<FriendsView> {
                     FriendRequestsView(
                       othersRequested: othersRequested,
                       myRequests: myRequests,
+                      updateNumFriendRequests: updateData,
                     ),
                   ],
                 );

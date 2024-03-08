@@ -9,6 +9,7 @@ import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rive/rive.dart';
 
 class CreatePostTabView extends StatefulWidget {
   const CreatePostTabView({super.key});
@@ -91,7 +92,30 @@ class _CreatePostTabViewState extends State<CreatePostTabView> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           width: double.infinity,
-          child: Column(
+          child: habits != null && habits!.isEmpty ? 
+          ListView(
+              children: const [
+                SizedBox(
+                  height: 125.0,
+                  child: RiveAnimation.asset('assets/rive/sleepy_lottie.riv'),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: Text(
+                    'create a habit on your profile to post !',
+                    style: TextStyle(
+                      // fontWeight: FontWeight.bold,
+                      // fontSize: 18.0, // You can adjust the font size as needed
+                    ),
+                  ),
+                ),
+                
+              ],
+            )
+          
+          : Column(
             children: [
               Stepper(
                 currentStep: _index,

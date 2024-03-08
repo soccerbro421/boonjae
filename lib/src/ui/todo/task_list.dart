@@ -7,12 +7,14 @@ class TaskList extends StatelessWidget {
   final List<TaskModel> tasks;
   final Future Function() refreshPage;
   final void Function(TaskModel) removeTask;
+  final bool noHabits;
 
   const TaskList({
     super.key,
     required this.tasks,
     required this.refreshPage,
     required this.removeTask,
+    required this.noHabits,
   });
 
   @override
@@ -37,32 +39,56 @@ class TaskList extends StatelessWidget {
                 child: TaskTile(task: tasks[index]),
               ),
             )
-          : ListView(
-              children: const [
-                SizedBox(
-                  height: 125.0,
-                  child: RiveAnimation.asset('assets/rive/sleepy_lottie.riv'),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Text(
-                    'no tasks for today!',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0, // You can adjust the font size as needed
+          : noHabits
+              ? ListView(
+                  children: const [
+                    SizedBox(
+                      height: 125.0,
+                      child:
+                          RiveAnimation.asset('assets/rive/sleepy_lottie.riv'),
                     ),
-                  ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: Text(
+                        'create a habit on your profile to see tasks !',
+                        style: TextStyle(
+                            // fontWeight: FontWeight.bold,
+                            // fontSize: 18.0, // You can adjust the font size as needed
+                            ),
+                      ),
+                    ),
+                  ],
+                )
+              : ListView(
+                  children: const [
+                    SizedBox(
+                      height: 125.0,
+                      child:
+                          RiveAnimation.asset('assets/rive/sleepy_lottie.riv'),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: Text(
+                        'no tasks for today!',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                              18.0, // You can adjust the font size as needed
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: Text('(refresh if no tasks for the week)'),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Text('(refresh if no tasks for the week)'),
-                ),
-              ],
-            ),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:boonjae/src/db/tasks_database.dart';
 import 'package:boonjae/src/models/task_model.dart';
-import 'package:boonjae/src/ui/todo/task_details_view.dart';
+// import 'package:boonjae/src/ui/todo/task_details_view.dart';
 import 'package:flutter/material.dart';
 
 class TaskTile extends StatefulWidget {
@@ -42,15 +42,15 @@ class _TaskTileState extends State<TaskTile> {
     await TasksDatabase.instance.update(taskCopy);
   }
 
-  void navigateToTaskDetailsView(BuildContext context, TaskModel task) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => TaskDetailsView(
-          task: task,
-        ),
-      ),
-    );
-  }
+  // void navigateToTaskDetailsView(BuildContext context, TaskModel task) {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //       builder: (context) => TaskDetailsView(
+  //         task: task,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class _TaskTileState extends State<TaskTile> {
       padding: const EdgeInsets.all(8.0),
       child: InkWell(
         onTap: () {
-          navigateToTaskDetailsView(context, widget.task);
+          // navigateToTaskDetailsView(context, widget.task);
         },
         child: SizedBox(
           height: 100,

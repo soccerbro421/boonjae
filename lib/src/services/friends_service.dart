@@ -93,8 +93,7 @@ class FriendsService {
       String currentUserId = _auth.currentUser!.uid;
       String friendId = friendToBeRemoved.uid;
 
-   
-          await _functions.httpsCallable('removeFriend').call({
+      await _functions.httpsCallable('removeFriend').call({
         'uid1': currentUserId,
         'uid2': friendId,
       });
@@ -140,8 +139,8 @@ class FriendsService {
       String currentUserId = _auth.currentUser!.uid;
 
       // add users to each other
-      
-          await _functions.httpsCallable('addFriend').call({
+
+      await _functions.httpsCallable('addFriend').call({
         'uid1': currentUserId,
         'uid2': user.uid, // Assuming UserModel has a uid property
       });
@@ -179,6 +178,30 @@ class FriendsService {
     } catch (err) {
       // print(err.toString());
       return [];
+    }
+  }
+
+  Future<int> getNumberOfIncomingFriendRequests() async {
+    try {
+      
+      String currentUserId = _auth.currentUser!.uid;
+      int result = 0;
+      
+
+      await _firestore
+          .collection('friendRequests')
+          .where('to', isEqualTo: currentUserId)
+          .count()
+          .get()
+          .then((res) => result = res.count!, 
+          onError: (e) => ());
+
+      return result;
+
+      
+    } catch (err) {
+      //
+      return 0;
     }
   }
 

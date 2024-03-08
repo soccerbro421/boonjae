@@ -33,6 +33,7 @@ class _TodoViewState extends State<TodoView> {
 
   late List<List<TaskModel>> tasks = [[], [], [], [], [], [], []];
   bool isLoading = false;
+  bool noHabits = true;
 
   @override
   void initState() {
@@ -51,6 +52,14 @@ class _TodoViewState extends State<TodoView> {
 
   Future refreshTasks() async {
     UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
+    List<HabitModel> habits =
+        Provider.of<HabitsProvider>(context, listen: false).getHabits;
+    bool anyHab = habits.isEmpty;
+
+    setState(() {
+      noHabits = anyHab;
+    });
+
     setState(() {
       isLoading = true;
     });
@@ -120,48 +129,58 @@ class _TodoViewState extends State<TodoView> {
               tasks: tasks[0],
               refreshPage: refreshTasks,
               removeTask: removeTask,
+              noHabits: noHabits,
             ),
             TaskList(
               tasks: tasks[1],
               refreshPage: refreshTasks,
               removeTask: removeTask,
+              noHabits: noHabits,
             ),
             TaskList(
               tasks: tasks[2],
               refreshPage: refreshTasks,
               removeTask: removeTask,
+              noHabits: noHabits,
             ),
             TaskList(
               tasks: tasks[3],
               refreshPage: refreshTasks,
               removeTask: removeTask,
+              noHabits: noHabits,
             ),
             TaskList(
               tasks: tasks[4],
               refreshPage: refreshTasks,
               removeTask: removeTask,
+              noHabits: noHabits,
             ),
             TaskList(
               tasks: tasks[5],
               refreshPage: refreshTasks,
               removeTask: removeTask,
+              noHabits: noHabits,
             ),
             TaskList(
               tasks: tasks[6],
               refreshPage: refreshTasks,
               removeTask: removeTask,
+              noHabits: noHabits,
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const CreateTaskView(),
-              ),
-            );
-          },
+        floatingActionButton: Visibility(
+          visible: !noHabits,
+          child: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const CreateTaskView(),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
