@@ -45,7 +45,7 @@ Install the Flutter package and Pubspec Assist
 
 ## Possible areas to use Cloud Functions
 * deleting a user
-* friend process
+* scheduled functions: https://firebase.google.com/docs/functions/schedule-functions?gen=2nd
 
 
 ## todo

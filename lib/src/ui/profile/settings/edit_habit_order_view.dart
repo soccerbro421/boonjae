@@ -21,12 +21,15 @@ class _EditHabitOrderViewState extends State<EditHabitOrderView> {
       appBar: AppBar(
         title: const Text('Edit Habit Order'),
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              // Handle save button click
-              saveHabitOrder();
-            },
-            child: const Text("Save"),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ElevatedButton(
+              onPressed: () {
+                // Handle save button click
+                saveHabitOrder();
+              },
+              child: const Text("Save"),
+            ),
           ),
         ],
       ),

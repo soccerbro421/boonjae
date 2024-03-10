@@ -6,6 +6,7 @@ import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/task_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/services/image_service.dart';
+import 'package:boonjae/src/services/notification_service.dart';
 import 'package:boonjae/src/services/storage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -397,6 +398,10 @@ class HabitsService {
               status: "NOTCOMPLETED",
             );
             await TasksDatabase.instance.create(task);
+
+            NotificationService().setDayNotif(dayOfWeek: daysOfWeekStrings[i], on: true);
+
+
           }
         }
 

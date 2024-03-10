@@ -6,6 +6,7 @@ import 'package:boonjae/src/ui/auth/login_screen.dart';
 import 'package:boonjae/src/ui/profile/settings/contact_us_view.dart';
 import 'package:boonjae/src/ui/profile/settings/delete_profile_view.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_habit_order_view.dart';
+import 'package:boonjae/src/ui/profile/settings/edit_notifications_view.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_privacy_view.dart';
 import 'package:boonjae/src/ui/profile/settings/edit_profile_view.dart';
 import 'package:boonjae/src/ui/profile/settings/settings_card.dart';
@@ -55,8 +56,17 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
+  void navigateToEditNotificationsView(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const EditNotificationsView(),
+      ),
+    );
+  }
+
   void navigateToEditHabitOrderView(BuildContext context) {
-    List<HabitModel> habits = Provider.of<HabitsProvider>(context, listen: false).getHabits;
+    List<HabitModel> habits =
+        Provider.of<HabitsProvider>(context, listen: false).getHabits;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => EditHabitOrderView(
@@ -129,6 +139,11 @@ class _SettingsViewState extends State<SettingsView> {
               onTap: navigateToEditHabitOrderView,
               text: 'Edit Habit Order',
               icon: const Icon(Icons.format_list_bulleted),
+            ),
+            SettingsCard(
+              onTap: navigateToEditNotificationsView,
+              text: 'Edit Notification Preferences',
+              icon: const Icon(Icons.notifications),
             ),
             SettingsCard(
               onTap: navigateToContactUsView,

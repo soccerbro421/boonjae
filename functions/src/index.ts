@@ -13,11 +13,43 @@
 // import * as functions from "firebase-functions";
 import * as v2 from "firebase-functions/v2";
 const {onCall} = require("firebase-functions/v2/https");
+const {onSchedule} = require("firebase-functions/v2/scheduler");
+const {logger} = require("firebase-functions");
 const messaging = require("firebase-admin/messaging");
 import * as admin from "firebase-admin";
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
+});
+
+
+exports.dailyEcouragementMessage = onSchedule("30 17 * * *", async (event : any) => {
+  // Fetch all user details.
+
+  try {
+    const currentDayOfWeek = new Date().getDay();
+
+    // Get the corresponding day name
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const currentDayName = dayNames[currentDayOfWeek];
+
+    const message = {
+      notification: {
+          title: "Let's try our habits!",
+          body: "Do that thing you wanted to do :D",
+      },
+      topic: currentDayName,
+    };
+
+    await messaging.getMessaging().send(message);
+
+    logger.log("Send todays message! :D");
+  } catch (error) {
+    console.error("Error:", error);
+    throw new v2.https.HttpsError("internal", "Something bad");
+  }
+
+  
 });
 
 export const removeFriend = onCall(
