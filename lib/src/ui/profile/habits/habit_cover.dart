@@ -35,7 +35,10 @@ class HabitCover extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text(habit.description),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(habit.description),
+                ),
                 const SizedBox(height: 8),
                 Text(
                   'started on ${DateFormat('dd MMMM yyyy').format(habit.createdDate)}',

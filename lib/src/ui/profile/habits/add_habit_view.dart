@@ -188,7 +188,7 @@ class _AddHabitView extends State<AddHabitView> {
                     ),
                   ),
                   Step(
-                    title: const Text('Frequency'),
+                    title: const Text('Days of week'),
                     content: Column(
                       children: [
                         WeekdaySelector(

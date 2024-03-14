@@ -32,6 +32,7 @@ Firestore-root
 
 ## VSCode
 Install the Flutter package and Pubspec Assist
+* https://docs.flutter.dev/get-started/install/macos/mobile-ios?tab=vscode
 
 ## Mobile App Setup
 1. Install dependencies

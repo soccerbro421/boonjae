@@ -85,7 +85,7 @@ class TaskList extends StatelessWidget {
                       height: 20,
                     ),
                     Center(
-                      child: Text('(refresh if no tasks for the week)'),
+                      child: Text('(refresh if there are no tasks for the week)'),
                     ),
                   ],
                 ),

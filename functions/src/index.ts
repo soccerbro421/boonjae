@@ -33,10 +33,33 @@ exports.dailyEcouragementMessage = onSchedule("30 17 * * *", async (event : any)
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const currentDayName = dayNames[currentDayOfWeek];
 
+    const encouragementTitles = [
+      "( ˘▽˘)っ",
+      "ᕦ( ˘ᴗ˘ )ᕤ",
+      "(｢• ω •)｢",
+      "ᐠ( ᐛ )ᐟ",
+      "₍ ..̮ ₎ ❃ ⁽ ˙˙̮ ⁾",
+      "(((((っ－＿－)っ",
+      // Add more titles as needed
+    ];
+
+    const encouragementBodies = [
+      "Do that thing you wanted to do :D",
+      "Go on a walk/workout :D",
+      "Do some youtube yoga :D",
+      "Try something new :D",
+      "Hang out w your friends :D",
+      "Stop doomscrolling D:"
+      // Add more bodies as needed
+    ];
+
+  // Select a random index for both title and body
+    const randomIndex = Math.floor(Math.random() * encouragementTitles.length);
+
     const message = {
       notification: {
-          title: "Let's try our habits!",
-          body: "Do that thing you wanted to do :D",
+          title: encouragementTitles[randomIndex],
+          body: encouragementBodies[randomIndex],
       },
       topic: currentDayName,
     };
