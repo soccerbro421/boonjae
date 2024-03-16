@@ -5,10 +5,33 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ImageService {
+  Future<bool> _requestPermission(Permission permission) async {
+    if (await permission.isGranted) {
+      return true;
+    } else {
+      final result = await permission.request();
+      if (result == PermissionStatus.granted) {
+        return true;
+      }
+      return false;
+    }
+  }
+
   pickMedia() async {
+    final permissionStatus = await _requestPermission(Permission.photos);
+
+    if (!permissionStatus) {
+      // Handle the case where permission is not granted
+      // You can show a dialog or a snackbar to inform the user
+      // about the required permission
+      return "ERROR";
+    }
+
     const source = ImageSource.gallery;
+
     final pickedFile = await ImagePicker().pickImage(source: source);
 
     if (pickedFile == null) {
@@ -28,8 +51,7 @@ class ImageService {
     }
   }
 
-  cropSquareImage(File imageFile) async =>
-      await ImageCropper().cropImage(
+  cropSquareImage(File imageFile) async => await ImageCropper().cropImage(
         sourcePath: imageFile.path,
         aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
         aspectRatioPresets: [CropAspectRatioPreset.square],
@@ -38,8 +60,6 @@ class ImageService {
         // androidUiSettingsLocked: androidUiSettingsLocked(),
         // iosUiSettings: iosUiSettingsLocked(),
       );
-
-
 
   pickImage(ImageSource source) async {
     final ImagePicker imagePicker = ImagePicker();

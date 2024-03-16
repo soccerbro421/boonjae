@@ -6,7 +6,9 @@ import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:boonjae/src/ui/auth/initialize_screen.dart';
 import 'package:boonjae/src/ui/auth/login_screen.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
@@ -81,8 +83,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  showDialogMessage() {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Access issue D:"),
+          content: const Text('Please allow access to photos in settings'),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                openAppSettings();
+              },
+              child: const Text("Go to settings"),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancel"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void selectImage() async {
     final im = await ImageService().pickMedia();
+
+    if (im is String) {
+      showDialogMessage();
+      return;
+    }
 
     if (im != null) {
       setState(() {

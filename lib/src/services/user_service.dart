@@ -48,9 +48,9 @@ class UserService {
 
       if (userSnapshot.docs.isNotEmpty) {
         DocumentSnapshot docsnap = userSnapshot.docs[0];
-        UserModel currUserModel = UserModel.fromSnap(docsnap);
+        UserModel anyUser = UserModel.fromSnap(docsnap);
 
-        if (currUserModel.username != username) {
+        if (anyUser.username != username || anyUser.uid != currentUser.uid) {
           return 'sorry that username is taken';
         }
       }

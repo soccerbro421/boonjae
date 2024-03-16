@@ -6,7 +6,9 @@ import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
@@ -50,8 +52,8 @@ class _AddHabitView extends State<AddHabitView> {
   }
 
   void createHabit() async {
-
-    List<HabitModel> habits = Provider.of<HabitsProvider>(context, listen: false).getHabits;
+    List<HabitModel> habits =
+        Provider.of<HabitsProvider>(context, listen: false).getHabits;
     int order = habits.length;
 
     setState(() {
@@ -92,8 +94,39 @@ class _AddHabitView extends State<AddHabitView> {
     );
   }
 
+  showDialogMessage() {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Access issue D:"),
+          content: const Text('Please allow access to photos in settings'),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                openAppSettings();
+              },
+              child: const Text("Go to settings"),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancel"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void selectImage() async {
     final im = await ImageService().pickMedia();
+
+    if (im is String) {
+      showDialogMessage();
+      return;
+    }
 
     if (im != null) {
       setState(() {

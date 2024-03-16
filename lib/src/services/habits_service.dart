@@ -274,9 +274,9 @@ class HabitsService {
     String habitId = oldHabit.habitId;
     String photoUrl = oldHabit.photoUrl;
 
-    if (!(daysOfWeek.any((element) => element))) {
-      return 'Please select at least one day';
-    }
+    // if (!(daysOfWeek.any((element) => element))) {
+    //   return 'Please select at least one day';
+    // }
 
     try {
       if (name.isNotEmpty) {
@@ -356,9 +356,9 @@ class HabitsService {
     String habitId = const Uuid().v1();
     String photoUrl = '';
 
-    if (!(daysOfWeek.any((element) => element))) {
-      return 'Please select at least one day';
-    }
+    // if (!(daysOfWeek.any((element) => element))) {
+    //   return 'Please select at least one day';
+    // }
 
     try {
       if (name.isNotEmpty) {
