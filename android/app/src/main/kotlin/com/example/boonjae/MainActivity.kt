@@ -1,4 +1,4 @@
-package com.example.boonjae
+package com.boonjae.boonjae
 
 import io.flutter.embedding.android.FlutterActivity
 

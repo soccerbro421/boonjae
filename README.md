@@ -2,6 +2,25 @@
 
 A new Flutter project.
 
+
+## Setup
+* Download Flutter SDK and Flutter extension on VSCode
+  * Install on Windows: https://docs.flutter.dev/get-started/install/windows/mobile 
+* Install the Flutter package and Pubspec Assist
+  * https://docs.flutter.dev/get-started/install/macos/mobile-ios?tab=vscode
+
+
+
+## Mobile App Setup
+1. Install dependencies
+    * flutter pub get
+    * cd ios -> pod install
+
+## Local Development Emulators
+* Install java
+* follow the steps here: https://firebase.google.com/codelabs/get-started-firebase-emulators-and-flutter#0 
+
+
 ## Firebase Firestore
 ```
 Firestore-root
@@ -29,20 +48,7 @@ Firestore-root
        |     |      --- $userThreeUid
        |     |             |
 ```
-
-## VSCode
-Install the Flutter package and Pubspec Assist
-* https://docs.flutter.dev/get-started/install/macos/mobile-ios?tab=vscode
-
-## Mobile App Setup
-1. Install dependencies
-    * flutter pub get
-    * cd ios -> pod install
-
-## Local Development Emulators
-* Install java
-* follow the steps here: https://firebase.google.com/codelabs/get-started-firebase-emulators-and-flutter#0 
-* 
+ 
 
 ## Possible areas to use Cloud Functions
 * deleting a user
