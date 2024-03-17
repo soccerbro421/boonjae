@@ -9,7 +9,7 @@ class PrivacyPolicyView extends StatelessWidget {
     return Scaffold(appBar: AppBar(),
     body: const SafeArea(
         child: Browser(
-          initialUriString: 'https://soccerbro421.github.io/boonjae-website/privacy_policy.html',
+          initialUriString: 'https://boonjae.com/privacy-policy/',
         ),
       ),
     

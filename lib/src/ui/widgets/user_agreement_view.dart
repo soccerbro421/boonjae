@@ -9,7 +9,7 @@ class UserAgreementView extends StatelessWidget {
     return Scaffold(appBar: AppBar(),
     body: const SafeArea(
         child: Browser(
-          initialUriString: 'https://soccerbro421.github.io/boonjae-website/terms_of_use.html',
+          initialUriString: 'https://boonjae.com/terms-of-use/',
         ),
       ),
     
