@@ -35,8 +35,8 @@ void main() async {
     // androidProvider: AndroidProvider.debug,
 
     // TODO: swap back
-    // appleProvider: AppleProvider.appAttest,
-    appleProvider: AppleProvider.debug,
+    appleProvider: AppleProvider.appAttest,
+    // appleProvider: AppleProvider.debug,
   );
 
   // if (kDebugMode) {
