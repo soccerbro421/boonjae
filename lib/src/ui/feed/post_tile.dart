@@ -32,7 +32,9 @@ class _PostTileState extends State<PostTile> {
   void navigateToPostView(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PostView(post: widget.post),
+        builder: (context) => PostView(
+          post: widget.post,
+        ),
       ),
     );
   }
@@ -81,7 +83,7 @@ class _PostTileState extends State<PostTile> {
               key: UniqueKey(),
               // width: double.infinity, // Make the image fill the width
               // height: 200.0, // Set a fixed height for better visual appeal
-              placeholder: (context, url) =>  ClipRRect(
+              placeholder: (context, url) => ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: SizedBox(
                   height:

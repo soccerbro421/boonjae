@@ -1,56 +1,37 @@
 import 'dart:typed_data';
 
-import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:weekday_selector/weekday_selector.dart';
 
-class EditHabitView extends StatefulWidget {
-  final HabitModel habit;
+class EditGroupHabitView extends StatefulWidget {
 
-  const EditHabitView({
-    super.key,
-    required this.habit,
-  });
+  final GroupHabitModel groupHabit;
+
+  const EditGroupHabitView({super.key, required this.groupHabit,});
 
   @override
-  State<EditHabitView> createState() => _EditHabitViewState();
+  State<EditGroupHabitView> createState() => _EditGroupHabitViewState();
 }
 
-class _EditHabitViewState extends State<EditHabitView> {
+class _EditGroupHabitViewState extends State<EditGroupHabitView> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
   Uint8List? _image;
   bool _isLoading = false;
   int _index = 0;
-  List<bool> values = [];
 
   @override
   void initState() {
-    _descriptionController.text = widget.habit.description;
-    _nameController.text = widget.habit.name;
-
-    values = widget.habit.daysOfWeek.map((dynamic element) {
-      if (element is bool) {
-        return element;
-      } else if (element is String) {
-        return element.toLowerCase() == 'true';
-      } else {
-        // Handle other cases or provide a default value
-        return false;
-      }
-    }).toList();
-
+    _descriptionController.text = widget.groupHabit.description;
+    _nameController.text = widget.groupHabit.name;
     super.initState();
   }
-
   @override
   void dispose() {
     _descriptionController.dispose();
@@ -66,17 +47,29 @@ class _EditHabitViewState extends State<EditHabitView> {
     );
   }
 
+  clearSnack() {
+    ScaffoldMessenger.of(context).clearSnackBars();
+  }
+
+  goHome() {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const MobileView(),
+      ),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   void updateHabit() async {
     setState(() {
       _isLoading = true;
     });
 
-    String res = await HabitsService().updateHabit(
+    String res = await HabitsService().updateGroupHabit(
       name: _nameController.text,
       description: _descriptionController.text,
       file: _image,
-      daysOfWeek: values,
-      oldHabit: widget.habit,
+      oldHabit: widget.groupHabit,
     );
 
     setState(() {
@@ -91,53 +84,8 @@ class _EditHabitViewState extends State<EditHabitView> {
     }
   }
 
-  clearSnack() {
-    ScaffoldMessenger.of(context).clearSnackBars();
-  }
-
-  goHome() {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const MobileView(),
-      ),
-      (Route<dynamic> route) => false,
-    );
-  }
-
-  showDialogMessage() {
-    showCupertinoDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Access issue D:"),
-          content: const Text('Please allow access to photos in settings'),
-          actions: [
-            CupertinoDialogAction(
-              onPressed: () {
-                openAppSettings();
-              },
-              child: const Text("Go to settings"),
-            ),
-            CupertinoDialogAction(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Cancel"),
-            ),
-            
-          ],
-        );
-      },
-    );
-  }
-
   void selectImage() async {
     final im = await ImageService().pickMedia();
-
-    if (im is String) {
-      showDialogMessage();
-      return;
-    }
 
     if (im != null) {
       setState(() {
@@ -172,11 +120,11 @@ class _EditHabitViewState extends State<EditHabitView> {
                         }
                       },
                 onStepContinue: () {
-                  if (_index < 3) {
+                  if (_index < 2) {
                     setState(() {
                       _index += 1;
                     });
-                  } else if (_index == 3) {
+                  } else if (_index == 2) {
                     updateHabit();
                   }
                 },
@@ -197,7 +145,7 @@ class _EditHabitViewState extends State<EditHabitView> {
                                 ? const Center(
                                     child: CircularProgressIndicator(),
                                   )
-                                : Text(_index == 3 ? 'UPDATE' : 'NEXT'),
+                                : Text(_index == 2 ? 'UPDATE' : 'NEXT'),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -232,23 +180,6 @@ class _EditHabitViewState extends State<EditHabitView> {
                     ),
                   ),
                   Step(
-                    title: const Text('Days of week'),
-                    content: Column(
-                      children: [
-                        WeekdaySelector(
-                          fillColor: Colors.black26,
-                          onChanged: (int day) {
-                            setState(() {
-                              values[day % 7] = !values[day % 7];
-                            });
-                          },
-                          values: values,
-                          firstDayOfWeek: 0,
-                        )
-                      ],
-                    ),
-                  ),
-                  Step(
                     title: const Text('Cover Photo'),
                     content: Column(
                       children: [
@@ -266,7 +197,7 @@ class _EditHabitViewState extends State<EditHabitView> {
                                   child: _image != null
                                       ? Image.memory(_image!)
                                       : CachedNetworkImage(
-                                          imageUrl: widget.habit.photoUrl,
+                                          imageUrl: widget.groupHabit.photoUrl,
                                           fit: BoxFit.cover,
                                           key: UniqueKey(),
                                           placeholder: (context, url) =>

@@ -1,6 +1,6 @@
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/ui/profile/friends/friends_view.dart';
-import 'package:boonjae/src/ui/profile/habits/add_habit_view.dart';
+import 'package:boonjae/src/ui/profile/habits/add_habit.dart';
 import 'package:flutter/material.dart';
 
 class MidScreenUserInfoView extends StatelessWidget {
@@ -16,7 +16,7 @@ class MidScreenUserInfoView extends StatelessWidget {
   void navigateToAddHabitView(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const AddHabitView(),
+        builder: (context) => const AddHabit(),
       ),
     );
   }
@@ -100,7 +100,7 @@ class MidScreenUserInfoView extends StatelessWidget {
                     onTap: () {
                       navigateToAddHabitView(context);
                     },
-                    child: const Icon(Icons.add),
+                    child: const Icon(Icons.add_circle_outline),
                   ),
                 ],
               ),

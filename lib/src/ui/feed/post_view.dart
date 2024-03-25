@@ -1,3 +1,5 @@
+import 'package:boonjae/src/models/base_habit_model.dart';
+import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/services/post_service.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
@@ -10,11 +12,13 @@ import 'package:intl/intl.dart';
 class PostView extends StatefulWidget {
   final PostModel post;
   final bool isCurrentUser;
+  final BaseHabitModel? habit;
 
   const PostView({
     super.key,
     required this.post,
     this.isCurrentUser = false,
+    this.habit,
   });
 
   @override
@@ -55,7 +59,12 @@ class _PostViewState extends State<PostView> {
                   ],
                   onSelected: (value) async {
                     if (value == "DELETE") {
-                      await PostService().deletePost(post: widget.post);
+                      if (widget.habit is GroupHabitModel) {
+                        await PostService().deleteGroupHabitPost(post: widget.post, groupHabit: widget.habit! as GroupHabitModel);
+                      } else {
+                        await PostService().deletePost(post: widget.post);
+                      }
+                      
                       goBack();
                     }
                   },

@@ -5,30 +5,31 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 
 class ImageService {
-  Future<bool> _requestPermission(Permission permission) async {
-    if (await permission.isGranted) {
-      return true;
-    } else {
-      final result = await permission.request();
-      if (result == PermissionStatus.granted) {
-        return true;
-      }
-      return false;
-    }
-  }
+  // Future<bool> _requestPermission(Permission permission) async {
+  //   if (await permission.isGranted) {
+  //     return true;
+  //   } else {
+  //     final result = await permission.request();
+  //     if (result == PermissionStatus.granted) {
+  //       return true;
+  //     }
+  //     return false;
+  //   }
+  // }
 
   pickMedia() async {
-    final permissionStatus = await _requestPermission(Permission.photos);
+    // final permissionStatus = await _requestPermission(Permission.photos);
 
-    if (!permissionStatus) {
-      // Handle the case where permission is not granted
-      // You can show a dialog or a snackbar to inform the user
-      // about the required permission
-      return "ERROR";
-    }
+    // if (!permissionStatus) {
+    //   // Handle the case where permission is not granted
+    //   // You can show a dialog or a snackbar to inform the user
+    //   // about the required permission
+
+    //   return "ERROR";
+    // }
 
     const source = ImageSource.gallery;
 

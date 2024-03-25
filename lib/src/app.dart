@@ -1,4 +1,5 @@
 import 'package:boonjae/src/providers/friend_request_provider.dart';
+import 'package:boonjae/src/providers/group_habits_provider.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/ui/auth/login_screen.dart';
@@ -38,6 +39,9 @@ class MyApp extends StatelessWidget {
             ),
             ChangeNotifierProvider(
               create: (_) => FriendRequestProvider(),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => GroupHabitsProvider(),
             ),
           ],
           child: MaterialApp(

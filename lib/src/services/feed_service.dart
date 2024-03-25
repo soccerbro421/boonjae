@@ -1,3 +1,4 @@
+import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,26 +10,41 @@ class FeedService {
 
   Future<UserModel> getUserByUserId({required String userId}) async {
     try {
-      CollectionReference usersCollection =
-            _firestore.collection('users');
+      CollectionReference usersCollection = _firestore.collection('users');
 
-      QuerySnapshot querySnapshot = await usersCollection.where('uid', isEqualTo: userId).get();
+      QuerySnapshot querySnapshot =
+          await usersCollection.where('uid', isEqualTo: userId).get();
       List<DocumentSnapshot> docs = querySnapshot.docs;
-    // Check if the query returned any documents
-    if (docs.isNotEmpty) {
-      // Return the first document found (assuming userId is unique)
-      UserModel user = UserModel.fromSnap(docs[0]);
-      return user;
-    } else {
-      // No user found with the specified userId
-      return const UserModel(uid: 'uid', photoUrl: 'photoUrl', name: 'name', bio: 'bio', username: 'username', friends: []);
-    }
+      // Check if the query returned any documents
+      if (docs.isNotEmpty) {
+        // Return the first document found (assuming userId is unique)
+        UserModel user = UserModel.fromSnap(docs[0]);
+        return user;
+      } else {
+        // No user found with the specified userId
+        return const UserModel(
+            uid: 'uid',
+            photoUrl: 'photoUrl',
+            name: 'name',
+            bio: 'bio',
+            username: 'username',
+            friends: []);
+      }
     } catch (err) {
-        return const UserModel(uid: 'uid', photoUrl: 'photoUrl', name: 'name', bio: 'bio', username: 'username', friends: []);
+      return const UserModel(
+          uid: 'uid',
+          photoUrl: 'photoUrl',
+          name: 'name',
+          bio: 'bio',
+          username: 'username',
+          friends: []);
     }
   }
 
-  Future<List<PostModel>> getFeed({required UserModel user}) async {
+  Future<List<PostModel>> getFeed({
+    required UserModel user,
+    required List<GroupHabitModel> groupHabits,
+  }) async {
     try {
       List<PostModel> allPosts = [];
 
@@ -45,10 +61,8 @@ class FeedService {
 
       String currentUserId = _auth.currentUser!.uid;
 
-      
-      List<String> posters = user.friends
-          .map((dynamic friend) => friend.toString())
-          .toList();
+      List<String> posters =
+          user.friends.map((dynamic friend) => friend.toString()).toList();
 
       posters.add(currentUserId);
 
@@ -81,6 +95,24 @@ class FeedService {
 
           allPosts.addAll(habitPosts);
         }
+      }
+
+      for (int i = 0; i < groupHabits.length; i++) {
+        String groupHabitId = groupHabits[i].habitId;
+
+        CollectionReference habitsCollectionRef =
+            _firestore.collection('groupHabits/$groupHabitId/posts');
+
+        QuerySnapshot postsSnapshot = await habitsCollectionRef
+            .where('createdDate', isGreaterThanOrEqualTo: startOfWeek)
+            .where('createdDate', isLessThanOrEqualTo: endOfWeek)
+            .get();
+
+        // Convert each post to a PostModel and add it to the list
+        List<PostModel> groupHabitPosts = postsSnapshot.docs.map((postDoc) {
+          return PostModel.fromSnap(postDoc);
+        }).toList();
+        allPosts.addAll(groupHabitPosts);
       }
 
       allPosts.sort((a, b) => b.createdDate.compareTo(a.createdDate));

@@ -1,58 +1,43 @@
 import 'dart:typed_data';
 
-import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/services/image_service.dart';
 import 'package:boonjae/src/ui/auth/auth_text_field_input.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:boonjae/src/ui/widgets/add_friends_to_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:weekday_selector/weekday_selector.dart';
 
-class EditHabitView extends StatefulWidget {
-  final HabitModel habit;
 
-  const EditHabitView({
+class AddGroupHabitView extends StatefulWidget {
+  const AddGroupHabitView({
     super.key,
-    required this.habit,
   });
 
   @override
-  State<EditHabitView> createState() => _EditHabitViewState();
+  State<StatefulWidget> createState() {
+    return _AddGroupHabitView();
+  }
 }
 
-class _EditHabitViewState extends State<EditHabitView> {
+class _AddGroupHabitView extends State<AddGroupHabitView> {
+  // final TextEditingController _emailController = TextEditingController();
+  // final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
   Uint8List? _image;
   bool _isLoading = false;
   int _index = 0;
-  List<bool> values = [];
 
-  @override
-  void initState() {
-    _descriptionController.text = widget.habit.description;
-    _nameController.text = widget.habit.name;
-
-    values = widget.habit.daysOfWeek.map((dynamic element) {
-      if (element is bool) {
-        return element;
-      } else if (element is String) {
-        return element.toLowerCase() == 'true';
-      } else {
-        // Handle other cases or provide a default value
-        return false;
-      }
-    }).toList();
-
-    super.initState();
-  }
+  List<UserModel> friendsToAdd = [];
 
   @override
   void dispose() {
+    // _emailController.dispose();
+    // _passwordController.dispose();
     _descriptionController.dispose();
     _nameController.dispose();
     super.dispose();
@@ -66,17 +51,17 @@ class _EditHabitViewState extends State<EditHabitView> {
     );
   }
 
-  void updateHabit() async {
+  void createHabit() async {
+
     setState(() {
       _isLoading = true;
     });
 
-    String res = await HabitsService().updateHabit(
+    String res = await HabitsService().addGroupHabit(
       name: _nameController.text,
       description: _descriptionController.text,
       file: _image,
-      daysOfWeek: values,
-      oldHabit: widget.habit,
+      friendsToAdd: friendsToAdd,
     );
 
     setState(() {
@@ -85,6 +70,7 @@ class _EditHabitViewState extends State<EditHabitView> {
 
     if (res != 'success') {
       clearSnack();
+
       showSnackBar(res);
     } else {
       goHome();
@@ -124,7 +110,6 @@ class _EditHabitViewState extends State<EditHabitView> {
               },
               child: const Text("Cancel"),
             ),
-            
           ],
         );
       },
@@ -146,15 +131,30 @@ class _EditHabitViewState extends State<EditHabitView> {
     }
   }
 
+  void openModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (BuildContext context) {
+        return AddFriendsToList(
+          addedFriends: friendsToAdd,
+          onAddFriends: selectFriends,
+        );
+      },
+    );
+  }
+
+  void selectFriends(List<UserModel> users) {
+    setState(() {
+      friendsToAdd = users;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Edit habit'),
-        actions: const [],
-      ),
-      body: SafeArea(
+    return SafeArea(
+      child: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           width: double.infinity,
@@ -177,7 +177,7 @@ class _EditHabitViewState extends State<EditHabitView> {
                       _index += 1;
                     });
                   } else if (_index == 3) {
-                    updateHabit();
+                    createHabit();
                   }
                 },
                 onStepTapped: (idx) {
@@ -197,7 +197,7 @@ class _EditHabitViewState extends State<EditHabitView> {
                                 ? const Center(
                                     child: CircularProgressIndicator(),
                                   )
-                                : Text(_index == 3 ? 'UPDATE' : 'NEXT'),
+                                : Text(_index == 3 ? 'ADD' : 'NEXT'),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -232,61 +232,65 @@ class _EditHabitViewState extends State<EditHabitView> {
                     ),
                   ),
                   Step(
-                    title: const Text('Days of week'),
-                    content: Column(
-                      children: [
-                        WeekdaySelector(
-                          fillColor: Colors.black26,
-                          onChanged: (int day) {
-                            setState(() {
-                              values[day % 7] = !values[day % 7];
-                            });
-                          },
-                          values: values,
-                          firstDayOfWeek: 0,
-                        )
-                      ],
+                    title: const Text('Friends to add'),
+                    content: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing:
+                                8.0, // Adjust the spacing between items as needed
+                            runSpacing:
+                                8.0, // Adjust the run spacing (spacing between lines) as needed
+                            children: friendsToAdd.map((friend) {
+                              return Chip(
+                                label: Text(friend.name),
+                                // You can customize Chip appearance here if needed
+                              );
+                            }).toList(),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                openModal();
+                              },
+                              icon: const Icon(Icons.group_add),
+                              label: const Text('Add Friends'),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Step(
                     title: const Text('Cover Photo'),
-                    content: Column(
+                    content: Stack(
                       children: [
-                        Stack(
-                          children: [
-                            InkWell(
-                              onTap: selectImage,
-                              child: SizedBox(
-                                height: 150,
-                                width: 150,
-                                // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
-                        
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: _image != null
-                                      ? Image.memory(_image!)
-                                      : CachedNetworkImage(
-                                          imageUrl: widget.habit.photoUrl,
-                                          fit: BoxFit.cover,
-                                          key: UniqueKey(),
-                                          placeholder: (context, url) =>
-                                              const Text(''),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.person),
-                                        ),
-                                ),
-                              ),
+                        InkWell(
+                          onTap: selectImage,
+                          child: SizedBox(
+                            height: 150,
+                            width: 150,
+                            // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
+
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: _image != null
+                                  ? Image.memory(_image!)
+                                  : Image.asset('assets/images/icon.png'),
                             ),
-                            Positioned(
-                              bottom: -10,
-                              left: 110,
-                              child: IconButton(
-                                onPressed: selectImage,
-                                icon: const Icon(Icons.add_a_photo),
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                          ),
+                        ),
+                        Positioned(
+                          bottom: -10,
+                          left: 110,
+                          child: IconButton(
+                            onPressed: selectImage,
+                            icon: const Icon(Icons.add_a_photo),
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
@@ -294,8 +298,6 @@ class _EditHabitViewState extends State<EditHabitView> {
                   Step(
                     title: const Text('Submit'),
                     content: Container(),
-                    // Text(
-                    //     'note: please refresh your profile page after update'),
                   ),
                 ],
               ),

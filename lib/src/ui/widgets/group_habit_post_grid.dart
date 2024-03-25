@@ -1,4 +1,4 @@
-import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/services/habits_service.dart';
@@ -6,12 +6,12 @@ import 'package:boonjae/src/ui/feed/post_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class PostsGridView extends StatefulWidget {
-  final HabitModel habit;
+class GroupHabitPostsGridView extends StatefulWidget {
+  final GroupHabitModel habit;
   final UserModel user;
   final bool isCurrentUser;
 
-  const PostsGridView({
+  const GroupHabitPostsGridView({
     super.key,
     required this.habit,
     required this.isCurrentUser,
@@ -19,10 +19,10 @@ class PostsGridView extends StatefulWidget {
   });
 
   @override
-  State<PostsGridView> createState() => _PostsGridViewState();
+  State<GroupHabitPostsGridView> createState() => _GroupHabitPostsGridView();
 }
 
-class _PostsGridViewState extends State<PostsGridView> {
+class _GroupHabitPostsGridView extends State<GroupHabitPostsGridView> {
   List<PostModel> posts = [];
 
 
@@ -45,9 +45,8 @@ class _PostsGridViewState extends State<PostsGridView> {
   }
 
   void updateData() async {
-    List<PostModel> temp = await HabitsService().getPostsByHabitAndUser(
-      habit: widget.habit,
-      user: widget.user,
+    List<PostModel> temp = await HabitsService().getGroupHabitPosts(
+      groupHabit: widget.habit,
     );
 
     setState(() {

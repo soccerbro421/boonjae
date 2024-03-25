@@ -17,6 +17,15 @@ class UserModel {
     required this.friends,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UserModel && runtimeType == other.runtimeType && uid == other.uid;
+
+  // Override hashCode for consistency with the overridden == operator
+  @override
+  int get hashCode => uid.hashCode;
+
   Map<String, dynamic> toJson() => {
         'name': name,
         'uid': uid,

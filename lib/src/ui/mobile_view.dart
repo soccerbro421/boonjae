@@ -1,6 +1,8 @@
+import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/providers/friend_request_provider.dart';
+import 'package:boonjae/src/providers/group_habits_provider.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/feed_service.dart';
@@ -33,7 +35,12 @@ class _MobileViewState extends State<MobileView> {
 
   updatePosts() async {
     UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
-    List<PostModel> temp = await FeedService().getFeed(user: user);
+    List<GroupHabitModel> groupHabits =
+        Provider.of<GroupHabitsProvider>(context, listen: false).getGroupHabits;
+    List<PostModel> temp = await FeedService().getFeed(
+      user: user,
+      groupHabits: groupHabits,
+    );
     setState(() {
       feedPosts = temp;
       _widgetOptions = <Widget>[
@@ -53,11 +60,14 @@ class _MobileViewState extends State<MobileView> {
     HabitsProvider habitsProvider = Provider.of(context, listen: false);
     FriendRequestProvider friendRequestProvider =
         Provider.of(context, listen: false);
+    GroupHabitsProvider groupHabitsProvider =
+        Provider.of(context, listen: false);
 
     await userProvider.refreshUser();
     await updatePosts();
     await habitsProvider.refreshHabits();
     await friendRequestProvider.refreshNumFriendRequests();
+    await groupHabitsProvider.refreshGroupHabits();
   }
 
   void _navigationTapped(int index) {

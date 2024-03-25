@@ -1,9 +1,12 @@
+import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/friends_service.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/ui/other_profile/other_mid_sreen_user.dart';
+import 'package:boonjae/src/ui/profile/habits/group_habits_list.dart';
+import 'package:boonjae/src/ui/profile/profile_view.dart';
 import 'package:boonjae/src/ui/widgets/habits_list_view.dart';
 import 'package:boonjae/src/ui/widgets/profile_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +29,7 @@ class OtherProfileView extends StatefulWidget {
 class _OtherProfileViewState extends State<OtherProfileView> {
   String friendStatus = '';
   List<HabitModel> otherUsersHabits = [];
+  List<GroupHabitModel> otherGroupHabits = [];
   bool _isLoading = false;
 
   @override
@@ -41,12 +45,16 @@ class _OtherProfileViewState extends State<OtherProfileView> {
     });
 
     List<HabitModel> habitsTemp = [];
+    List<GroupHabitModel> groupHabitTemp = [];
     if (widget.relationship == 'FRIEND' || widget.relationship == 'ME') {
       habitsTemp = await HabitsService().getHabitsByUser(user: widget.user);
+      groupHabitTemp =
+          await HabitsService().getGroupHabitsByUser(user: widget.user);
     }
 
     setState(() {
       otherUsersHabits = habitsTemp;
+      otherGroupHabits = groupHabitTemp;
     });
   }
 
@@ -62,6 +70,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
 
     List<HabitModel> temp =
         await FriendsService().acceptFriendRequest(user: widget.user);
+    List<GroupHabitModel> temp1 =
+        await HabitsService().getGroupHabitsByUser(user: widget.user);
 
     refreshUserProvider();
 
@@ -71,6 +81,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
 
     setState(() {
       otherUsersHabits = temp;
+      otherGroupHabits = temp1;
       friendStatus = "FRIEND";
     });
   }
@@ -257,7 +268,14 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                   ),
                                 ],
                               ),
-                              itemExtent: 50)
+                              itemExtent: 50),
+          otherGroupHabits.isNotEmpty
+              ? const DividerSliver()
+              : const EmptyContainer(),
+          otherGroupHabits.isNotEmpty
+              ? GroupHabitsListView(
+                  groupHabits: otherGroupHabits, user: widget.user)
+              : const EmptyContainer(),
         ],
       ),
     );

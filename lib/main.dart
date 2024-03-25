@@ -32,9 +32,9 @@ void main() async {
   await FirebaseAppCheck.instance.activate(
     // TODO: swap back
     // androidProvider: AndroidProvider.playIntegrity,
-    androidProvider: AndroidProvider.debug,
+    // androidProvider: AndroidProvider.debug,
 
-    // TODO: swap backF
+    // TODO: swap back
     // appleProvider: AppleProvider.appAttest,
     appleProvider: AppleProvider.debug,
   );

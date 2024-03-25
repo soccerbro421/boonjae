@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:boonjae/src/db/tasks_database.dart';
+import 'package:boonjae/src/models/base_habit_model.dart';
+import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/task_model.dart';
@@ -32,8 +34,10 @@ class HabitsService {
     try {
       String currentUserId = _auth.currentUser!.uid;
       // Assuming you have a Firestore collection named 'habits'
-      CollectionReference habitsCollection =
-          _firestore.collection('users').doc(currentUserId).collection('habits');
+      CollectionReference habitsCollection = _firestore
+          .collection('users')
+          .doc(currentUserId)
+          .collection('habits');
 
       for (int newIndex = 0; newIndex < habits.length; newIndex++) {
         final HabitModel habit = habits[newIndex];
@@ -43,7 +47,6 @@ class HabitsService {
       }
 
       return 'Saved order successfully';
-  
     } catch (error) {
       // print('Error saving habit order: $error');
       return error.toString();
@@ -109,6 +112,59 @@ class HabitsService {
     }
   }
 
+  Future<List<GroupHabitModel>> getGroupHabitsByUser({
+    required UserModel user,
+  }) async {
+    try {
+      List<GroupHabitModel> res = [];
+
+      // Get all documents from the 'habits' subcollection
+      QuerySnapshot groupHabitsQuerySnapshot = await _firestore
+          .collection('groupHabits')
+          .where('members', arrayContains: user.uid)
+          .get();
+
+      // Iterate through the documents in the query snapshot
+      for (var groupHabitDoc in groupHabitsQuerySnapshot.docs) {
+        GroupHabitModel h = GroupHabitModel.fromSnap(groupHabitDoc);
+        res.add(h);
+      }
+
+      return res;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  Future<List<PostModel>> getGroupHabitPosts({
+    required GroupHabitModel groupHabit,
+  }) async {
+    try {
+      CollectionReference postsCollectionRef = _firestore
+          .collection('groupHabits')
+          .doc(groupHabit.habitId)
+          .collection('posts');
+
+      List<PostModel> posts = [];
+
+      QuerySnapshot querySnapshot = await postsCollectionRef
+          .orderBy('createdDate', descending: true)
+          .get();
+
+      posts = [];
+
+      for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
+        PostModel post = PostModel.fromSnap(docSnapshot);
+        posts.add(post);
+      }
+
+      return posts;
+    } catch (err) {
+      // print(err.toString());
+      return [];
+    }
+  }
+
   Future<List<PostModel>> getPostsByHabitAndUser({
     required HabitModel habit,
     required UserModel user,
@@ -144,12 +200,11 @@ class HabitsService {
   }
 
   Future<String> uploadPostFromTab({
-    required HabitModel habit,
+    required BaseHabitModel habit,
     required Uint8List file,
     required String description,
     required UserModel user,
   }) async {
-
     String photoUrl = '';
     String postId = const Uuid().v1();
 
@@ -160,47 +215,73 @@ class HabitsService {
     try {
       String currentUserId = _auth.currentUser!.uid;
 
-      Reference postPicRef = _storage
-          .ref()
-          .child('users/$currentUserId')
-          .child('habits')
-          .child(habit.habitId)
-          .child('posts')
-          .child(postId);
+      if (habit is HabitModel) {
+        Reference postPicRef = _storage
+            .ref()
+            .child('users/$currentUserId')
+            .child('habits')
+            .child(habit.habitId)
+            .child('posts')
+            .child(postId);
 
-      file = await ImageService().compressImage(file);
+        file = await ImageService().compressImage(file);
 
-      photoUrl = await StorageService()
-          .uploadImageToStorageByReference(postPicRef, file);
+        photoUrl = await StorageService()
+            .uploadImageToStorageByReference(postPicRef, file);
 
-      PostModel p = PostModel(
-        habitId: habit.habitId,
-        photoUrl: photoUrl,
-        postId: postId,
-        description: description,
-        userId: currentUserId,
-        createdDate: DateTime.now(),
-        habitName: habit.name,
-        userName: user.username,
-      );
+        PostModel p = PostModel(
+          habitId: habit.habitId,
+          photoUrl: photoUrl,
+          postId: postId,
+          description: description,
+          userId: currentUserId,
+          createdDate: DateTime.now(),
+          habitName: habit.name,
+          userName: user.username,
+        );
 
-      DocumentReference userDocRef =
-          _firestore.collection('users').doc(currentUserId);
+        DocumentReference userDocRef =
+            _firestore.collection('users').doc(currentUserId);
 
-      // Reference to the 'habits' subcollection for the user
-      DocumentReference habitsDocRef =
-          userDocRef.collection('habits').doc(habit.habitId);
+        // Reference to the 'habits' subcollection for the user
+        DocumentReference habitsDocRef =
+            userDocRef.collection('habits').doc(habit.habitId);
 
-      CollectionReference postsCollectionRef = habitsDocRef.collection('posts');
+        CollectionReference postsCollectionRef =
+            habitsDocRef.collection('posts');
 
-      await postsCollectionRef.doc(postId).set(p.toJson());
+        await postsCollectionRef.doc(postId).set(p.toJson());
+      } else if (habit is GroupHabitModel) {
+        Reference postPicRef =
+            _storage.ref().child('groupHabits/${habit.habitId}/posts/$postId');
+
+        file = await ImageService().compressImage(file);
+
+        photoUrl = await StorageService()
+            .uploadImageToStorageByReference(postPicRef, file);
+
+        PostModel p = PostModel(
+          habitId: habit.habitId,
+          photoUrl: photoUrl,
+          postId: postId,
+          description: description,
+          userId: currentUserId,
+          createdDate: DateTime.now(),
+          habitName: habit.name,
+          userName: user.username,
+        );
+        CollectionReference postsCollectionRef = _firestore
+            .collection('groupHabits')
+            .doc(habit.habitId)
+            .collection('posts');
+
+        await postsCollectionRef.doc(postId).set(p.toJson());
+      }
 
       return 'successful upload !';
-
     } catch (err) {
       return err.toString();
     }
-
   }
 
   Future<String> uploadPost({
@@ -260,6 +341,129 @@ class HabitsService {
     }
   }
 
+  Future<String> leaveGroupHabit({
+    required GroupHabitModel habit,
+  }) async {
+    String res = 'error occurred';
+
+    try {
+      String currentUserId = _auth.currentUser!.uid;
+
+      habit.members.remove(currentUserId);
+
+      GroupHabitModel h = GroupHabitModel(
+        habitId: habit.habitId,
+        photoUrl: habit.photoUrl,
+        name: habit.name,
+        description: habit.description,
+        createdDate: habit.createdDate,
+        members: habit.members,
+      );
+
+      await _firestore
+          .collection('groupHabits')
+          .doc(habit.habitId)
+          .update(h.toJson());
+      return 'success';
+    } catch (err) {
+      res = err.toString();
+    }
+
+    return res;
+  }
+
+  Future<String> updateMembersInGroupHabit({
+    required List<UserModel> newUsers,
+    required GroupHabitModel oldHabit,
+    Uint8List? file,
+    // required List<String> daysOfWeek,
+  }) async {
+    String res = 'error occurred';
+
+    try {
+      List<String> uids = newUsers.map((user) => user.uid).toList();
+
+      GroupHabitModel h = GroupHabitModel(
+        habitId: oldHabit.habitId,
+        photoUrl: oldHabit.photoUrl,
+        name: oldHabit.name,
+        description: oldHabit.description,
+        createdDate: oldHabit.createdDate,
+        members: uids,
+      );
+
+      await _firestore
+          .collection('groupHabits')
+          .doc(oldHabit.habitId)
+          .update(h.toJson());
+      return 'success';
+    } catch (err) {
+      res = err.toString();
+    }
+
+    return res;
+  }
+
+  Future<String> updateGroupHabit({
+    required String name,
+    required String description,
+    required GroupHabitModel oldHabit,
+    Uint8List? file,
+    // required List<String> daysOfWeek,
+  }) async {
+    String res = 'error occurred';
+    String habitId = oldHabit.habitId;
+    String photoUrl = oldHabit.photoUrl;
+
+    // if (!(daysOfWeek.any((element) => element))) {
+    //   return 'Please select at least one day';
+    // }
+
+    try {
+      if (name.isNotEmpty) {
+        Reference habitsFolderRef = _storage
+            .ref()
+            .child('groupHabits/${oldHabit.habitId}')
+            .child('coverPhoto');
+
+        if (file != null) {
+          file = await ImageService().compressImage(file);
+
+          photoUrl = await StorageService()
+              .uploadImageToStorageByReference(habitsFolderRef, file);
+        }
+
+        GroupHabitModel h = GroupHabitModel(
+          habitId: habitId,
+          photoUrl: photoUrl,
+          name: name,
+          description: description,
+          createdDate: oldHabit.createdDate,
+          members: oldHabit.members,
+        );
+
+        await _firestore
+            .collection('groupHabits')
+            .doc(oldHabit.habitId)
+            .update(h.toJson());
+
+        // await habitsCollectionRef.doc(habitId).set({
+        //   'name': habitName,
+        //   // 'created_at': FieldValue.serverTimestamp(),
+        //   // Add other habit-related fields as needed
+        // });
+
+        res = 'success';
+      } else {
+        res = 'please enter habit name';
+      }
+    } catch (err) {
+      res = err.toString();
+    }
+
+    return res;
+  }
+
   Future<String> updateHabit({
     required String name,
     required String description,
@@ -295,15 +499,14 @@ class HabitsService {
         }
 
         HabitModel h = HabitModel(
-          habitId: habitId,
-          photoUrl: photoUrl,
-          name: name,
-          description: description,
-          userId: userId,
-          daysOfWeek: daysOfWeek,
-          createdDate: oldHabit.createdDate,
-          order: oldHabit.order
-        );
+            habitId: habitId,
+            photoUrl: photoUrl,
+            name: name,
+            description: description,
+            userId: userId,
+            daysOfWeek: daysOfWeek,
+            createdDate: oldHabit.createdDate,
+            order: oldHabit.order);
 
         // create tasks
         for (int i = 0; i < daysOfWeek.length; i++) {
@@ -342,6 +545,61 @@ class HabitsService {
     return res;
   }
 
+  Future<String> addGroupHabit({
+    required String name,
+    required String description,
+    required List<UserModel> friendsToAdd,
+    Uint8List? file,
+  }) async {
+    String res = 'error occurred';
+
+    String currentUserId = _auth.currentUser!.uid;
+    String habitId = const Uuid().v1();
+    String photoUrl = '';
+
+    if (name.isEmpty) {
+      return res;
+    }
+
+    try {
+      // upload cover photo
+      Reference habitsFolderRef = _storage
+          .ref()
+          .child('groupHabits')
+          .child(habitId)
+          .child('coverPhoto');
+
+      if (file != null) {
+        file = await ImageService().compressImage(file);
+
+        photoUrl = await StorageService()
+            .uploadImageToStorageByReference(habitsFolderRef, file);
+      }
+
+      List<String> uids = friendsToAdd.map((user) => user.uid).toList();
+      uids.add(currentUserId);
+
+      // upload data to firebase
+      GroupHabitModel h = GroupHabitModel(
+          habitId: habitId,
+          photoUrl: photoUrl,
+          name: name,
+          description: description,
+          createdDate: DateTime.now(),
+          members: uids);
+
+      // Reference to the user document
+      CollectionReference groupHabitRef = _firestore.collection('groupHabits');
+
+      // Add the currentUserUid to the list of uids
+
+      await groupHabitRef.doc(habitId).set(h.toJson());
+      return 'success';
+    } catch (err) {
+      return err.toString();
+    }
+  }
+
   Future<String> addHabit({
     required String name,
     required String description,
@@ -355,10 +613,6 @@ class HabitsService {
     String userId = _auth.currentUser!.uid;
     String habitId = const Uuid().v1();
     String photoUrl = '';
-
-    // if (!(daysOfWeek.any((element) => element))) {
-    //   return 'Please select at least one day';
-    // }
 
     try {
       if (name.isNotEmpty) {
@@ -399,9 +653,8 @@ class HabitsService {
             );
             await TasksDatabase.instance.create(task);
 
-            NotificationService().setDayNotif(dayOfWeek: daysOfWeekStrings[i], on: true);
-
-
+            NotificationService()
+                .setDayNotif(dayOfWeek: daysOfWeekStrings[i], on: true);
           }
         }
 

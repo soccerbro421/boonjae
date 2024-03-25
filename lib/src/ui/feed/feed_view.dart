@@ -1,5 +1,7 @@
+import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/models/post_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/providers/group_habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/feed_service.dart';
 import 'package:boonjae/src/ui/ads/native_ads.dart';
@@ -54,7 +56,12 @@ class _FeedViewState extends State<FeedView> {
 
   updateData() async {
     UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
-    List<PostModel> temp = await FeedService().getFeed(user: user);
+    List<GroupHabitModel> groupHabits =
+        Provider.of<GroupHabitsProvider>(context, listen: false).getGroupHabits;
+    List<PostModel> temp = await FeedService().getFeed(
+      user: user,
+      groupHabits: groupHabits,
+    );
 
     setState(() {
       widget.posts = temp;
@@ -93,9 +100,7 @@ class _FeedViewState extends State<FeedView> {
                               18.0, // You can adjust the font size as needed
                         ),
                       )),
-                      Center(
-                          child: Text(
-                              '(upload post to wake Ellie up!)')),
+                      Center(child: Text('(upload post to wake Ellie up!)')),
                     ],
                   )
                 ],
@@ -121,7 +126,9 @@ class _FeedViewState extends State<FeedView> {
                         } else {
                           final int postIndex = index - (index ~/ 6);
                           final PostModel post = widget.posts[postIndex];
-                          return PostTile(post: post);
+                          return PostTile(
+                            post: post,
+                          );
                         }
                       },
                       childCount: widget.posts.length < 5
@@ -129,7 +136,6 @@ class _FeedViewState extends State<FeedView> {
                           : widget.posts.length + (widget.posts.length ~/ 5),
                     ),
                   ),
-                  
                 ],
               ),
       ),

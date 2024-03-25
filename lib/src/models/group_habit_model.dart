@@ -1,28 +1,22 @@
 import 'package:boonjae/src/models/base_habit_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class HabitModel extends BaseHabitModel{
+class GroupHabitModel extends BaseHabitModel{
   final String habitId;
   final String photoUrl;
   @override
   final String name;
   final String description;
-  final String userId;
-  final List<dynamic> daysOfWeek;
-  List? tasks;
   final DateTime createdDate;
-  final int order;
+  final List<dynamic> members;
 
-  HabitModel({
+  GroupHabitModel({
     required this.habitId,
     required this.photoUrl,
     required this.name,
     required this.description,
-    required this.userId,
-    required this.daysOfWeek,
-    this.tasks,
     required this.createdDate,
-    required this.order,
+    required this.members,
   });
 
   Map<String, dynamic> toJson() => {
@@ -30,26 +24,22 @@ class HabitModel extends BaseHabitModel{
         'photoUrl': photoUrl,
         'name': name,
         'description': description,
-        'userId': userId,
-        'daysOfWeek': daysOfWeek,
         'createdDate': createdDate,
-        'order': order,
+        'members': members,
       };
 
-  static HabitModel fromSnap(DocumentSnapshot snap) {
+  static GroupHabitModel fromSnap(DocumentSnapshot snap) {
     
 
     var snapshot = snap.data() as Map<String, dynamic>;
 
-    return HabitModel(
+    return GroupHabitModel(
       name: snapshot['name'],
-      userId: snapshot['userId'],
       habitId: snapshot['habitId'],
       photoUrl: snapshot['photoUrl'],
       description: snapshot['description'],
-      daysOfWeek: snapshot['daysOfWeek'],
       createdDate: (snapshot['createdDate'] as Timestamp).toDate(),
-      order: snapshot['order'],
+      members: snapshot['members'],
     );
   }
 }

@@ -1,7 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/models/base_habit_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/providers/group_habits_provider.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/habits_service.dart';
@@ -23,8 +24,8 @@ class CreatePostTabView extends StatefulWidget {
 class _CreatePostTabViewState extends State<CreatePostTabView> {
   bool _isLoading = false;
   int _index = 0;
-  List<HabitModel>? habits;
-  HabitModel? selectedHabit;
+  List<BaseHabitModel>? habits;
+  BaseHabitModel? selectedHabit;
 
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -88,7 +89,9 @@ class _CreatePostTabViewState extends State<CreatePostTabView> {
   void uploadPost() async {
     UserModel user = Provider.of<UserProvider>(context, listen: false).getUser;
 
-    if (_image == null || selectedHabit == null || _descriptionController.text.isEmpty) {
+    if (_image == null ||
+        selectedHabit == null ||
+        _descriptionController.text.isEmpty) {
       showSnackBar('Please enter all fields');
       return;
     }
@@ -97,15 +100,18 @@ class _CreatePostTabViewState extends State<CreatePostTabView> {
       _isLoading = true;
     });
 
-    String res = await HabitsService().uploadPostFromTab(habit: selectedHabit!, file: _image!, description: _descriptionController.text, user: user);
+    String res = await HabitsService().uploadPostFromTab(
+      habit: selectedHabit!,
+      file: _image!,
+      description: _descriptionController.text,
+      user: user,
+    );
 
     showSnackBar(res);
-
 
     setState(() {
       _isLoading = false;
     });
-
   }
 
   void goBack() {
@@ -114,7 +120,10 @@ class _CreatePostTabViewState extends State<CreatePostTabView> {
 
   @override
   Widget build(BuildContext context) {
-    habits = Provider.of<HabitsProvider>(context).getHabits;
+    habits = [
+      ...Provider.of<HabitsProvider>(context).getHabits,
+      ...Provider.of<GroupHabitsProvider>(context).getGroupHabits,
+    ];
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -125,168 +134,169 @@ class _CreatePostTabViewState extends State<CreatePostTabView> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           width: double.infinity,
-          child: habits != null && habits!.isEmpty ? 
-          ListView(
-              children: const [
-                SizedBox(
-                  height: 125.0,
-                  child: RiveAnimation.asset('assets/rive/sleepy_lottie.riv'),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Text(
-                    'create a habit on your profile to post !',
-                    style: TextStyle(
-                      // fontWeight: FontWeight.bold,
-                      // fontSize: 18.0, // You can adjust the font size as needed
+          child: habits != null && habits!.isEmpty
+              ? ListView(
+                  children: const [
+                    SizedBox(
+                      height: 125.0,
+                      child:
+                          RiveAnimation.asset('assets/rive/sleepy_lottie.riv'),
                     ),
-                  ),
-                ),
-                
-              ],
-            )
-          
-          : Column(
-            children: [
-              Stepper(
-                currentStep: _index,
-                onStepCancel: _index == 0
-                    ? null
-                    : () {
-                        if (_index > 0) {
-                          setState(() {
-                            _index -= 1;
-                          });
-                        }
-                      },
-                onStepContinue: () {
-                  if (_index < 3) {
-                    setState(() {
-                      _index += 1;
-                    });
-                  } else if (_index == 3) {
-                    uploadPost();
-                  }
-                },
-                onStepTapped: (idx) {
-                  setState(() {
-                    _index = idx;
-                  });
-                },
-                controlsBuilder: (context, details) {
-                  return Container(
-                    margin: const EdgeInsets.only(top: 50),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: details.onStepContinue,
-                            child: _isLoading
-                                ? const Center(
-                                    child: CircularProgressIndicator(),
-                                  )
-                                : Text(_index == 3 ? 'UPLOAD' : 'NEXT'),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        if (_index != 0)
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: details.onStepCancel,
-                              child: const Text('BACK'),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: Text(
+                        'create a habit on your profile to post !',
+                        style: TextStyle(
+                            // fontWeight: FontWeight.bold,
+                            // fontSize: 18.0, // You can adjust the font size as needed
                             ),
-                          ),
-                      ],
+                      ),
                     ),
-                  );
-                },
-                steps: [
-                  Step(
-                    title: const Text('Habit'),
-                    content: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          DropdownMenu(
-                            width: 250,
-                            label: const Text('select habit'),
-                            onSelected: (selectedValue) {
-                              if (selectedValue != null) {
+                  ],
+                )
+              : Column(
+                  children: [
+                    Stepper(
+                      currentStep: _index,
+                      onStepCancel: _index == 0
+                          ? null
+                          : () {
+                              if (_index > 0) {
                                 setState(() {
-                                  selectedHabit = selectedValue;
+                                  _index -= 1;
                                 });
                               }
                             },
-                            dropdownMenuEntries: habits!.map<DropdownMenuEntry>(
-                              (HabitModel habit) {
-                                return DropdownMenuEntry(
-                                    value: habit, label: habit.name);
-                              },
-                            ).toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Step(
-                    title: const Text('Select pic'),
-                    content: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            InkWell(
-                              onTap: selectImage,
-                              child: SizedBox(
-                                height: 150,
-                                width: 150,
-                                // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
-
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: _image != null
-                                      ? Image.memory(_image!)
-                                      : Image.asset('assets/images/icon.png'),
+                      onStepContinue: () {
+                        if (_index < 3) {
+                          setState(() {
+                            _index += 1;
+                          });
+                        } else if (_index == 3) {
+                          uploadPost();
+                        }
+                      },
+                      onStepTapped: (idx) {
+                        setState(() {
+                          _index = idx;
+                        });
+                      },
+                      controlsBuilder: (context, details) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 50),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: details.onStepContinue,
+                                  child: _isLoading
+                                      ? const Center(
+                                          child: CircularProgressIndicator(),
+                                        )
+                                      : Text(_index == 3 ? 'UPLOAD' : 'NEXT'),
                                 ),
                               ),
+                              const SizedBox(width: 12),
+                              if (_index != 0)
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: details.onStepCancel,
+                                    child: const Text('BACK'),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                      steps: [
+                        Step(
+                          title: const Text('Habit'),
+                          content: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                DropdownMenu(
+                                  width: 250,
+                                  label: const Text('select habit'),
+                                  onSelected: (selectedValue) {
+                                    if (selectedValue != null) {
+                                      setState(() {
+                                        selectedHabit = selectedValue;
+                                      });
+                                    }
+                                  },
+                                  dropdownMenuEntries:
+                                      habits!.map<DropdownMenuEntry>(
+                                    (BaseHabitModel habit) {
+                                      return DropdownMenuEntry(
+                                          value: habit, label: habit.name);
+                                    },
+                                  ).toList(),
+                                ),
+                              ],
                             ),
-                            Positioned(
-                              bottom: -10,
-                              left: 110,
-                              child: IconButton(
-                                onPressed: selectImage,
-                                icon: const Icon(Icons.add_a_photo),
-                                color: Colors.white,
+                          ),
+                        ),
+                        Step(
+                          title: const Text('Select pic'),
+                          content: Column(
+                            children: [
+                              Stack(
+                                children: [
+                                  InkWell(
+                                    onTap: selectImage,
+                                    child: SizedBox(
+                                      height: 150,
+                                      width: 150,
+                                      // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
+
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: _image != null
+                                            ? Image.memory(_image!)
+                                            : Image.asset(
+                                                'assets/images/icon.png'),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: -10,
+                                    left: 110,
+                                    child: IconButton(
+                                      onPressed: selectImage,
+                                      icon: const Icon(Icons.add_a_photo),
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                        ),
+                        Step(
+                          title: const Text('Description'),
+                          content: Column(
+                            children: [
+                              TextFieldInput(
+                                textEditingController: _descriptionController,
+                                hintText: 'Enter a description',
+                                textInputType: TextInputType.text,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Step(
+                          title: const Text('Submit'),
+                          content: Container(),
+                          // Text(
+                          //     'note: please refresh your profile page after creation'),
                         ),
                       ],
                     ),
-                  ),
-                  Step(
-                    title: const Text('Description'),
-                    content: Column(
-                      children: [
-                        TextFieldInput(
-                          textEditingController: _descriptionController,
-                          hintText: 'Enter a description',
-                          textInputType: TextInputType.text,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Step(
-                    title: const Text('Submit'),
-                    content: Container(),
-                    // Text(
-                    //     'note: please refresh your profile page after creation'),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                  ],
+                ),
         ),
       ),
     );

@@ -137,13 +137,8 @@ class _AddHabitView extends State<AddHabitView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Create habit'),
-        actions: const [],
-      ),
-      body: SafeArea(
+    return SafeArea(
+      child: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           width: double.infinity,
@@ -238,7 +233,7 @@ class _AddHabitView extends State<AddHabitView> {
                     ),
                   ),
                   Step(
-                    title: const Text('Image'),
+                    title: const Text('Cover Photo'),
                     content: Stack(
                       children: [
                         InkWell(
@@ -247,7 +242,7 @@ class _AddHabitView extends State<AddHabitView> {
                             height: 150,
                             width: 150,
                             // child: Image.network(habit.photoUrl, fit: BoxFit.cover),
-
+        
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
                               child: _image != null

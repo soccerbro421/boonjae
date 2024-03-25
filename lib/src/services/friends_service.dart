@@ -1,3 +1,4 @@
+import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -102,6 +103,58 @@ class FriendsService {
     }
   }
 
+  Future<List<UserModel>> getUsersInHabit({
+    required GroupHabitModel groupHabit,
+  }) async {
+    try {
+      Set<UserModel> users = {};
+
+      for (String uid in groupHabit.members) {
+        DocumentSnapshot snapshot =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        if (snapshot.exists) {
+          UserModel user = UserModel.fromSnap(snapshot);
+          users.add(user);
+        }
+      }
+
+      return users.toList();
+    } catch (err) {
+      // print(err.toString());
+      return [];
+    }
+  }
+
+  Future<List<UserModel>> getPotentialUsersInHabit({
+    required GroupHabitModel groupHabit,
+    required UserModel user,
+  }) async {
+    try {
+      Set<UserModel> users = {};
+
+      for (String uid in groupHabit.members) {
+        DocumentSnapshot snapshot =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        if (snapshot.exists) {
+          UserModel user = UserModel.fromSnap(snapshot);
+          users.add(user);
+        }
+      }
+
+      List<UserModel> friends = await getFriends(user: user);
+
+      users.addAll(friends);
+
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      users.removeWhere((user) => user.uid == currentUserId);
+
+      return users.toList();
+    } catch (err) {
+      // print(err.toString());
+      return [];
+    }
+  }
+
   Future<List<UserModel>> getFriends({
     required UserModel user,
   }) async {
@@ -183,22 +236,17 @@ class FriendsService {
 
   Future<int> getNumberOfIncomingFriendRequests() async {
     try {
-      
       String currentUserId = _auth.currentUser!.uid;
       int result = 0;
-      
 
       await _firestore
           .collection('friendRequests')
           .where('to', isEqualTo: currentUserId)
           .count()
           .get()
-          .then((res) => result = res.count!, 
-          onError: (e) => ());
+          .then((res) => result = res.count!, onError: (e) => ());
 
       return result;
-
-      
     } catch (err) {
       //
       return 0;
