@@ -1,7 +1,6 @@
 import 'package:boonjae/src/models/group_habit_model.dart';
 import 'package:boonjae/src/services/habits_service.dart';
 import 'package:boonjae/src/ui/mobile_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LeaveGroupHabitView extends StatefulWidget {

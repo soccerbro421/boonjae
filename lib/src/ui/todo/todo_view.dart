@@ -86,17 +86,29 @@ class _TodoViewState extends State<TodoView> {
     List<HabitModel> habits =
         Provider.of<HabitsProvider>(context, listen: false).getHabits;
 
+    DateTime currentDate = DateTime.now();
+    DateTime startOfWeek =
+        currentDate.subtract(Duration(days: currentDate.weekday));
+    DateTime startOfSunday =
+        DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+
+    startOfWeek = currentDate.weekday == 7
+        ? DateTime(currentDate.year, currentDate.month, currentDate.day)
+        : startOfSunday;
+
     for (int i = 0; i < habits.length; i++) {
       HabitModel habit = habits[i];
 
       for (int j = 0; j < habit.daysOfWeek.length; j++) {
         if (habit.daysOfWeek[j] == true) {
+          
+          DateTime dateToAdd = startOfWeek.add(Duration(days: j));
           TaskModel task = TaskModel(
               userId: user.uid,
               habitId: habit.habitId,
               dayOfWeek: daysOfWeekString[j],
               habitName: habit.name,
-              date: DateTime.now(),
+              date: dateToAdd,
               status: "NOTCOMPLETED");
 
           await TasksDatabase.instance.create(task);

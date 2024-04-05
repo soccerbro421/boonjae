@@ -114,7 +114,7 @@ class _PostViewState extends State<PostView> {
               widget.post.habitName,
               style: const TextStyle(
                 color: Colors.grey,
-                fontStyle: FontStyle.italic,
+                // fontStyle: FontStyle.italic,
                 fontSize: 16,
               ),
             ),
@@ -147,7 +147,7 @@ class _PostViewState extends State<PostView> {
                   DateFormat('dd MMMM yyyy').format(widget.post.createdDate),
                   style: const TextStyle(
                     color: Colors.grey,
-                    fontStyle: FontStyle.italic,
+                    // fontStyle: FontStyle.italic,
                   ),
                 ),
               ],

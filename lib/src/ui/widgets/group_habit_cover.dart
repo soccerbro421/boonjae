@@ -44,7 +44,7 @@ class GroupHabitCover extends StatelessWidget {
                   'started on ${DateFormat('dd MMMM yyyy').format(habit.createdDate)}',
                   style: const TextStyle(
                     color: Colors.grey,
-                    fontStyle: FontStyle.italic,
+                    // fontStyle: FontStyle.italic,
                   ),
                 ),
               ],

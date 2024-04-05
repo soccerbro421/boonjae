@@ -98,6 +98,7 @@ class FeedService {
       }
 
       for (int i = 0; i < groupHabits.length; i++) {
+        
         String groupHabitId = groupHabits[i].habitId;
 
         CollectionReference habitsCollectionRef =

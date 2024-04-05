@@ -45,7 +45,7 @@ class _MobileViewState extends State<MobileView> {
       feedPosts = temp;
       _widgetOptions = <Widget>[
         FeedView(
-          posts: feedPosts,
+          posts: temp,
         ),
         const TodoView(),
         // SearchScreen(),
@@ -64,10 +64,11 @@ class _MobileViewState extends State<MobileView> {
         Provider.of(context, listen: false);
 
     await userProvider.refreshUser();
-    await updatePosts();
     await habitsProvider.refreshHabits();
     await friendRequestProvider.refreshNumFriendRequests();
     await groupHabitsProvider.refreshGroupHabits();
+
+    await updatePosts();
   }
 
   void _navigationTapped(int index) {

@@ -66,7 +66,7 @@ class _PostTileState extends State<PostTile> {
             widget.post.habitName,
             style: const TextStyle(
               color: Colors.grey,
-              fontStyle: FontStyle.italic,
+              // fontStyle: FontStyle.italic,
               fontSize: 16,
             ),
           ),

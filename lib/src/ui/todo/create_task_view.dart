@@ -50,12 +50,23 @@ class _CreateTaskViewState extends State<CreateTaskView> {
       return;
     }
 
+    DateTime currentDate = DateTime.now();
+    DateTime startOfWeek =
+        currentDate.subtract(Duration(days: currentDate.weekday));
+    DateTime startOfSunday =
+        DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+
+    startOfWeek = currentDate.weekday == 7
+        ? DateTime(currentDate.year, currentDate.month, currentDate.day)
+        : startOfSunday;
+    DateTime dateToAdd = startOfWeek.add(Duration(days: indexOfTrue));
+
     TaskModel task = TaskModel(
         userId: user.uid,
         habitId: selectedHabit!.habitId,
         dayOfWeek: daysOfWeek[indexOfTrue],
         habitName: selectedHabit!.name,
-        date: DateTime.now(),
+        date: dateToAdd,
         status: "NOTCOMPLETED");
 
     await TasksDatabase.instance.create(task);

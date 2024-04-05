@@ -1,5 +1,6 @@
 import 'package:boonjae/src/models/task_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -119,6 +120,40 @@ class TasksDatabase {
       }
 
       return lists;
+    } catch (err) {
+      throw Exception('sadness');
+    }
+  }
+
+  Future<Map<DateTime, int>> getAllTasksByCurrentUserAndHabit(
+      {required String habitId}) async {
+    try {
+      final db = await instance.database;
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+      final maps = await db.query(
+        tableTasks,
+        columns: TaskFields.values,
+        where:
+            '${TaskFields.habitId} = ? AND ${TaskFields.userId} = ? AND ${TaskFields.status} = ?',
+        whereArgs: [
+          habitId,
+          currentUserId,
+          "COMPLETED"
+        ],
+      );
+
+      List<TaskModel> allTasks =
+          maps.map((taskMap) => TaskModel.fromJson(taskMap)).toList();
+
+      Map<DateTime, int> taskCountByDate = {};
+
+      for (TaskModel task in allTasks) {
+        DateTime roundedDate = DateTime(task.date.year, task.date.month, task.date.day);
+        taskCountByDate.update(roundedDate, (value) => (value + 1) , ifAbsent: () => 1);
+      }
+
+      return taskCountByDate;
     } catch (err) {
       throw Exception('sadness');
     }
