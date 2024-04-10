@@ -509,19 +509,10 @@ class HabitsService {
             order: oldHabit.order);
 
         // create tasks
-        for (int i = 0; i < daysOfWeek.length; i++) {
-          if (daysOfWeek[i] == true) {
-            TaskModel task = TaskModel(
-              userId: userId,
-              habitId: h.habitId,
-              dayOfWeek: daysOfWeekStrings[i],
-              habitName: h.name,
-              date: DateTime.now(),
-              status: "NOTCOMPLETED",
-            );
-            await TasksDatabase.instance.create(task);
-          }
-        }
+        await createTasksForHabit(
+          daysOfWeek: daysOfWeek,
+          h: h,
+        );
 
         CollectionReference habitsCollectionRef =
             _firestore.collection('users').doc(userId).collection('habits');
@@ -641,22 +632,10 @@ class HabitsService {
           order: order,
         );
 
-        for (int i = 0; i < daysOfWeek.length; i++) {
-          if (daysOfWeek[i] == true) {
-            TaskModel task = TaskModel(
-              userId: userId,
-              habitId: h.habitId,
-              dayOfWeek: daysOfWeekStrings[i],
-              habitName: h.name,
-              date: DateTime.now(),
-              status: "NOTCOMPLETED",
-            );
-            await TasksDatabase.instance.create(task);
-
-            NotificationService()
-                .setDayNotif(dayOfWeek: daysOfWeekStrings[i], on: true);
-          }
-        }
+        await createTasksForHabit(
+          daysOfWeek: daysOfWeek,
+          h: h,
+        );
 
         // Reference to the user document
         DocumentReference userDocRef =
@@ -683,5 +662,44 @@ class HabitsService {
     }
 
     return res;
+  }
+
+  Future<dynamic> createTasksForHabit({
+    required List<bool> daysOfWeek,
+    required HabitModel h,
+  }) async {
+    try {
+      String userId = _auth.currentUser!.uid;
+
+      DateTime currentDate = DateTime.now();
+      DateTime startOfWeek =
+          currentDate.subtract(Duration(days: currentDate.weekday));
+      DateTime startOfSunday =
+          DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+
+      startOfWeek = currentDate.weekday == 7
+          ? DateTime(currentDate.year, currentDate.month, currentDate.day)
+          : startOfSunday;
+
+      for (int i = 0; i < daysOfWeek.length; i++) {
+        if (daysOfWeek[i] == true) {
+          DateTime taskDate = startOfWeek.add(Duration(days: i));
+          TaskModel task = TaskModel(
+            userId: userId,
+            habitId: h.habitId,
+            dayOfWeek: daysOfWeekStrings[i],
+            habitName: h.name,
+            date: taskDate,
+            status: "NOTCOMPLETED",
+          );
+          await TasksDatabase.instance.create(task);
+
+          NotificationService()
+              .setDayNotif(dayOfWeek: daysOfWeekStrings[i], on: true);
+        }
+      }
+    } catch (err) {
+      // test
+    }
   }
 }

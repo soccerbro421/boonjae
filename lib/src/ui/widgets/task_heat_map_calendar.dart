@@ -38,7 +38,7 @@ class TaskHeatMapCalendar extends StatelessWidget {
           return Center(
             child: HeatMap(
               datasets: taskCounts,
-              startDate: startDate,
+              startDate: DateTime(startDate.year, startDate.month, startDate.day),
               colorMode: ColorMode.opacity,
               // showText: true,
               defaultColor: const Color.fromARGB(255, 77, 77, 77),
