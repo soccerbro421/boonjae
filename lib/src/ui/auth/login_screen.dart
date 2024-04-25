@@ -116,13 +116,13 @@ class _LoginScreenState extends State<LoginScreen> {
               // const SizedBox(height: 32),
               TextFieldInput(
                 textEditingController: _emailController,
-                hintText: 'Enter you email',
+                hintText: 'Enter your email',
                 textInputType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 32),
               TextFieldInput(
                 textEditingController: _passwordController,
-                hintText: 'Enter you password',
+                hintText: 'Enter your password',
                 textInputType: TextInputType.text,
                 isPass: true,
               ),
