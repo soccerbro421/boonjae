@@ -47,6 +47,7 @@ class HabitView extends StatelessWidget {
       body: CustomScrollView(slivers: [
         HabitCover(
           habit: habit,
+          user: user,
         ),
         PostsGridView(
           habit: habit,

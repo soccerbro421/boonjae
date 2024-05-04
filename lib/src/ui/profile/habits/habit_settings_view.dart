@@ -1,7 +1,7 @@
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/ui/profile/habits/edit_habit_view.dart';
 import 'package:boonjae/src/ui/widgets/delete_habit_view.dart';
-import 'package:boonjae/src/ui/widgets/task_heat_map_calendar.dart';
+// import 'package:boonjae/src/ui/widgets/task_heat_map_calendar.dart';
 import 'package:flutter/material.dart';
 
 class HabitSettingsView extends StatelessWidget {
@@ -32,7 +32,7 @@ class HabitSettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('More'),
+        title: const Text('Settings'),
         actions: const [],
       ),
       body: Padding(
@@ -44,10 +44,10 @@ class HabitSettingsView extends StatelessWidget {
           // crossAxisAlignment: CrossAxisAlignment.start,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TaskHeatMapCalendar(
-              habit: habit,
-            ),
-            const SizedBox(height: 32),
+            // TaskHeatMapCalendar(
+            //   habit: habit,
+            // ),
+            // const SizedBox(height: 32),
             const Divider(
               height: 1,
               thickness: 1,

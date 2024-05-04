@@ -6,6 +6,7 @@ import 'package:boonjae/src/providers/group_habits_provider.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/services/feed_service.dart';
+import 'package:boonjae/src/ui/activity/activity_view.dart';
 import 'package:boonjae/src/ui/create_post/create_post_view.dart';
 import 'package:boonjae/src/ui/feed/feed_view.dart';
 import 'package:boonjae/src/ui/profile/profile_view.dart';
@@ -24,7 +25,7 @@ class MobileView extends StatefulWidget {
 }
 
 class _MobileViewState extends State<MobileView> {
-  int _selectedIndex = 3;
+  int _selectedIndex = 4;
   List<PostModel> feedPosts = [];
 
   @override
@@ -47,9 +48,10 @@ class _MobileViewState extends State<MobileView> {
         FeedView(
           posts: temp,
         ),
+        const CreatePostTabView(),
         const TodoView(),
         // SearchScreen(),
-        const CreatePostTabView(),
+        const ActivityView(),
         const ProfileView(),
       ];
     });
@@ -82,8 +84,9 @@ class _MobileViewState extends State<MobileView> {
       posts: const [],
     ),
     const TodoView(),
-    // SearchScreen(),
     const CreatePostTabView(),
+    // SearchScreen(),
+    const ActivityView(),
     const ProfileView(),
   ];
 
@@ -102,12 +105,16 @@ class _MobileViewState extends State<MobileView> {
             label: 'feed',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle),
+            label: 'post',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.task_alt),
             label: 'to do ',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle),
-            label: 'post',
+            icon: Icon(Icons.equalizer),
+            label: 'activity',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

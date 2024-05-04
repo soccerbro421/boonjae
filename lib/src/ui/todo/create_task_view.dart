@@ -130,7 +130,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                                 ? const Center(
                                     child: CircularProgressIndicator(),
                                   )
-                                : Text(_index == 2 ? 'ADD TASK' : 'NEXT'),
+                                : Text(_index == 2 ? 'CREATE' : 'NEXT'),
                           ),
                         ),
                         const SizedBox(width: 12),

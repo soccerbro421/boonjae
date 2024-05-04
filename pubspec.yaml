@@ -4,7 +4,7 @@ description: "A new Flutter project."
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 1.4.4+1
+version: 1.4.5+1
 
 environment:
   sdk: '>=3.2.5 <4.0.0'
@@ -18,8 +18,10 @@ dependencies:
   firebase_app_check: ^0.2.1+14
   firebase_auth: ^4.17.3
   firebase_core: ^2.25.3
+  firebase_database: ^10.4.7
   firebase_messaging: ^14.7.16
   firebase_storage: ^11.6.4
+  fl_chart: ^0.67.0
   flutter:
     sdk: flutter
   flutter_heatmap_calendar: ^1.0.5
@@ -33,6 +35,7 @@ dependencies:
   image_cropper: ^5.0.1
   image_picker: ^1.0.7
   intl: ^0.18.1
+  page_view_dot_indicator: ^2.3.0
   path: ^1.8.3
   path_provider: ^2.1.2
   permission_handler: ^11.3.0

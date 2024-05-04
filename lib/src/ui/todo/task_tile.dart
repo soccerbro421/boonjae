@@ -2,6 +2,7 @@ import 'package:boonjae/src/db/tasks_database.dart';
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/task_model.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
+import 'package:boonjae/src/services/tasks_service.dart';
 import 'package:boonjae/src/ui/todo/task_map_detailed.dart';
 // import 'package:boonjae/src/ui/widgets/task_heat_map_calendar.dart';
 // import 'package:boonjae/src/ui/todo/task_details_view.dart';
@@ -62,6 +63,7 @@ class _TaskTileState extends State<TaskTile> {
       ))));
     }
 
+    TasksService().updateTask(task: taskCopy, complete: boool);
     await TasksDatabase.instance.update(taskCopy);
   }
 
