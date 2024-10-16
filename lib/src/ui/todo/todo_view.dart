@@ -4,6 +4,7 @@ import 'package:boonjae/src/models/task_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
 import 'package:boonjae/src/providers/user_provider.dart';
+import 'package:boonjae/src/services/tasks_service.dart';
 import 'package:boonjae/src/ui/todo/create_task_view.dart';
 import 'package:boonjae/src/ui/todo/task_list.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,7 @@ class _TodoViewState extends State<TodoView> {
   }
 
   void removeTask(TaskModel task) async {
+    await TasksService().deleteTask(task: task);
     await TasksDatabase.instance.delete(task.taskId!);
 
     setState(() {

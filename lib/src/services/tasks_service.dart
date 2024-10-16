@@ -1,6 +1,7 @@
 import 'package:boonjae/src/models/habit_model.dart';
 import 'package:boonjae/src/models/task_model.dart';
 import 'package:boonjae/src/models/user_model.dart';
+import 'package:boonjae/src/services/activity_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -64,7 +65,6 @@ class TasksService {
           taskCountByDate[DateTime.parse(key)] = value;
         });
       }
-
       return taskCountByDate;
 
       // return 'Your report has been submitted';
@@ -93,13 +93,43 @@ class TasksService {
       DatabaseReference habitRef = _rtdb.ref().child(datePath);
 
       // Set the value to 1
+      // update tasks by week
+      DateTime currentDateTime = DateTime.now();
+      String weekYear = ActivityService().weekRange(currentDateTime);
+
+      // String weekYear = '$numWeek-${currentDateTime.year}';
+      String tasksPerWeek = "users/$currentUserId/tasksPerWeek/$weekYear";
+
+      DatabaseReference tasksPerWeekRef = _rtdb.ref().child(tasksPerWeek);
+
+      DatabaseEvent event = await tasksPerWeekRef.once();
+      int tasksThisWeek = 0;
+
+      // Parse the data into the taskCountByDate map
+      if (event.snapshot.value != null) {
+        int data = event.snapshot.value as int;
+        tasksThisWeek = data;
+      }
+
       if (complete) {
         await habitRef.set(1);
+        await tasksPerWeekRef.set(tasksThisWeek + 1);
       } else {
         await habitRef.remove();
+        await tasksPerWeekRef.set(tasksThisWeek <= 0 ? 0 : tasksThisWeek - 1);
       }
     } catch (err) {
       // return err.toString();
+    }
+  }
+
+  deleteTask({required TaskModel task}) async {
+    try {
+      if (task.status == "COMPLETED") {
+        TasksService().updateTask(task: task, complete: false);
+      }
+    } catch (err) {
+      // print(err.toString());
     }
   }
 }

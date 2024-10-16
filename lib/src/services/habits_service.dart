@@ -509,10 +509,10 @@ class HabitsService {
             order: oldHabit.order);
 
         // create tasks
-        await createTasksForHabit(
-          daysOfWeek: daysOfWeek,
-          h: h,
-        );
+        // await createTasksForHabit(
+        //   daysOfWeek: daysOfWeek,
+        //   h: h,
+        // );
 
         CollectionReference habitsCollectionRef =
             _firestore.collection('users').doc(userId).collection('habits');

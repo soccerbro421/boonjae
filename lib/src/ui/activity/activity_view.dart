@@ -1,6 +1,9 @@
 import 'package:boonjae/src/models/habit_model.dart';
+import 'package:boonjae/src/models/user_model.dart';
 import 'package:boonjae/src/providers/habits_provider.dart';
+import 'package:boonjae/src/providers/user_provider.dart';
 import 'package:boonjae/src/ui/activity/past_week_activity.dart';
+import 'package:boonjae/src/ui/activity/top_5_friends.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
@@ -14,10 +17,18 @@ class ActivityView extends StatefulWidget {
 
 class _ActivityViewState extends State<ActivityView> {
   List<HabitModel> habits = [];
+  UserModel user = const UserModel(
+      uid: 'uid',
+      photoUrl: 'photoUrl',
+      name: 'name',
+      bio: 'bio',
+      username: 'username',
+      friends: []);
 
   @override
   Widget build(BuildContext context) {
     habits = Provider.of<HabitsProvider>(context).getHabits;
+    user = Provider.of<UserProvider>(context).getUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,6 +42,11 @@ class _ActivityViewState extends State<ActivityView> {
                   padding: const EdgeInsets.all(8.0),
                   child: PastWeekActivity(habits: habits),
                 ),
+                SizedBox(
+                  height: 700,
+                    child: TopFiveFriendsActivity(
+                  currentUser: user,
+                )),
                 // Add more children widgets here
               ],
             )

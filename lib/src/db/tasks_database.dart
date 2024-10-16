@@ -176,14 +176,14 @@ class TasksDatabase {
       DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
 
       final startOfPastWeek = startOfWeek.subtract(const Duration(days: 7));
-      final endOfPastWeek = startOfWeek;
+      final endOfPastWeek = startOfWeek.subtract(const Duration(seconds: 1));
 
       final currentWeekMaps = await _getTasksCountByPeriod(
           startOfWeek, endOfWeek, currentUserId, habits);
-      final nextWeekMaps = await _getTasksCountByPeriod(
+      final pastWeekMaps = await _getTasksCountByPeriod(
           startOfPastWeek, endOfPastWeek, currentUserId, habits);
 
-      return [nextWeekMaps, currentWeekMaps];
+      return [pastWeekMaps, currentWeekMaps];
     } catch (err) {
       throw Exception('Failed to get tasks count by week: $err');
     }
